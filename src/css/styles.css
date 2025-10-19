@@ -1,8 +1,9 @@
 /* Header PoliParking */
 .header {
+    border: 2px solid rojo;
     background-color: var(--colorDos);
     color: var(--colorUno);
-    padding: 1.8rem 0;
+    padding: 1.5rem 0;
     text-align: center;
 }
 
