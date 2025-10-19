@@ -1,0 +1,49 @@
+
+:root {
+    --colorUno: #ffffff;  
+    --colorDos: #0a3d62;  
+}
+
+
+.header {
+    border: 2px solid red; 
+    background-color: var(--colorDos);
+    color: var(--colorUno);
+    padding: 1.5rem 0;
+    text-align: center;
+}
+
+.navbar__container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+.navar__logo {
+    font-family: 'Roboto', sans-serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.navbar__container ul {
+    list-style: none;
+    display: flex;
+    gap: 1.5rem;
+    margin: 0;
+    padding: 0;
+}
+
+.navbar__container a {
+    text-decoration: none;
+    color: var(--colorUno);
+    font-family: 'Lato', sans-serif;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.navbar__container a:hover {
+    color: #feca57; 
+}
