@@ -1,29 +1,25 @@
-/* Declaration of variables CSS */
-:root {
-    --colorUno: #FFFFFF;
-    --colorDos: #00A8A8;
-    --colorTres: #2FE5E4;
-    --colorCuatro: #293A4E;
-    --colorCinco: #000000;
-    --fuentePrincipal: "Roboto", sans-serif;
-    --fuenteSecundaria: "Lato", sans-serif;
+/* Header PoliParking */
+.header {
+    background-color: var(--colorDos);
+    color: var(--colorUno);
+    padding: 1.5rem 0;
+    text-align: center;
 }
 
-
-/* General styles for the document HTML  */
-html {
-    background-color: var(--colorUno);
+.header-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.8rem;
 }
 
-body{
-    font-family: var(--fuentePrincipal);
+.logo {
+    width: 60px;
+    height: 60px;
 }
 
-
-/* Styles for containers */
-.container {
-    max-width: 120rem;
-    width: 90%;
-    margin: 0 auto;
-    
+.titulo {
+    font-family: var(--fuenteSecundaria);
+    font-size: 1.8rem;
+    font-weight: 700;
 }
