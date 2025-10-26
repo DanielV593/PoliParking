@@ -7,7 +7,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="styles">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="normalize.css">
 </head>
@@ -15,8 +15,10 @@
 
     <!-- Start - Section Header -->
     <header class="header">
+    <div class="header-left">
         <img src="https://upload.wikimedia.org/wikipedia/commons/5/51/Escuela_Polit%C3%A9cnica_Nacional.png" alt="Logo EPN" class="logo">
-        <h1>Escuela Politenica Nacional - PoliParking</h1>
+        <h1 class="header-title">Escuela Politécnica Nacional</h1>
+    </div>
         <nav class="navbar__container">
                 <ul>
                     <li><a href="#">Inicio</a></li>
@@ -29,27 +31,82 @@
     <!-- End - Section Header -->
 
     <!-- Start - Section Main -->
-    <main class = "main-conteiner">
-        <div>
-            <img src="https://lh3.googleusercontent.com/p/AF1QipM-5aLM7ZV3W_TKrSuARvx508qTcTqQtWb0bQ1L=s1360-w1360-h1020-rw" alt="EPNLG">
+    <main class="main-container">
+        <div class="main-content">
+        <h2 class="main-title">Sistema <span>PoliParking</span></h2>
+
+        <p class="main-description">
+            PoliParking es el sistema oficial de gestión de parqueaderos de la Escuela Politécnica Nacional.
+            Permite reservar, gestionar y optimizar el uso de los espacios de estacionamiento dentro del campus.
+        </p>
+
+        <a href="#reservar" class="btn-reserva">¡Reserva tu parqueadero!</a>
         </div>
-        <div class = "main-text">
-            <h2>Bienvenido/a al sistema <span>PoliParking</span></h2>
-            <div>
-                <p>Sistema de gestion de parqueados del campus de la Escuela Politecnica Nacional. Aqui podras revisar la disponibilidad de parqueaderos y reservar tu parqueadero.</p>
-            </div>
-            <a href="#reservar" class="btn-reserva"> ! Reserva tu parqueadero !</a>
+        <div class="main-image">
+        <img src="https://lh3.googleusercontent.com/p/AF1QipM-5aLM7ZV3W_TKrSuARvx508qTcTqQtWb0bQ1L=s1360-w1360-h1020-rw" alt="Campus EPN">
         </div>
     </main>
     <!-- End - Section Main -->
     
 
     <!-- Start - Section About -->
+    <section class="container about">
+        <div class="about__container">
+        <h2 class="about__title">Sobre PoliParking</h2>
+        <p class="about__text">
+            PoliParking es una iniciativa de la Escuela Politécnica Nacional (EPN) que busca optimizar el uso de los
+            parqueaderos mediante un sistema de reservas eficiente y moderno.
+        </p>
+        <p class="about__text">
+            Nuestro objetivo es mejorar la movilidad interna, reducir la congestión y ofrecer comodidad a la comunidad universitaria.
+        </p>
+        <p class="about__text">
+            Con PoliParking, tu espacio está asegurado antes de llegar. ¡Innovamos para un campus más organizado!
+        </p>
+        </div>
+        <div class="about__img">
+        <img src="https://i.ibb.co/3Wk4JgX/parqueo-epn.jpg" alt="Parqueadero de la EPN" loading="lazy">
+        </div>
+    </section>    
     <!-- End - Section About -->
 
 
-    <!-- Start - Section Services -->
-    <!-- End - Section Services -->
+    <!-- Start - Section Find Us -->
+    <section class="find-us">
+        <h2 class="find-us__title">Encuéntranos</h2>
+        <article class="container">
+        <h4 class="find-us__text">
+            Visítanos en la Asociación de la ESFOT o síguenos en nuestras redes sociales.
+        </h4>
+
+        <div class="find-us__container">
+            <!-- Asociación -->
+            <div class="location-card">
+            <img src="https://i.ibb.co/QfH1D0c/map-pin.png" alt="Ubicación ESFOT" loading="lazy">
+            <p class="location__title">Asociación de la ESFOT</p>
+            <p class="location__text">
+            Edificio E, Planta Baja — Escuela Politécnica Nacional<br>
+                Av. Ladrón de Guevara E11-253, Quito
+            </p>
+            <a href="https://maps.google.com/?q=Escuela+Politecnica+Nacional+ESFOT" target="_blank" class="btn-reserva">Ver en Mapa</a>
+            </div>
+
+            <!-- Redes Sociales -->
+            <div class="location-card">
+            <img src="https://i.ibb.co/VTHD1Lq/social-media.png" alt="Redes Sociales" loading="lazy">
+            <p class="location__title">Nuestras Redes</p>
+            <p class="location__text">Síguenos y entérate de las últimas novedades:</p>
+            <div class="social-icons">
+                <a href="https://www.facebook.com" target="_blank"><img src="https://i.ibb.co/vzwSn1K/facebook.png" alt="Facebook"></a>
+                <a href="https://www.instagram.com" target="_blank"><img src="https://i.ibb.co/Z6R0HhS/instagram.png" alt="Instagram"></a>
+                <a href="https://www.tiktok.com" target="_blank"><img src="https://i.ibb.co/mqRBQvV/tiktok.png" alt="TikTok"></a>
+                <a href="https://wa.me/593999999999" target="_blank"><img src="https://i.ibb.co/x5YgFWC/whatsapp.png" alt="WhatsApp"></a>
+            </div>
+            </div>
+        </div>
+        </article>
+    </section>
+    <!-- End - Section Find Us -->
 
 
 
