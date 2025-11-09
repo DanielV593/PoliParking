@@ -12,6 +12,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="normalize.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
 
@@ -73,61 +74,129 @@
     <!-- End - Section About -->
 
 
-    <!-- Start - Section Find Us -->
-    <section class="find-us">
-        <h2 class="find-us__title">Encuéntranos</h2>
+    <!-- Start - Section Services -->
+    <section class="services">
+        <h2 class="services__title">Nuestros Servicios</h2>
         <article class="container">
-        <h4 class="find-us__text">
-            Visítanos en la Asociación de la ESFOT o síguenos en nuestras redes sociales.
-        </h4>
-
-        <div class="find-us__container">
-            <!-- Asociación -->
-            <div class="location-card">
-            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT9eVnHYz5MlxlN16m08_bZSRhpm7bJqYJZbw&s" alt="Ubicación ESFOT" loading="lazy">
-            <p class="location__title">Asociación de la ESFOT</p>
-            <p class="location__text">
-            Edificio E, Planta Baja — Escuela Politécnica Nacional<br>
-                Av. Ladrón de Guevara E11-253, Quito
-            </p>
-            <a href="https://maps.google.com/?q=Escuela+Politecnica+Nacional+ESFOT" target="_blank" class="btn-reserva">Ver en Mapa</a>
-            </div>
-
-            <!-- Redes Sociales -->
-            <div class="location-card">
-            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSjiyxcMH1PfJ_J60c4AOZ1MjFx27TWMJ4bLw&s" alt="Redes Sociales" loading="lazy">
-            <p class="location__title">Nuestras Redes</p>
-            <p class="location__text">Síguenos y entérate de las últimas novedades:</p>
-            <div class="social-icons">
-                <a href="https://www.facebook.com" target="_blank"><img src="https://pngdownload.io/wp-content/uploads/2024/01/Facebook-Logo-social-media-emblem-transparent-PNG-image-jpg.webp" alt="Facebook"></a>
-                <a href="https://www.instagram.com" target="_blank"><img src="https://img.freepik.com/vector-premium/icono-logotipo-vector-instagram-logotipo-redes-sociales_901408-392.jpg?semt=ais_hybrid&w=740&q=80" alt="Instagram"></a>
-                <a href="https://www.tiktok.com" target="_blank"><img src="https://img.freepik.com/vector-premium/icono-falla-tik-tok-redes-sociales-icono-tik-tok-vinnitsa-ucrania-22-02-febrero-2023_250246-536.jpg?semt=ais_hybrid&w=740&q=80" alt="TikTok"></a>
-                <a href="https://wa.me/593999999999" target="_blank"><img src="https://png.pngtree.com/element_our/sm/20180626/sm_5b321c99945a2.jpg" alt="WhatsApp"></a>
-            </div>
-            </div>
-        </div>
+            <h4 class="services__text">Descubre cómo PoliParking transforma tu experiencia de estacionamiento en la EPN.</h4>
+            <div class="services__container">
+                <div class="service-card">
+                    <img src="./src/images/reserva.png" alt="Reserva rápida" loading="lazy">
+                    <p class="service-card__title">Reserva tu espacio en segundos</p>
+                    <p class="service-card__description">Encuentra y asegura tu parqueadero disponible antes de llegar al campus. Olvídate de buscar por horas.</p>
+                </div>
+                <div class="service-card">
+                    <img src="./src/images/mapa.png" alt="Mapa interactivo" loading="lazy">
+                    <p class="service-card__title">Mapa interactivo de parqueaderos</p>
+                    <p class="service-card__description">Visualiza la disponibilidad en tiempo real y navega fácilmente hacia tu espacio reservado o libre.</p>
+                </div>
+                <div class="service-card">
+                    <img src="./src/images/notificaciones.png" alt="Notificaciones" loading="lazy">
+                    <p class="service-card__title">Notificaciones y recordatorios</p>
+                    <p class="service-card__description">Recibe alertas sobre tu reserva, tiempo restante y promociones exclusivas para usuarios de PoliParking.</p>
+                </div>
+            </div>            
         </article>
     </section>
-    <!-- End - Section Find Us -->
-
+    <!-- End - Section Services -->
 
 
     <!-- Start - Section App -->
+    <section class="container app">
+        <div class="mobile">
+            <h2 class="mobile__title">Lleva PoliParking en tu bolsillo</h2>
+            <p class="mobile__description">Descarga nuestra aplicación y gestiona tus parqueaderos con total comodidad. Reserva, encuentra y paga desde tu smartphone.</p>
+            <div class="mobile__buttons">
+                <a href="#" target="_blank"><img src="./src/images/appstore.png" alt="Descargar en App Store" loading="lazy"></a>
+                <a href="#" target="_blank"><img src="./src/images/googleplay.png" alt="Descargar en Google Play" loading="lazy"></a>
+            </div>
+        </div>
+        <div class="mobile__img">
+            <img src="./src/images/mockup-poliparking.png" alt="Mockup app PoliParking" loading="lazy">
+        </div>
+    </section>
     <!-- End - Section App -->
 
 
 
     <!-- Start - Section Gallery -->
+    <section class="gallery">
+        <h3 class="gallery__title">Galería PoliParking</h3>
+        <p class="gallery__description">Explora el campus de la EPN y nuestros modernos parqueaderos.</p>
+        
+        <div class="gallery__grid container">
+            <div class="gallery__item"><img src="./src/images/gallery-1.jpg" alt="Parqueadero techado EPN" loading="lazy"></div>
+            <div class="gallery__item"><img src="./src/images/gallery-2.jpg" alt="Vista aérea EPN" loading="lazy"></div>
+            <div class="gallery__item"><img src="./src/images/gallery-3.jpg" alt="Entrada al parqueadero EPN" loading="lazy"></div>
+            <div class="gallery__item"><img src="./src/images/gallery-4.jpg" alt="Estudiante usando la app" loading="lazy"></div>
+            <div class="gallery__item"><img src="./src/images/gallery-5.jpg" alt="Parqueadero subterráneo EPN" loading="lazy"></div>
+            <div class="gallery__item"><img src="./src/images/gallery-6.jpg" alt="Área verde campus EPN" loading="lazy"></div>
+        </div>
+    </section>
     <!-- End - Section Gallery -->
 
 
+    <!-- Start - Section Find Us -->
+    <section class="find-us">
+        <h2 class="find-us__title">Encuéntranos</h2>
+        <article class="container">
+            <h4 class="find-us__text">
+                Visítanos en la Asociación de la ESFOT o síguenos en nuestras redes sociales.
+            </h4>
 
-    <!-- Start - Section Contact -->
-    <!-- End - Section Contact -->
+            <div class="find-us__container">
+                <div class="location-card">
+                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT9eVnHYz5MlxlN16m08_bZSRhpm7bJqJZbw&s" alt="Ubicación ESFOT" loading="lazy">
+                    <p class="location__title">Asociación de la ESFOT</p>
+                    <p class="location__text">
+                        Edificio E, Planta Baja — Escuela Politécnica Nacional<br>
+                        Av. Ladrón de Guevara E11-253, Quito
+                    </p>
+                    <a href="https://maps.google.com/?q=Escuela+Politecnica+Nacional+ESFOT" target="_blank" class="btn-reserva">Ver en Mapa</a>
+                </div>
+                <div class="location-card">
+                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSjiyxcMH1PfJ_J60c4AOZ1MjFx27TWMJ4bLw&s" alt="Redes Sociales" loading="lazy">
+                    <p class="location__title">Nuestras Redes</p>
+                    <p class="location__text">Síguenos y entérate de las últimas novedades:</p>
+                    <div class="social-icons">
+                        <!-- Enlaces de redes sociales (Agregar por favor) -->
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-tiktok"></i></a>
+                        <a href="#"><i class="fab fa-whatsapp"></i></a>
+                    </div>
+                </div>
+            </div>
+        </article>
+    </section>
+    <!-- End - Section Find Us -->
 
 
     <!-- Start - Section Footer -->
+    <footer class="footer">
+        <div class="footer__container">
+            <div class="footer__links">
+                <h3>Enlaces de interés</h3>
+                <div class="links">
+                    <a href="#">Soporte técnico</a>
+                    <a href="#">Blog de noticias</a>
+                    <a href="#">Preguntas frecuentes (FAQ)</a>
+                </div>
+            </div>
+
+            <div class="footer__contact">
+                <h3>Llámanos</h3>
+                <p class="call">(593) 22976300</p>
+                <h3>Escríbenos</h3>
+                <p class="write">info@epn.edu.ec</p>
+            </div>
+        </div>
+
+        <hr/>
+        <p class="footer__copy">© Derechos Reservados - PoliParking EPN</p>
+    </footer>
     <!-- End - Section Footer -->
+
 
 </body>
 </html>
