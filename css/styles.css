@@ -25,7 +25,7 @@ body {
     margin: 0 auto;
     padding: 0 1.5rem;
 }
-
+/* Start - Section Header */
 .header {
     display: flex;
     justify-content: space-between;
@@ -115,7 +115,10 @@ body {
 .navbar__container a:hover {
     color: var(--colorSecundario);
 }
+/* End - Section Header */
 
+
+/* Start - Section Main */
 .main-container {
     display: flex;
     align-items: center;
@@ -215,7 +218,10 @@ body {
         font-size: 2.2rem;
     }
 }
+/* End - Section Main */
 
+
+/* Start - Section About */
 .about {
     margin: 4rem 0;
     display: flex;
@@ -283,7 +289,9 @@ body {
         padding: 0;
     }
 }
+/* End - Section About */
 
+/* Start - Section Find Us */
 .find-us {
     background-color: var(--colorPrincipal);
     padding: 4rem 0;
@@ -380,7 +388,9 @@ body {
         font-size: 1.4rem;
     }
 }
+/* End - Section Find Us */
 
+/* Start - Section Services */
 .services {
     background-color: var(--colorFondoSeccion);
     padding: 4rem 0;
@@ -458,7 +468,9 @@ body {
         grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
     }
 }
+/* End - Section Services */
 
+/* Start - Section App */
 .app {
     margin-top: 5rem;
     margin-bottom: 6rem;
@@ -553,7 +565,9 @@ body {
         margin: 0;
     }
 }
+/* End - Section App */
 
+/* Start - Section Gallery */
 .gallery {
     background-color: var(--colorPrincipal);
     padding: 4rem 0;
@@ -619,28 +633,14 @@ body {
         height: 280px;
     }
 }
+/* End - Section Gallery */
 
-.footer {
-    background-color: var(--colorTextoOscuro);
-    padding-top: 2.5rem;
-    color: var(--colorFondoClaro);
-}
-
-.footer__container {
-    padding: 1.5rem 1rem;
-    display: flex;
-    flex-direction: column;
-    gap: 2.5rem;
-}
-
-/*: Styles for Section Contact */
-
+/* Start - Section Contact */
 .contact{
     margin-bottom: 2rem;
 }
 
 .contact__form{
-  /* border: 1px solid red; */
     background-color: rgba(166, 166, 166, 0.17);
     padding: 1rem;
     margin: 2rem 0;
@@ -667,7 +667,7 @@ body {
     border: 1px solid #ccc;
     border-radius: 4px;
     font-weight: 600;
-    color: var(--colorCinco);
+    color: var(--colorTextoOscuro);
     background-color: rgba(217, 217, 217, 1);
 }
 
@@ -700,7 +700,21 @@ body {
         margin: 0;
     }
 }
+/* End - Section Contact */
 
+/* Start - Section Footer */
+.footer {
+    background-color: var(--colorTextoOscuro);
+    padding-top: 2.5rem;
+    color: var(--colorFondoClaro);
+}
+
+.footer__container {
+    padding: 1.5rem 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+}
 
 .footer__social h3,
 .footer__links h3,
@@ -751,3 +765,4 @@ hr {
     padding: 1.5rem;
     font-size: 0.95rem;
 }
+/* End - Section Footer */
