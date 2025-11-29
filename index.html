@@ -34,20 +34,21 @@
     <!-- End - Section Header -->
 
     <!-- Start - Section Main -->
-    <main class="main-container">
-        <div class="main-content">
-            <img src="/images/Logo PoliParking.jpg" alt="Logo PoliParking" class="main-logo-hero">
-        <h2 class="main-title">Sistema <span>PoliParking</span></h2>
-
-        <p class="main-description">
-            PoliParking es el sistema oficial de gestión de parqueaderos de la Escuela Politécnica Nacional.
-            Permite reservar, gestionar y optimizar el uso de los espacios de estacionamiento dentro del campus.
-        </p>
-
-        <a href="#reservar" class="btn-reserva">¡Reserva tu parqueadero!</a>
-        </div>
-        <div class="main-image">
-        <img src="https://lh3.googleusercontent.com/p/AF1QipM-5aLM7ZV3W_TKrSuARvx508qTcTqQtWb0bQ1L=s1360-w1360-h1020-rw" alt="Campus EPN">
+    <main class="hero-background">
+        <div class="main-container">
+        
+            <div class="main-content">
+                <img src="images/Logo PoliParking.jpg" alt="Logo PoliParking" class="main-logo-hero">
+                <h1 class="main-title">Sistema <span>PoliParking</span></h1>
+                <p class="main-description">
+                    PoliParking es el sistema oficial de gestión de parqueaderos de la Escuela Politécnica Nacional.
+                    Permite reservar, gestionar y optimizar el uso de los espacios de estacionamiento dentro del campus.
+                </p>
+                <a href="#reservar" class="btn-reserva">¡Reserva tu parqueadero!</a>
+            </div>
+            <div class="main-image">
+                <img src="https://lh3.googleusercontent.com/p/AF1QipM-5aLM7ZV3W_TKrSuARvx508qTcTqQtWb0bQ1L=s1360-w1360-h1020-rw" alt="Campus EPN">
+            </div>
         </div>
     </main>
     <!-- End - Section Main -->
@@ -141,33 +142,38 @@
     </section>
     <!-- End - Section Gallery -->
 
-
-    <!-- Start - Section Find Us -->
         <!-- Start - Section Contact -->
-    <section class="container contact">
-        <div class="contact__form">
-            <h2 class="contact__title">Contáctanos</h2>
-            <form>
-                <input type="name="nombre" placeholder="Nombre" required>
-                <input type="email" name="corre0" placeholder="Correo" required>
-                <input type="tel" name="celular" placeholder="Celular" required>
-                <textarea name="observaciones" placeholder="Observaciones" rows="4"></textarea>
-                <label class="checkbox__label">
-                    <input type="checkbox" required>
-                    Términos y condiciones
-                </label>
-                <button type="submit" class="btn button">Enviar</button>
-            </form>
-        </div>
+    <section class="container contact">    
+        <h2 class="contact__title">Contáctanos</h2>
+            <div class="contact__row">       
+            <div class="contact__form">
+                <form>
+                    <input type="text" name="nombre" placeholder="Nombre" required>
+                    <input type="email" name="corre0" placeholder="Correo" required>
+                    <input type="tel" name="celular" placeholder="Celular" required>
+                    <textarea name="observaciones" placeholder="Observaciones" rows="4"></textarea>
+                    <label class="checkbox__label">
+                        <input type="checkbox" required>
+                        Términos y condiciones
+                    </label>
+                    <button type="submit" class="btn button">Enviar</button>
+                </form>
+            </div>
 
-        <div class="contact__map">
-            <iframe
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3989.7914484515727!2d-78.4919116242656!3d-0.2102860353982151!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x91d59a107e1cd44b%3A0x88a284f66939ed4!2sESCUELA%20POLIT%C3%89CNICA%20NACIONAL!5e0!3m2!1ses-419!2sec!4v1748692694233!5m2!1ses-419!2sec"
-                width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy"
-                referrerpolicy="no-referrer-when-downgrade"></iframe>
+            <div class="contact__map">
+                <iframe
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3989.7902347343467!2d-78.4905869250352!3d-0.2149526997836369!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x91d59a107f960255%3A0x63351d5203366c8!2sEscuela%20Polit%C3%A9cnica%20Nacional!5e0!3m2!1ses!2sec!4v1716584000000!5m2!1ses!2sec"
+                    width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy"
+                    referrerpolicy="no-referrer-when-downgrade"></iframe>
+            </div>
+
         </div>
     </section>
+    
     <!-- End - Section Contact -->
+    
+    <!-- Start - Section Find Us -->
+    <section class="find-us">
     <section class="find-us">
         <h2 class="find-us__title">Encuéntranos</h2>
         <article class="container">
@@ -176,26 +182,53 @@
             </h4>
 
             <div class="find-us__container">
-                <div class="location-card">
-                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT9eVnHYz5MlxlN16m08_bZSRhpm7bJqJZbw&s" alt="Ubicación ESFOT" loading="lazy">
-                    <p class="location__title">Asociación de la ESFOT</p>
-                    <img src="images/Logo ESFOT.jpg" alt="Logo" class="logo-ubicacion">
-                    <p class="location__text">
-                        Edificio E, Planta Baja — Escuela Politécnica Nacional<br>
-                        Av. Ladrón de Guevara E11-253, Quito
-                    </p>
-                    <a href="https://maps.google.com/?q=Escuela+Politecnica+Nacional+ESFOT" target="_blank" class="btn-reserva">Ver en Mapa</a>
+                <div class="location-card card-physical">
+                    <div class="card__header">
+                        <p class="location__title">Asociación de la ESFOT</p>
+                    </div>
+        
+                    <div class="card__body">
+                        <img src="images/Logo ESFOT.png" alt="Logo ESFOT" class="main-logo-esfot">
+            
+                        <div class="address-block">
+                            <div class="address-item">
+                                <i class="fas fa-building"></i>
+                                <p>Edificio E, Planta Baja — EPN</p>
+                            </div>
+                            <div class="address-item">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <p>Av. Ladrón de Guevara E11-253, Quito</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card__footer">
+                        <a href="https://maps.google.com/?q=Escuela+Politecnica+Nacional+ESFOT" target="_blank" class="btn-reserva full-width">Ver en Mapa</a>
+                    </div>
                 </div>
-                <div class="location-card">
-                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSjiyxcMH1PfJ_J60c4AOZ1MjFx27TWMJ4bLw&s" alt="Redes Sociales" loading="lazy">
-                    <p class="location__title">Nuestras Redes</p>
-                    <p class="location__text">Síguenos y entérate de las últimas novedades:</p>
-                    <div class="social-icons">
-                        <!-- Enlaces de redes sociales (Agregar por favor) -->
-                        <a href="https://www.facebook.com/"><i class="fab fa-facebook-f"></i></a>
-                        <a href="https://www.instagram.com/"><i class="fab fa-instagram"></i></a>
-                        <a href="https://www.tiktok.com/"><i class="fab fa-tiktok"></i></a>
-                        <a href="https://web.whatsapp.com/"><i class="fab fa-whatsapp"></i></a>
+
+                <div class="location-card card-social">
+                    <div class="card__header">
+                        <p class="location__title">Nuestras Redes</p>
+                    </div>
+
+                    <div class="card__body centered-body">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/5/51/Escuela_Polit%C3%A9cnica_Nacional.png" alt="EPN Logo" class="main-logo-esfot">
+            
+                        <div class="address-block social-text-block">
+                            <p class="location__text">
+                                Síguenos y entérate de las últimas novedades y eventos oficiales.
+                            </p>
+                        </div>
+                    </div>
+        
+                    <div class="card__footer">
+                        <div class="social-icons prominent-icons">
+                            <a href="https://www.facebook.com/"><i class="fab fa-facebook-f"></i></a>
+                            <a href="https://www.instagram.com/"><i class="fab fa-instagram"></i></a>
+                            <a href="https://www.tiktok.com/"><i class="fab fa-tiktok"></i></a>
+                            <a href="https://web.whatsapp.com/"><i class="fab fa-whatsapp"></i></a>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -205,33 +238,49 @@
 
 
     <!-- Start - Section Footer -->
-<footer class="footer">
-        <div class="footer__container">
-            
-            <div class="footer-row">
-                
-                <div class="footer__links">
-                    <h3>Enlaces de interés</h3>
-                    <div class="links">
-                        <a href="#">Soporte técnico</a>
-                        <a href="#">Blog de noticias</a>
-                        <a href="#">Preguntas frecuentes (FAQ)</a>
+        <footer class="footer">
+            <div class="footer__container">        
+                <div class="footer-row">            
+                    <div class="footer__col">
+                        <h3 class="footer__title">Navegación</h3>
+                        <ul class="footer__list">
+                            <li><a href="#">Preguntas Frecuentes</a></li>
+                            <li><a href="#">Términos y Condiciones</a></li>
+                            <li><a href="#">Reglamento de Uso</a></li>
+                            <li><a href="#">Soporte Técnico</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer__col">
+                        <h3 class="footer__title">Horarios de Atención</h3>
+                        <ul class="footer__list">
+                            <li><span class="label">Lunes - Viernes:</span> 07:00 - 21:00</li>
+                            <li><span class="label">Sábados:</span> 08:00 - 13:00</li>
+                            <li><span class="label">Domingos:</span> Cerrado</li>
+                        </ul>
+                    </div>
+                    <div class="footer__col">
+                        <h3 class="footer__title">Contáctanos</h3>
+                        <ul class="footer__list contact-list">
+                            <li>
+                                <i class="fa-solid fa-phone"></i> 
+                                (593) 22976300
+                            </li>
+                            <li>
+                                <i class="fa-solid fa-envelope"></i> 
+                                info@epn.edu.ec
+                            </li>
+                            <li>
+                                <i class="fa-solid fa-location-dot"></i> 
+                                Edificio Administrativo, Planta Baja
+                            </li>
+                        </ul>
                     </div>
                 </div>
-
-                <div class="footer__contact">
-                    <h3>Llámanos</h3>
-                    <p class="call">(593) 22976300</p>
-                    <h3>Escríbenos</h3>
-                    <p class="write">info@epn.edu.ec</p>
-                </div>
-
             </div>
+            <div class="footer__bottom">
+                <p>© 2025 PoliParking - Escuela Politécnica Nacional</p>
             </div>
-
-        <hr/>
-        <p class="footer__copy">© Derechos Reservados - PoliParking EPN</p>
-    </footer>
+        </footer>
     <!-- End - Section Footer -->
 
 
