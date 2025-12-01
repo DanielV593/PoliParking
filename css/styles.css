@@ -45,7 +45,7 @@ body {
 }
 
 .logo {
-    height: 60px;
+    height: 80px;
     width: auto;
 }
 
@@ -152,7 +152,7 @@ body {
 }
 
 .main-logo-hero {
-    width: 380px; 
+    width: 450px; 
     max-width: 100%; 
     height: auto;
     margin-bottom: 1.5rem;
@@ -222,7 +222,7 @@ body {
 .main-logo-esfot, 
 .logo{
     background-color: white;
-    padding: 5px;
+    padding: 1px;
     border-radius: 8px;
     box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
 }
@@ -250,7 +250,7 @@ body {
     }
 
     .main-logo-hero {
-        width: 150px;
+        width: 200px;
         margin-bottom: 1rem;
     }
     
