@@ -15,7 +15,7 @@
 body {
     font-family: 'Lato', sans-serif;
     margin: 0;
-    padding-top: 0;
+    padding-top: 70px;
     box-sizing: border-box;
     background-color: var(--colorFondoClaro);
     color: var(--colorTextoOscuro);
@@ -250,7 +250,7 @@ body {
     }
 
     .main-logo-hero {
-        width: 250px;
+        width: 150px;
         margin-bottom: 1rem;
     }
     
@@ -346,10 +346,16 @@ body {
     display: flex;
     justify-content: space-around;
     margin-top: 1.5rem;
-    padding: 1.5rem 2rem;
+    padding: 1.5rem 0.5rem;
     background: var(--colorFondoSeccion);
     border-radius: 12px;
-    gap: 1.5rem;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+.stat-item {
+    text-align: center;
+    min-width: 80px; 
+    padding: 0 5px;
 }
 
 .stat-item {
@@ -364,7 +370,7 @@ body {
 }
 
 .stat-label {
-    font-size: 0.9rem;
+    font-size: 0.8rem;
     color: var(--colorTextoClaro);
     font-weight: 600;
 }
@@ -414,7 +420,10 @@ body {
         gap: 2rem;
     }
     .stat-number{
-        font-size: 2rem;
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--colorPrincipal);
+        display: block;
     }
 }
 @media(min-width:1200px){
@@ -848,33 +857,30 @@ body {
 
 /* Start - Section Contact */
 .contact {
-    margin: 4rem auto; /* Separación arriba y abajo */
+    margin: 4rem auto; 
     max-width: 1200px;
     padding: 0 1.5rem;
 }
 
-/* Título centrado arriba de todo */
 .contact__title {
     text-align: center;
     font-size: 2.5rem;
     font-weight: 800;
     color: var(--colorPrincipal);
     font-family: var(--font-primary, 'Open Sans', sans-serif);
-    margin-bottom: 2.5rem; /* Espacio entre titulo y las cajas */
+    margin-bottom: 2.5rem; 
 }
 
-/* Contenedor de Formulario y Mapa */
 .contact__row {
     display: flex;
-    flex-direction: column; /* En celular, uno debajo de otro */
+    flex-direction: column; 
     gap: 2rem;
 }
 
-/* --- ESTILOS "COMO ANTES" (Tu caja gris) --- */
 .contact__form {
-    background-color: rgba(166, 166, 166, 0.17); /* Tu gris original */
+    background-color: rgba(166, 166, 166, 0.17); 
     padding: 1.5rem;
-    border-radius: 8px; /* Un poquitin redondeado para que no sea tan duro */
+    border-radius: 8px; 
 }
 
 .contact__form form {
@@ -925,7 +931,6 @@ body {
     cursor: pointer;
 }
 
-/* Mapa */
 .contact__map {
     width: 100%;
 }
@@ -933,23 +938,22 @@ body {
 .contact__map iframe {
     width: 100%;
     height: 100%;
-    min-height: 400px; /* Altura mínima para que se vea bien */
+    min-height: 400px; 
     display: block;
     border-radius: 8px;
 }
 
-/* --- VERSIÓN PC (Aquí sucede la magia de la alineación) --- */
 @media (min-width: 768px) {
     .contact__row {
-        flex-direction: row; /* Lado a lado */
-        align-items: center; /* ESTO ALINEA AL MEDIO VERTICALMENTE */
+        flex-direction: row; 
+        align-items: center; 
         justify-content: space-between;
-        gap: 4rem; /* Separación entre mapa y formulario */
+        gap: 4rem; 
     }
 
     .contact__form,
     .contact__map {
-        flex: 1; /* Ocupan 50% cada uno */
+        flex: 1; 
         width: 50%; 
     }
 }
