@@ -49,6 +49,26 @@ body {
     width: auto;
 }
 
+.logo{
+	animation-duration: 5s;
+	animation-name: animacionLogo;
+	animation-iteration-count: infinite;
+  }
+@keyframes animacionLogo{
+	from {
+		-webkit-transform: rotate(0deg);
+        transform: rotateY(0deg);
+	}
+  50%{
+		-webkit-transform: rotate(180deg);
+        transform: rotateY(180deg);
+	} 
+	to {
+		-webkit-transform: rotate(360deg);
+        transform: rotateY(360deg);
+		}
+}
+
 .header-left {
     display: flex;
     align-items: center;
@@ -656,6 +676,7 @@ body {
 .service-card:hover {
     transform: translateY(-10px);
     box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+    padding: 20px;
 }
 
 .service-card img {
@@ -1129,3 +1150,4 @@ body {
         flex: 1; 
     }
 }
+
