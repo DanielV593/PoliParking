@@ -1,10 +1,4 @@
-/* ===================================================== */
-/*  SISTEMA DE ANIMACIONES INSTITUCIONALES – POLIPARKING */
-/* ===================================================== */
 
-
-/* ---------- MAIN ---------- */
-/* Fade + desplazamiento vertical */
 @keyframes fadeInInstitutional {
     from {
         opacity: 0;
@@ -17,8 +11,6 @@
 }
 
 
-/* ---------- ABOUT ---------- */
-/* Slide lateral suave */
 @keyframes slideInLeftSoft {
     from {
         opacity: 0;
@@ -30,7 +22,6 @@
     }
 }
 
-/* Fade + scale académico */
 @keyframes fadeInSoft {
     from {
         opacity: 0;
@@ -42,10 +33,6 @@
     }
 }
 
-
-/* ===================== */
-/* MAIN */
-/* ===================== */
 
 .main-container {
     animation: fadeInInstitutional 1s ease-out both;
@@ -61,33 +48,23 @@
 }
 
 
-/* ===================== */
-/* ABOUT (Scroll CSS) */
-/* ===================== */
-
 .about {
     view-timeline-name: --about-timeline;
     view-timeline-axis: block;
 }
 
-/* Texto: slide lateral */
 .about__container {
     animation: slideInLeftSoft 1.1s ease-out both;
     animation-timeline: --about-timeline;
     animation-range: entry 20% cover 40%;
 }
 
-/* Imagen: fade + scale */
 .about__img {
     animation: fadeInSoft 1.2s ease-out both;
     animation-timeline: --about-timeline;
     animation-range: entry 25% cover 45%;
 }
 
-
-/* ===================== */
-/* MICRO INTERACCIONES */
-/* ===================== */
 
 .main-image img,
 .about__img img {
