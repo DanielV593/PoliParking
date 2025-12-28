@@ -23,5 +23,10 @@
   "homepage": "https://github.com/DanielV593/PoliParking#readme",
   "devDependencies": {
     "vite": "^7.3.0"
+  },
+  "dependencies": {
+    "aos": "^2.3.4",
+    "firebase": "^12.7.0",
+    "react-router-dom": "^7.11.0"
   }
 }
