@@ -1,0 +1,32 @@
+{
+  "name": "poliparking",
+  "version": "1.0.0",
+  "description": "Sistema de gestión de parqueaderos a nivel de la Escuela Politécnica Nacional",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DanielV593/PoliParking.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/DanielV593/PoliParking/issues"
+  },
+  "homepage": "https://github.com/DanielV593/PoliParking#readme",
+  "devDependencies": {
+    "vite": "^7.3.0"
+  },
+  "dependencies": {
+    "aos": "^2.3.4",
+    "firebase": "^12.7.0",
+    "react-router-dom": "^7.11.0"
+  }
+}
