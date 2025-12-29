@@ -11,31 +11,30 @@ return (
     <>
     <Header />
 
-      {/* --- Start - Section Main (Hero) --- */}
-    <main className="hero-background" data-aos="fade-in">
+    {/* SECCIÓN INICIO - Añadido id="inicio" */}
+    <main id="inicio" className="hero-background" data-aos="fade-in">
         <div className="main-container">
-        <div className="main-content">
-            <img 
-                src={logoPoli} 
-                alt="Logo PoliParking" 
-                className="main-logo-hero" 
-            />
-            <h1 className="main-title">Sistema <span>PoliParking</span></h1>
-            <p className="main-description">
-            PoliParking es el sistema oficial de gestión de parqueaderos de la Escuela Politécnica Nacional.
-            Permite reservar, gestionar y optimizar el uso de los espacios de estacionamiento dentro del campus.
-            </p>
-            <a href="#reservar" className="btn-reserva">¡Reserva tu parqueadero!</a>
-        </div>
-        <div className="main-image">
-            <img src={campusEpn} alt="Campus EPN" />
-        </div>
+            <div className="main-content">
+                <img 
+                    src={logoPoli} 
+                    alt="Logo PoliParking" 
+                    className="main-logo-hero" 
+                />
+                <h1 className="main-title">Sistema <span>PoliParking</span></h1>
+                <p className="main-description">
+                PoliParking es el sistema oficial de gestión de parqueaderos de la Escuela Politécnica Nacional.
+                Permite reservar, gestionar y optimizar el uso de los espacios de estacionamiento dentro del campus.
+                </p>
+                <a href="#reservar" className="btn-reserva">¡Reserva tu parqueadero!</a>
+            </div>
+            <div className="main-image">
+                <img src={campusEpn} alt="Campus EPN" />
+            </div>
         </div>
     </main>
-      {/* --- End - Section Main --- */}
 
-      {/* --- Start - Section About --- */}
-    <section className="about" data-aos="fade-up">
+    {/* SECCIÓN SOBRE NOSOTROS - Añadido id="about" */}
+    <section id="about" className="about" data-aos="fade-up">
         <div className="about__container">
         <h2 className="about__title">Sobre PoliParking</h2>
         <p className="about__text">
@@ -72,10 +71,9 @@ return (
         />
         </div>
     </section>
-      {/* --- End - Section About --- */}
 
-      {/* --- Start - Section Services --- */}
-    <section className="services" data-aos="fade-up">
+    {/* SECCIÓN SERVICIOS - Añadido id="services" */}
+    <section id="services" className="services" data-aos="fade-up">
         <h2 className="services__title">Nuestros Servicios</h2>
         <article className="container">
         <h4 className="services__text">Descubre cómo PoliParking transforma tu experiencia de estacionamiento en la EPN.</h4>
@@ -103,9 +101,8 @@ return (
         </div>
         </article>
     </section>
-      {/* --- End - Section Services --- */}
 
-      {/* --- Start - Section App --- */}
+    {/* SECCIÓN APP (Sin cambio de ID necesario) */}
     <section className="container app" data-aos="fade-left">
         <div className="mobile">
         <h2 className="mobile__title">Lleva PoliParking en tu bolsillo</h2>
@@ -123,9 +120,8 @@ return (
         <img src="https://us.as.com/autos/wp-content/uploads/2024/05/5805550_60893-scaled.jpg" alt="Mockup app PoliParking" loading="lazy" />
         </div>
     </section>
-      {/* --- End - Section App --- */}
 
-      {/* --- Start - Section Gallery --- */}
+    {/* SECCIÓN GALERÍA */}
     <section className="gallery" data-aos="zoom-in">
         <h3 className="gallery__title">Galería PoliParking</h3>
         <p className="gallery__description">Explora el campus de la EPN y nuestros modernos parqueaderos.</p>
@@ -139,10 +135,9 @@ return (
         <div className="gallery__item"><img src="https://images.unsplash.com/photo-1663326577034-f8424e12dddb?q=80&w=774&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Área verde campus EPN" loading="lazy" /></div>
         </div>
     </section>
-      {/* --- End - Section Gallery --- */}
 
-      {/* --- Start - Section Contact --- */}
-    <section className="container contact" data-aos="fade-up">    
+    {/* SECCIÓN CONTACTO - Añadido id="contact" */}
+    <section id="contact" className="container contact" data-aos="fade-up">    
         <h2 className="contact__title">Contáctanos</h2>
         <div className="contact__row">       
         <div className="contact__form">
@@ -172,9 +167,8 @@ return (
         </div>
         </div>
     </section>
-      {/* --- End - Section Contact --- */}
 
-      {/* --- Start - Section Find Us --- */}
+    {/* SECCIÓN FIND US */}
     <section className="find-us" data-aos="fade-up">
         <h2 className="find-us__title">Encuéntranos</h2>
         <article className="container">
@@ -235,7 +229,6 @@ return (
         </div>
         </article>
     </section>
-      {/* --- End - Section Find Us --- */}
 
         <Footer />
     </>

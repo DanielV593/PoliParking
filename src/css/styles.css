@@ -325,3 +325,69 @@ img { display: block; max-width: 100%; }
 .auth-footer { margin-top: 1.5rem; font-size: 0.95rem; }
 .auth-footer a { color: var(--colorPrincipal); font-weight: 700; }
 .auth-footer a:hover { text-decoration: underline; }
+
+
+/* Fuerza a que los elementos estén en la misma línea */
+.header__content {
+    display: flex !important; 
+    flex-direction: row !important; 
+    justify-content: space-between !important; 
+    align-items: center;
+    width: 100%;
+    padding: 10px 20px;
+    background-color: white;
+    position: relative; 
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.header__hamburger {
+    display: none; 
+    font-size: 2rem;
+    cursor: pointer;
+    color: #b71c1c; 
+}
+
+@media (max-width: 768px) {
+    .header__hamburger {
+        display: block !important; 
+    }
+
+    .navbar__container {
+        display: none;
+    }
+
+    /* Cuando se activa el menú */
+    .navbar__container.active {
+        display: block;
+        position: absolute;
+        top: 100%; 
+        left: 0;
+        width: 100%;
+        background-color: #f4f4f4; 
+        z-index: 9999;
+        padding: 20px 10px; /* Añadimos un poco de padding lateral */
+    }
+
+    /* CAMBIO CLAVE: De vertical (column) a horizontal (row) */
+    .navbar__container.active ul {
+        display: flex; /* Aseguramos que sea flex */
+        flex-direction: row; /* Alineación horizontal */
+        flex-wrap: wrap; /* Si no caben, bajan a la siguiente línea (importante para móviles pequeños) */
+        justify-content: center; /* Centra los elementos horizontalmente */
+        align-items: center;
+        gap: 15px; /* Espacio entre links y botones */
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    /* Achicamos el texto para que no empuje la hamburguesa fuera de la pantalla */
+    .header-title {
+        font-size: 0.85rem;
+    }
+}
