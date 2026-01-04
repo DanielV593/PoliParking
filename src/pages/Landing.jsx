@@ -35,50 +35,47 @@ return (
 
     {/* SECCIÓN SOBRE NOSOTROS - Añadido id="about" */}
     <section id="about" className="about">
-    <div className="about__wrapper">
+        <div className="about__wrapper">
+            {/* TARJETA BLANCA */}
+            <div className="about__card">
+                <h2 className="about__title">Sobre PoliParking</h2>
 
-    {/* TARJETA BLANCA */}
-    <div className="about__card">
-        <h2 className="about__title">Sobre PoliParking</h2>
+                <p className="about__text">
+                PoliParking es una iniciativa innovadora de la Escuela Politécnica Nacional (EPN) diseñada para revolucionar la experiencia de estacionamiento en el campus mediante un sistema de reservas inteligente y eficiente.
+                </p>
 
-        <p className="about__text">
-        PoliParking es una iniciativa innovadora de la Escuela Politécnica Nacional (EPN) diseñada para revolucionar la experiencia de estacionamiento en el campus mediante un sistema de reservas inteligente y eficiente.
-        </p>
+                <p className="about__text">
+                Nuestro objetivo es transformar la movilidad interna, reducir significativamente la congestión vehicular y ofrecer máxima comodidad a toda la comunidad universitaria.
+                </p>
 
-        <p className="about__text">
-        Nuestro objetivo es transformar la movilidad interna, reducir significativamente la congestión vehicular y ofrecer máxima comodidad a toda la comunidad universitaria.
-        </p>
+                <p className="about__text">
+                Con PoliParking, tu espacio está garantizado antes de que llegues al campus.
+                </p>
 
-        <p className="about__text">
-        Con PoliParking, tu espacio está garantizado antes de que llegues al campus.
-        </p>
-
-        <div className="about__stats">
-        <div className="stat">
-            <span>500+</span>
-            <small>Espacios</small>
+                <div className="about__stats">
+                <div className="stat">
+                    <span>500+</span>
+                    <small>Espacios</small>
+                </div>
+                <div className="stat">
+                    <span>24/7</span>
+                    <small>Disponibilidad</small>
+                </div>
+                <div className="stat">
+                    <span>100%</span>
+                    <small>Seguro</small>
+                </div>
+                </div>
+            </div>
+            {/* IMAGEN */}
+            <div className="about__image">
+                <img
+                src="https://www.eluniverso.com/resizer/v2/DXSEAS2SXZCHRE55ABQN76TEUM.jpg?auth=e19adbde083f6a0cc42c27b2b17401475a411b603aef08e8080373ec7188cd5a&width=1005&height=670&quality=75&smart=true"
+                alt="Sistema moderno de parqueadero EPN"
+                loading="lazy"
+                />
+            </div>
         </div>
-        <div className="stat">
-            <span>24/7</span>
-            <small>Disponibilidad</small>
-        </div>
-        <div className="stat">
-            <span>100%</span>
-            <small>Seguro</small>
-        </div>
-        </div>
-    </div>
-
-    {/* IMAGEN */}
-    <div className="about__image">
-        <img
-        src="https://www.eluniverso.com/resizer/v2/DXSEAS2SXZCHRE55ABQN76TEUM.jpg?auth=e19adbde083f6a0cc42c27b2b17401475a411b603aef08e8080373ec7188cd5a&width=1005&height=670&quality=75&smart=true"
-        alt="Sistema moderno de parqueadero EPN"
-        loading="lazy"
-        />
-    </div>
-
-    </div>
     </section>
 
 
@@ -167,8 +164,6 @@ return (
         <div className="contact__map">
             <iframe
             src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15959.073379204043!2d-78.4907604!3d-0.2117562!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x91d59a107f950c41%3A0x6758d4a6549226cb!2sEscuela%20Polit%C3%A9cnica%20Nacional!5e0!3m2!1ses!2sec!4v1700000000000!5m2!1ses!2sec"
-            width="600" 
-            height="450" 
             style={{ border: 0 }} 
             allowFullScreen="" 
             loading="lazy"
@@ -218,7 +213,7 @@ return (
             </div>
 
             <div className="card__body centered-body">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/5/51/Escuela_Polit%C3%A9cnica_Nacional.png" alt="EPN Logo" className="main-logo-esfot" />
+                <img src="https://upload.wikimedia.org/wikipedia/commons/5/51/Escuela_Polit%C3%A9cnica_Nacional.png" alt="EPN Logo" className="main-logo-epns" />
             
                 <div className="address-block social-text-block">
                 <p className="location__text">

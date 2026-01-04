@@ -39,8 +39,10 @@ const Header = () => {
                         <li><Link to="/register" className="btn-register" onClick={closeMenu}>Registro</Link></li>
                     </ul>
                 </nav>
+                
             </div>
         </header>
+        
     );
 };
 
