@@ -1,0 +1,69 @@
+
+/* =========================================
+   7. GALERÍA
+   ========================================= */
+.gallery { background-color: var(--colorPrincipal); padding: 1rem 0; color: white; }
+.gallery__title { text-align: center; color: white; font-size: 3rem; }
+.gallery__description { text-align: center; margin-bottom: 0.5em; color: rgba(255,255,255,0.9); font-size: 1.3rem; }
+.gallery__grid {
+    width: 90%; max-width: 1700px; margin: 0 auto;
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 1.5rem;
+}
+.gallery__item img { width: 100%; height: 300px; object-fit: cover; border-radius: 10px; transition: transform 0.3s; }
+.gallery__item img:hover { transform: scale(1.05); }
+/* =========================================
+   GALLERY – RESPONSIVE
+   ========================================= */
+
+/* TABLET */
+@media (max-width: 992px) {
+    .gallery__grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .gallery__item img {
+        height: 260px;
+    }
+
+    .gallery__title {
+        font-size: 2.5rem;
+    }
+
+    .gallery__description {
+        font-size: 1.15rem;
+    }
+}
+
+/* MOBILE */
+@media (max-width: 576px) {
+    .gallery {
+        padding: 3rem 0;
+    }
+
+    .gallery__grid {
+        grid-template-columns: 1fr;
+        width: 95%;
+    }
+
+    .gallery__item img {
+        height: auto;
+        aspect-ratio: 4 / 3;
+    }
+
+    .gallery__title {
+        font-size: 2.1rem;
+    }
+
+    .gallery__description {
+        font-size: 1.05rem;
+        margin-bottom: 1.2rem;
+        padding: 0 1rem;
+    }
+}
+
+/* EXTRA SMALL (opcional pero recomendado) */
+@media (max-width: 400px) {
+    .gallery__item img {
+        aspect-ratio: 3 / 2;
+    }
+}

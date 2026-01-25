@@ -1,0 +1,41 @@
+
+/* =========================================
+   5. SERVICIOS
+   ========================================= */
+#services{
+    scroll-margin-top: 90px;
+}
+.services {padding: 4.5rem 0; background: #fff; }
+.services__title { text-align: center; font-size: 3rem; margin-bottom: 0.4rem; }
+.services__text { text-align: center; font-size: 1.15rem; color: var(--colorTextoClaro); margin-bottom: 3rem; }
+.services__container {
+    width: 90%; max-width: 1200px; margin: 0 auto;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 3rem;
+}
+.service-card {
+    background: #fff; padding: 2.5rem 2.5rem; border-radius: 15px; text-align: center;
+    border: 1px solid var(--bordeSuave); box-shadow: 0 8px 30px rgba(0,0,0,0.06);
+    transition: transform 0.3s, box-shadow 0.3s; 
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.service-card:hover { transform: translateY(-6px); box-shadow: 0 14px 40px rgba(0,0,0,0.1); border-color: var(--colorPrincipal); }
+.service-card img { width: 70px; margin-bottom: 2rem; }
+.service-card__title { font-size: 1.4rem; color: var(--colorPrincipal); margin-bottom: 0.8rem; }
+.service-card p{
+    font-size: 1.06rem;
+
+}
+@media (max-width: 768px) {
+    .services__container {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+
+    .service-card {
+        padding: 2rem;
+    }
+}
+

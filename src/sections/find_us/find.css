@@ -1,0 +1,136 @@
+
+.find-us {
+    padding: 2rem 0;
+    background-color: var(--colorFondoSeccion);
+    /* Corrige scroll con header fijo */
+    scroll-margin-top: 100px;
+}
+
+.find-us__title {
+    text-align: center;
+    font-size: 3rem;
+    margin-bottom: 0.55rem;
+    color: var(--colorPrincipal);
+}
+
+.find-us__text {
+    text-align: center;
+    margin-bottom: 2rem;
+    font-size: 1.2rem;
+    color: var(--colorTextoClaro);
+}
+
+/* Grid */
+.find-us__container {
+    width: 90%;
+    max-width: 1400px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 3.5rem;
+}
+
+/* CARD */
+.location-card {
+    background: #ffffff;
+    border-radius: 18px;
+    overflow: hidden;
+
+    display: flex;
+    flex-direction: column;
+
+    box-shadow: 0 15px 35px rgba(0,0,0,0.08);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.location-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 25px 55px rgba(0,0,0,0.15);
+}
+
+/* HEADER */
+.card__header {
+    padding: 2rem;
+    border-left: 6px solid var(--colorSecundario);
+    border-bottom: 1px solid var(--bordeSuave);
+}
+
+.location__title {
+    font-size: 1.25rem;
+    font-weight: 800;
+    margin: 0;
+    color: var(--colorPrincipal);
+}
+
+/* BODY */
+.card__body {
+    padding: 3rem 2.5rem;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    text-align: center;
+}
+
+.main-logo-esfot {
+    width: 200px;
+    height: auto;
+    margin-bottom: 2.2rem;
+}
+.main-logo-epns {
+    width: 150px;
+    height: auto;
+    margin-bottom: 2.2rem;
+}
+
+
+.address-item {
+    font-size: 1.15rem;
+    color: var(--colorTextoClaro);
+    margin-bottom: 1rem;
+
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+/* FOOTER */
+.card__footer {
+    padding: 2rem;
+    background-color: #fbfbfb;
+    border-top: 1px solid var(--bordeSuave);
+    text-align: center;
+}
+
+/* SOCIAL ICONS */
+.social-icons {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+}
+
+.social-icons i {
+    font-size: 2.4rem;
+    color: var(--colorPrincipal);
+    cursor: pointer;
+    transition: color 0.25s, transform 0.25s;
+}
+
+.social-icons i:hover {
+    color: var(--colorSecundario);
+    transform: translateY(-3px);
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+    .find-us__container {
+        grid-template-columns: 1fr;
+        gap: 2.5rem;
+    }
+
+    .card__body {
+        padding: 2.5rem 2rem;
+    }
+}

@@ -1,0 +1,275 @@
+
+/* =========================================
+   ABOUT 
+   ========================================= */
+.about {
+    width: 100%; 
+    padding: 6rem 1.25rem; 
+    box-sizing: border-box; 
+    background-color: #fff; 
+    overflow-x: hidden; /* Mantener para prevenir desbordes horizontales */
+}
+
+.about__wrapper {
+    width: 95%; 
+    max-width: 1500px; 
+    margin: 0 auto; 
+    display: flex;
+    align-items: center; 
+    gap: 5rem;
+}
+
+/* ---------- TARJETA ---------- */
+.about__card {
+    flex: 1; 
+    background-color: #ffffff; 
+    padding: 4rem; 
+    border-radius: 24px;
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.08); 
+    position: relative;
+    /* Añadir para prevenir desbordamiento de texto */
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    word-break: break-word;
+    hyphens: auto;
+}
+
+/* Línea decorativa izquierda */
+.about__card::before {
+    content: "";
+    position: absolute;
+    top: 2rem;
+    left: 0;
+    width: 6px;
+    height: 90%;
+    background-color: var(--colorDorado);
+    border-radius: 10px;
+}
+
+/* ---------- TEXTO ---------- */
+.about__title {
+    font-size: 2.5rem;
+    margin-bottom: 2rem;
+    color: var(--colorPrincipal);
+}
+
+.about__text {
+    font-size: 1.15rem;
+    color: var(--colorTextoClaro);
+    margin-bottom: 1.05rem;
+    line-height: 1.5;
+    /* Añadir para mejor manejo de texto en móviles */
+    max-width: 100%;
+}
+
+/* ---------- STATS ---------- */
+.about__stats {
+    margin-top: 2.8rem;
+    background-color: #f1f5f9;
+    border-radius: 16px;
+    padding: 2rem;
+    display: flex;
+    justify-content: space-between;
+    /* Asegurar que las stats se ajusten bien */
+    flex-wrap: wrap;
+}
+
+.stat {
+    text-align: center;
+    flex: 1;
+    min-width: 120px; /* Ancho mínimo para evitar que se compriman demasiado */
+    padding: 0.5rem;
+}
+
+.stat span {
+    display: block;
+    font-size: 2.8rem;
+    font-weight: 900;
+    color: var(--colorPrincipal);
+}
+
+.stat small {
+    font-size: 1rem;
+    color: #64748b;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+/* ---------- IMAGEN ---------- */
+.about__image {
+    flex: 1.1;
+    display: flex;
+    justify-content: center;
+}
+
+.about__image img {
+    width: 100%;
+    max-width: 720px;
+    height: auto;
+    border-radius: 26px;
+    box-shadow: 0 30px 70px rgba(0, 0, 0, 0.12);
+    object-fit: cover;
+}
+
+/* RESPONSIVE - CORRECCIONES IMPORTANTES */
+@media (max-width: 992px) {
+    .about {
+        padding: 4rem 1rem; /* Reducir padding lateral */
+    }
+    
+    .about__wrapper {
+        flex-direction: column;
+        gap: 3rem;
+        width: 100%;
+    }
+
+    .about__card {
+        padding: 2.5rem 1.5rem; /* Reducir padding significativamente */
+        width: 100%; /* Asegurar que ocupe el ancho completo */
+        margin: 0;
+        border-radius: 20px; /* Opcional: reducir border-radius para móviles */
+    }
+    
+    .about__card::before {
+        left: 0.75rem;
+        height: 85%;
+    }
+    
+    .about__title {
+        font-size: 1.8rem; /* Reducir más el tamaño del título */
+        margin-bottom: 1.5rem;
+    }
+    
+    .about__text {
+        font-size: 1rem; /* Reducir tamaño de texto */
+        line-height: 1.6; /* Mejorar legibilidad */
+        text-align: justify; /* Opcional: mejorar distribución del texto */
+    }
+    
+    .about__stats {
+        padding: 1.5rem;
+        margin-top: 2rem;
+        gap: 1rem; /* Añadir espacio entre stats */
+    }
+    
+    .stat {
+        min-width: calc(50% - 1rem); /* Para 2 columnas en móviles */
+        margin-bottom: 1rem;
+    }
+    
+    .stat span {
+        font-size: 2.2rem; /* Reducir tamaño de números grandes */
+    }
+    
+    .stat small {
+        font-size: 0.9rem;
+    }
+    
+    .about__image img {
+        display: none;
+    }
+    
+    .about__card::before {
+        display: none;
+    }
+}
+
+/* RESPONSIVE ADICIONAL PARA MÓVILES PEQUEÑOS */
+@media (max-width: 576px) {
+    .about {
+        padding: 3rem 0.75rem; /* Aún menos padding en móviles muy pequeños */
+    }
+    
+    .about__card {
+        padding: 2rem 1.25rem;
+        border-radius: 16px;
+    }
+    
+    .about__title {
+        font-size: 1.6rem;
+    }
+    
+    .about__text {
+        font-size: 0.95rem;
+        line-height: 1.7;
+    }
+    
+    .about__stats {
+        padding: 1.25rem;
+        flex-direction: column; /* Cambiar a columna en móviles muy pequeños */
+        gap: 0.75rem;
+    }
+    
+    .stat {
+        min-width: 100%; /* Una columna en móviles muy pequeños */
+    }
+    
+    .stat span {
+        font-size: 2rem;
+    }
+}
+
+/*ANIMACIONES SUAVES – ABOUT*/
+.about__card {
+    animation: slideLeft 1s ease-out 0.4s both;
+}
+
+.about__image {
+    animation: slideRight 1s ease-out 0.5s both;
+}
+
+@keyframes slideLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes slideRight {
+    from {
+        opacity: 0;
+        transform: translateX(50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.stat {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.stat:hover {
+    transform: translateY(-6px);
+}
+
+.about__image img {
+    transition: transform 0.5s ease, box-shadow 0.5s ease;
+}
+
+.about__image img:hover {
+    transform: scale(1.02);
+    box-shadow: 0 35px 80px rgba(0, 0, 0, 0.15);
+}
+
+/* ABOUT */
+.about {
+    animation: fadeUp 0.9s ease-out both;
+}
+
+/* Keyframe principal */
+@keyframes fadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(40px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

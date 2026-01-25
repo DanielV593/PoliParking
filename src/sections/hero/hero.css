@@ -1,0 +1,215 @@
+/* ==========================
+   HERO SECTION BASE
+========================== */
+.hero-background {
+  padding-top: 85px;
+  padding-bottom: 2.5rem;
+  min-height: 85vh;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  background-color: var(--colorFondoSeccion);
+  overflow-x: hidden;
+}
+
+.main-container {
+  width: 100%;
+  max-width: 1650px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 5rem;
+}
+
+.main-content {
+  flex: 1;
+}
+
+/* ==========================
+   HERO TITLE EFFECT
+========================== */
+
+.block-effect {
+  font-size: clamp(2.8rem, 5vw, 4rem);
+  line-height: 1.1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-bottom: 0.8rem;
+}
+
+.block-reveal {
+  --t: calc(var(--td) + var(--d));
+  color: transparent;
+  padding: 4px 6px;
+  position: relative;
+  overflow: hidden;
+  display: inline-block;
+}
+
+/* Cajas animadas */
+.block-reveal::after {
+  content: '';
+  width: 0%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: var(--bc);
+  animation: revealingIn var(--td) var(--d) forwards,
+             revealingOut var(--td) var(--t) forwards;
+}
+
+/* Colores finales */
+.block-reveal.blue {
+  animation: revealBlue 0s var(--t) forwards;
+}
+
+.block-reveal.gold {
+  animation: revealGold 0s var(--t) forwards;
+}
+
+/* ==========================
+   SUBTITLE ANIMATION
+========================== */
+.hero-subtitle {
+  font-size: clamp(1.4rem, 2.5vw, 2rem);
+  margin-bottom: 1.2rem;
+  font-weight: 700;
+}
+
+/* ==========================
+   HERO DESCRIPTION
+========================== */
+.main-description {
+  font-size: 1.08rem;
+  color: var(--colorTextoClaro);
+  margin-bottom: 2rem;
+  max-width: 85%;
+}
+
+/* ==========================
+   HERO FEATURES
+========================== */
+.hero-features {
+  display: flex;
+  gap: 2rem;
+  flex-wrap: wrap;
+  margin-bottom: 2.5rem;
+}
+
+.hero-features span {
+  background: rgba(10, 61, 98, 0.06);
+  color: var(--colorPrincipal);
+  padding: 0.5rem 1.2rem;
+  border-radius: 30px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  box-shadow: 0 6px 15px rgba(10,61,98,0.08);
+  animation: fadeUp 0.8s ease forwards;
+  opacity: 0;
+}
+
+.hero-features span:nth-child(1) { animation-delay: .6s; }
+.hero-features span:nth-child(2) { animation-delay: .8s; }
+.hero-features span:nth-child(3) { animation-delay: 1s; }
+
+.hero-features span:hover {
+  background: var(--colorPrincipal);
+  color: white;
+  transform: translateY(-4px);
+  transition: all 0.3s ease;
+}
+
+/* ==========================
+   CTA BUTTON
+========================== */
+.btn-reserva {
+  display: inline-block;
+  background-color: var(--colorPrincipal);
+  color: white;
+  padding: 1.05rem 3rem;
+  font-weight: 700;
+  font-size: 1.15rem;
+  border-radius: 10px;
+  box-shadow: 0 10px 20px rgba(10, 61, 98, 0.2);
+  transition: transform 0.3s ease, background 0.3s ease;
+}
+
+.btn-reserva:hover {
+  transform: translateY(-3px);
+  background-color: #082a45;
+}
+
+/* ==========================
+   HERO IMAGE
+========================== */
+.main-image {
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.main-image img {
+  max-width: 100%;
+  border-radius: 20px;
+  box-shadow: 20px 20px 0 rgba(0,0,0,0.05);
+}
+
+/* ==========================
+   ANIMATIONS
+========================== */
+@keyframes revealBlue {
+  100% { color: var(--colorPrincipal); }
+}
+
+@keyframes revealGold {
+  100% { color: var(--colorDorado); }
+}
+
+@keyframes revealingIn {
+  from { width: 0; }
+  to { width: 100%; }
+}
+
+@keyframes revealingOut {
+  from { transform: translateX(0); }
+  to { transform: translateX(100%); }
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ==========================
+   RESPONSIVE
+========================== */
+@media (max-width: 900px) {
+  .main-container {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .main-description {
+    max-width: 100%;
+  }
+
+  .hero-features {
+    justify-content: center;
+  }
+
+  .main-image {
+    justify-content: center;
+  }
+}

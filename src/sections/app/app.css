@@ -1,0 +1,13 @@
+.app {
+    padding: 6rem 0; width: 95%; max-width: 1600px; margin: 0 auto;
+    display: flex; align-items: center; gap: 5%;
+}
+.mobile { flex: 1; }
+.mobile__img { flex: 1; display: flex; justify-content: center; }
+.mobile__img img { max-width: 500px; border-radius: 20px; box-shadow: 0 25px 60px rgba(0,0,0,0.15); }
+.mobile__title { font-size: 3.25rem; margin-bottom: 1.5rem; }
+.mobile__description { margin-bottom: 3rem; font-size: 1.25rem; }
+.mobile__buttons { display: flex; gap: 2rem; }
+.mobile__buttons img { width: 180px; border-radius: 10px; transition: transform 0.2s; }
+.mobile__buttons img:hover { transform: scale(1.05); }
+@media (max-width: 900px) { .app { flex-direction: column; text-align: center; } .mobile__buttons { justify-content: center; } }
