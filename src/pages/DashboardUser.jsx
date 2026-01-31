@@ -3,7 +3,7 @@ import { auth, db } from '../firebase/config';
 import { collection, addDoc, query, where, onSnapshot, deleteDoc, doc, getDocs } from 'firebase/firestore';
 import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
-import { signOut } from 'firebase/auth'; // Importación necesaria
+import { signOut } from 'firebase/auth'; 
 
 const DashboardUser = () => {
     const navigate = useNavigate();
@@ -12,13 +12,11 @@ const DashboardUser = () => {
     const [misReservas, setMisReservas] = useState([]);
     const [loading, setLoading] = useState(true);
     
-    // --- LÓGICA DE FECHAS (5 DÍAS MÁXIMO) ---
     const today = new Date();
     const maxDate = new Date();
     maxDate.setDate(today.getDate() + 5); 
     const fechaHoy = today.toISOString().split('T')[0];
     const fechaMax = maxDate.toISOString().split('T')[0];
-    // ----------------------------------------
 
     const [reservaForm, setReservaForm] = useState({
         lugar: 'Edificio CEC',
@@ -30,10 +28,29 @@ const DashboardUser = () => {
     const CAPACIDADES = { "Edificio CEC": 100, "Facultad de Sistemas": 35, "Canchas Deportivas": 50 };
     const horasServicio = ["06:30", "07:00", "07:30", "08:00", "08:30", "09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "12:00", "12:30", "13:00", "13:30", "14:00", "14:30", "15:00", "15:30", "16:00", "16:30", "17:00", "17:30", "18:00", "18:30", "19:00", "19:30", "20:00"];
 
+    // --- LÓGICA DE LIMPIEZA AUTOMÁTICA (SOLO PARA ESTE USUARIO) ---
+    const limpiarReservasVencidas = async (email) => {
+        try {
+            const q = query(collection(db, "reservas"), where("usuario", "==", email));
+            const querySnapshot = await getDocs(q);
+            const hoyStr = new Date().toISOString().split('T')[0];
+
+            querySnapshot.forEach(async (documento) => {
+                if (documento.data().fecha < hoyStr) {
+                    await deleteDoc(doc(db, "reservas", documento.id));
+                }
+            });
+        } catch (error) {
+            console.error("Error al limpiar caducados:", error);
+        }
+    };
+
     useEffect(() => {
         const savedRole = localStorage.getItem('userRole');
         const unsubscribe = auth.onAuthStateChanged(async (user) => {
             if (user) {
+                // Ejecutar limpieza al entrar
+                limpiarReservasVencidas(user.email);
                 try {
                     const q = query(collection(db, "usuarios"), where("email", "==", user.email));
                     const querySnapshot = await getDocs(q);
@@ -58,15 +75,14 @@ const DashboardUser = () => {
     useEffect(() => {
         if (!realRole) return;
 
-        // Cargar mapa
         const qMapa = query(collection(db, "reservas"), where("fecha", "==", reservaForm.fecha), where("lugar", "==", reservaForm.lugar));
         const unsubMapa = onSnapshot(qMapa, (snapshot) => {
             setReservasTotales(snapshot.docs.map(d => d.data()));
         });
 
-        // Cargar mis reservas
         const identificador = auth.currentUser?.email || "Invitado_Anonimo";
         const qMias = query(collection(db, "reservas"), where("usuario", "==", identificador));
+        
         const unsubMias = onSnapshot(qMias, (snapshot) => {
             setMisReservas(snapshot.docs.map(d => ({ id: d.id, ...d.data() })));
         });
@@ -100,7 +116,6 @@ const DashboardUser = () => {
         }
     };
 
-    // --- LOGOUT ARREGLADO ---
     const handleLogout = async () => {
         await signOut(auth);
         localStorage.clear();
@@ -142,7 +157,6 @@ const DashboardUser = () => {
                             <div style={{display:'flex', gap:'10px'}}>
                                 <div style={{flex:1}}>
                                     <label style={labelStyle}>Fecha</label>
-                                    {/* INPUT FECHA CON LÍMITES */}
                                     <input type="date" min={fechaHoy} max={fechaMax} style={inputStyle} value={reservaForm.fecha} onChange={(e) => setReservaForm({...reservaForm, fecha: e.target.value})} />
                                 </div>
                                 <div style={{flex:1}}>
@@ -226,7 +240,6 @@ const DashboardUser = () => {
     );
 };
 
-// --- ESTILOS ORIGINALES (NO TOCAR) ---
 const bgStyle = { minHeight: '100vh', background: '#f4f7f6', padding: '20px' };
 const navStyle = { display: 'flex', justifyContent: 'space-between', alignItems:'center', padding: '10px 5%', background: '#fff', borderRadius:'10px', marginBottom: '20px' };
 const brandStyle = { fontSize: '1.2rem', fontWeight: 'bold' };

@@ -6,14 +6,11 @@ import {
     collection, getDocs, deleteDoc, doc, updateDoc, addDoc, query, orderBy 
 } from 'firebase/firestore';
 import Swal from 'sweetalert2';
-import { FaChartBar, FaUsers, FaEnvelope, FaCar, FaChevronDown, FaChevronUp, FaSignOutAlt } from 'react-icons/fa';
+import { FaChartBar, FaUsers, FaEnvelope, FaCar, FaChevronDown, FaChevronUp, FaSignOutAlt, FaTrashAlt } from 'react-icons/fa';
 
 const DashboardAdmin = () => {
     const navigate = useNavigate();
-    
-    // Estado para controlar qué módulo se ve
     const [moduloActivo, setModuloActivo] = useState('resumen');
-
     const [usuarios, setUsuarios] = useState([]);
     const [invitados, setInvitados] = useState([]);
     const [reservas, setReservas] = useState([]);
@@ -48,9 +45,39 @@ const DashboardAdmin = () => {
         setLoading(false);
     };
 
+    // --- LÓGICA DE LIMPIEZA GLOBAL (ADMIN) ---
+    const ejecutarMantenimiento = async () => {
+        const result = await Swal.fire({
+            title: 'Limpieza de Reservas',
+            text: "¿Deseas eliminar todas las reservas que ya caducaron?",
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#0a3d62',
+            confirmButtonText: 'Sí, limpiar base de datos'
+        });
+
+        if (result.isConfirmed) {
+            try {
+                const hoyStr = new Date().toISOString().split('T')[0];
+                let contador = 0;
+                
+                reservas.forEach(async (res) => {
+                    if (res.fecha < hoyStr) {
+                        await deleteDoc(doc(db, "reservas", res.id));
+                        contador++;
+                    }
+                });
+                
+                await cargarDatos();
+                Swal.fire('Limpieza Exitosa', `Se eliminaron las reservas vencidas.`, 'success');
+            } catch (error) {
+                Swal.fire('Error', 'No se pudo completar la limpieza', 'error');
+            }
+        }
+    };
+
     const handleLogout = async () => { await signOut(auth); navigate('/'); };
 
-    // --- LÓGICA CRUD (Simplificada) ---
     const toggleBloqueo = async (u) => { 
         await updateDoc(doc(db, "usuarios", u.id), {estado: u.estado==='bloqueado'?'activo':'bloqueado'}); 
         cargarDatos(); 
@@ -69,22 +96,27 @@ const DashboardAdmin = () => {
         } 
     };
 
-    if (loading) return <div style={{height:'100vh', display:'flex', justifyContent:'center', alignItems:'center'}}><h2>Cargando...</h2></div>;
-
-    // --- RENDERIZADO DE CONTENIDOS ---
     const renderResumen = () => (
-        <div style={statsGrid}>
-            {Object.keys(CAPACIDAD).map(lugar => {
-                const ocupados = reservas.filter(r => r.lugar === lugar).length;
-                const disponibles = CAPACIDAD[lugar] - ocupados;
-                return (
-                    <div key={lugar} style={parkCard}>
-                        <h4 style={{fontSize:'1rem', color:'#0a3d62', margin:0}}>{lugar}</h4>
-                        <p style={{ fontSize: '2.5rem', margin: '10px 0', fontWeight:'bold', color: disponibles > 0 ? '#2ecc71' : '#e30613' }}>{disponibles}</p>
-                        <span style={{fontSize:'0.8rem', color:'#666'}}>Libres</span>
-                    </div>
-                );
-            })}
+        <div>
+            <div style={{display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:'20px'}}>
+                <h3 style={{margin:0, color:'#0a3d62'}}>Estado Actual</h3>
+                <button onClick={ejecutarMantenimiento} style={{...btnEdit, background:'#e67e22', display:'flex', alignItems:'center', gap:'8px', padding:'10px 15px'}}>
+                    <FaTrashAlt/> Limpiar Vencidos
+                </button>
+            </div>
+            <div style={statsGrid}>
+                {Object.keys(CAPACIDAD).map(lugar => {
+                    const ocupados = reservas.filter(r => r.lugar === lugar).length;
+                    const disponibles = CAPACIDAD[lugar] - ocupados;
+                    return (
+                        <div key={lugar} style={parkCard}>
+                            <h4 style={{fontSize:'1rem', color:'#0a3d62', margin:0}}>{lugar}</h4>
+                            <p style={{ fontSize: '2.5rem', margin: '10px 0', fontWeight:'bold', color: disponibles > 0 ? '#2ecc71' : '#e30613' }}>{disponibles}</p>
+                            <span style={{fontSize:'0.8rem', color:'#666'}}>Libres</span>
+                        </div>
+                    );
+                })}
+            </div>
         </div>
     );
 
@@ -156,15 +188,11 @@ const DashboardAdmin = () => {
 
     return (
         <div style={{ fontFamily: 'Lato, sans-serif', background: '#f4f7f9', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
-            
-            {/* CSS RESPONSIVO INCRUSTADO */}
             <style>{`
                 .sidebar-container { width: 250px; background: white; border-right: 1px solid #e1e1e1; display: flex; flex-direction: column; padding: 20px 10px; gap: 10px; }
                 .content-area { flex: 1; padding: 30px; overflow-y: auto; }
                 .mobile-accordion { display: none; padding: 10px; }
                 .layout-wrapper { flex: 1; display: flex; overflow: hidden; }
-
-                /* MÓVIL: Oculta Sidebar, Muestra Acordeón */
                 @media (max-width: 768px) {
                     .sidebar-container { display: none; }
                     .content-area { display: none; }
@@ -173,18 +201,12 @@ const DashboardAdmin = () => {
                 }
             `}</style>
 
-            {/* HEADER */}
             <nav style={navAdminStyle}>
-                {/* CORRECCIÓN DE COLOR: Forzamos el color blanco para PoliParking */}
-                <h2 style={{margin:0, fontSize:'1.4rem', color:'white'}}>
-                    PoliParking <span style={adminSpanStyle}>ADMIN</span>
-                </h2>
+                <h2 style={{margin:0, fontSize:'1.4rem', color:'white'}}>PoliParking <span style={adminSpanStyle}>ADMIN</span></h2>
                 <button onClick={handleLogout} style={btnLogoutStyle}><FaSignOutAlt/> Salir</button>
             </nav>
 
             <div className="layout-wrapper">
-                
-                {/* --- VISTA PC: SIDEBAR IZQUIERDO --- */}
                 <div className="sidebar-container">
                     {[
                         {id:'resumen', icon:<FaChartBar/>, label:'Resumen'},
@@ -192,67 +214,34 @@ const DashboardAdmin = () => {
                         {id:'mensajes', icon:<FaEnvelope/>, label:'Mensajes'},
                         {id:'invitados', icon:<FaCar/>, label:'Invitados'}
                     ].map(item => (
-                        <button 
-                            key={item.id} 
-                            onClick={() => setModuloActivo(item.id)} 
-                            style={{
-                                ...menuBtnStyle, 
-                                background: moduloActivo === item.id ? '#0a3d62' : 'transparent', 
-                                color: moduloActivo === item.id ? 'white' : '#0a3d62'
-                            }}
-                        >
+                        <button key={item.id} onClick={() => setModuloActivo(item.id)} style={{...menuBtnStyle, background: moduloActivo === item.id ? '#0a3d62' : 'transparent', color: moduloActivo === item.id ? 'white' : '#0a3d62'}}>
                             {item.icon} {item.label}
                         </button>
                     ))}
                 </div>
 
-                {/* --- VISTA PC: CONTENIDO DERECHO --- */}
-                <div className="content-area">
-                    {getContenidoActivo()}
-                </div>
+                <div className="content-area">{getContenidoActivo()}</div>
 
-                {/* --- VISTA MÓVIL: ACORDEÓN --- */}
                 <div className="mobile-accordion">
-                    {/* ACORDEÓN RESUMEN */}
                     <div style={accCard}>
-                        <div onClick={() => setModuloActivo(moduloActivo === 'resumen' ? '' : 'resumen')} style={accHeader}>
-                            <span style={{display:'flex', alignItems:'center', gap:'10px'}}><FaChartBar/> Resumen</span>
-                            {moduloActivo === 'resumen' ? <FaChevronUp/> : <FaChevronDown/>}
-                        </div>
+                        <div onClick={() => setModuloActivo(moduloActivo === 'resumen' ? '' : 'resumen')} style={accHeader}><span style={{display:'flex', alignItems:'center', gap:'10px'}}><FaChartBar/> Resumen</span> {moduloActivo === 'resumen' ? <FaChevronUp/> : <FaChevronDown/>}</div>
                         {moduloActivo === 'resumen' && <div style={{padding:'15px'}}>{renderResumen()}</div>}
                     </div>
-
-                    {/* ACORDEÓN USUARIOS */}
                     <div style={accCard}>
-                        <div onClick={() => setModuloActivo(moduloActivo === 'usuarios' ? '' : 'usuarios')} style={accHeader}>
-                            <span style={{display:'flex', alignItems:'center', gap:'10px'}}><FaUsers/> Usuarios</span>
-                            {moduloActivo === 'usuarios' ? <FaChevronUp/> : <FaChevronDown/>}
-                        </div>
+                        <div onClick={() => setModuloActivo(moduloActivo === 'usuarios' ? '' : 'usuarios')} style={accHeader}><span style={{display:'flex', alignItems:'center', gap:'10px'}}><FaUsers/> Usuarios</span> {moduloActivo === 'usuarios' ? <FaChevronUp/> : <FaChevronDown/>}</div>
                         {moduloActivo === 'usuarios' && <div style={{padding:'15px'}}>{renderUsuarios()}</div>}
                     </div>
-
-                    {/* ACORDEÓN MENSAJES */}
                     <div style={accCard}>
-                        <div onClick={() => setModuloActivo(moduloActivo === 'mensajes' ? '' : 'mensajes')} style={accHeader}>
-                            <span style={{display:'flex', alignItems:'center', gap:'10px'}}><FaEnvelope/> Mensajes</span>
-                            {moduloActivo === 'mensajes' ? <FaChevronUp/> : <FaChevronDown/>}
-                        </div>
+                        <div onClick={() => setModuloActivo(moduloActivo === 'mensajes' ? '' : 'mensajes')} style={accHeader}><span style={{display:'flex', alignItems:'center', gap:'10px'}}><FaEnvelope/> Mensajes</span> {moduloActivo === 'mensajes' ? <FaChevronUp/> : <FaChevronDown/>}</div>
                         {moduloActivo === 'mensajes' && <div style={{padding:'15px'}}>{renderMensajes()}</div>}
                     </div>
-
-                    {/* ACORDEÓN INVITADOS */}
                     <div style={accCard}>
-                        <div onClick={() => setModuloActivo(moduloActivo === 'invitados' ? '' : 'invitados')} style={accHeader}>
-                            <span style={{display:'flex', alignItems:'center', gap:'10px'}}><FaCar/> Invitados</span>
-                            {moduloActivo === 'invitados' ? <FaChevronUp/> : <FaChevronDown/>}
-                        </div>
+                        <div onClick={() => setModuloActivo(moduloActivo === 'invitados' ? '' : 'invitados')} style={accHeader}><span style={{display:'flex', alignItems:'center', gap:'10px'}}><FaCar/> Invitados</span> {moduloActivo === 'invitados' ? <FaChevronUp/> : <FaChevronDown/>}</div>
                         {moduloActivo === 'invitados' && <div style={{padding:'15px'}}>{renderInvitados()}</div>}
                     </div>
                 </div>
-
             </div>
 
-            {/* MODAL USERS */}
             {showModal && (
                 <div style={modalOverlay}>
                     <div style={modalContent}>
@@ -280,7 +269,6 @@ const DashboardAdmin = () => {
     );
 };
 
-// --- ESTILOS ---
 const navAdminStyle = { background: '#0a3d62', padding: '1rem 2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', color: 'white' };
 const adminSpanStyle = { color: '#feca57', border:'1px solid', padding:'2px 8px', borderRadius:'4px', fontSize:'0.8rem', marginLeft:'10px' };
 const btnLogoutStyle = { background: '#e30613', border: 'none', color: 'white', padding: '0.6rem 1.2rem', borderRadius: '8px', cursor: 'pointer', fontWeight: 'bold', display:'flex', alignItems:'center', gap:'5px' };
@@ -294,12 +282,10 @@ const tdStyle = { padding: '12px', borderBottom: '1px solid #f1f2f6', fontSize:'
 const badgeStyle = { padding: '4px 10px', borderRadius: '15px', fontSize: '0.7rem', fontWeight: 'bold' };
 const btnCreate = { background: '#27ae60', color: 'white', border: 'none', padding: '10px 20px', borderRadius: '8px', cursor: 'pointer', fontWeight:'bold' };
 const btnEdit = { background: '#0a3d62', color: 'white', border: 'none', padding: '6px 10px', borderRadius: '6px', cursor: 'pointer', marginRight: '5px' };
-const btnDel = { background: '#e30613', color: 'white', border: 'none', padding: '6px 10px', borderRadius: '6px', cursor: 'pointer' };
+const btnDel = { background: '#e30613', color: 'white', border: 'none', padding: '6px 12px', borderRadius: '6px', cursor: 'pointer' };
 const modalOverlay = { position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', background: 'rgba(0,0,0,0.7)', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 1000 };
 const modalContent = { background: 'white', padding: '2rem', borderRadius: '15px', width: '90%', maxWidth:'420px' };
 const inputStyle = { width: '100%', padding: '12px', margin: '8px 0', borderRadius: '8px', border: '1px solid #ddd', boxSizing: 'border-box' };
-
-// Estilos Acordeón Móvil
 const accCard = { background: 'white', borderRadius: '10px', overflow: 'hidden', boxShadow: '0 2px 5px rgba(0,0,0,0.05)' };
 const accHeader = { padding: '15px', background: '#0a3d62', color: 'white', fontWeight: 'bold', display: 'flex', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer' };
 
