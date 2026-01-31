@@ -63,12 +63,12 @@ img { display: block; max-width: 100%; }
    ESTILOS DE AUTENTICACIÓN (LOGIN / REGISTRO)
    ========================================= */
 .auth-container {
-    min-height: 100vh;
+    min-height: calc(100vh- 90px);
+    padding-top: 90px; /* Espacio del header */
     display: flex;
     justify-content: center;
     align-items: center;
     background-color: var(--colorFondoSeccion);
-    padding-top: 90px; /* Espacio del header */
 }
 
 .auth-card {
@@ -132,6 +132,99 @@ img { display: block; max-width: 100%; }
     box-shadow: 0 0 0 2px rgba(10, 61, 98, 0.1);
 }
 
+.auth-page {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+}
+
+.auth-container--register {
+    flex: 1;
+    padding-bottom: 20px;
+}
+
+.auth-card--register {
+    padding: 0;
+    overflow: hidden;
+    width: 100%;
+    max-width: 750px;
+    display: flex;
+    flex-direction: row;
+    min-height: 480px;
+}
+
+.auth-register__left {
+    width: 40%;
+    background: #f8fafc;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border-right: 1px solid #eee;
+}
+
+.auth-register__right {
+    width: 60%;
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.auth-register__title {
+    margin-top: -20px;
+    font-size: 1.5rem;
+}
+
+.auth-register__footer {
+    margin-top: 20px;
+}
+
+.auth-register__link {
+    font-weight: bold;
+}
+
+.auth-form--register {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.auth-register__label {
+    font-size: 0.75rem;
+    font-weight: bold;
+}
+
+.auth-register__input {
+    padding: 8px;
+    font-size: 0.9rem;
+}
+
+.auth-register__password {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.auth-register__input--password {
+    width: 100%;
+    padding-right: 35px;
+}
+
+.auth-register__toggle {
+    position: absolute;
+    right: 10px;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.auth-register__submit {
+    grid-column: 1 / -1;
+    padding: 10px;
+    margin-top: 5px;
+}
 
 /* Fuerza a que los elementos estén en la misma línea */
 .header__content {
@@ -159,10 +252,47 @@ img { display: block; max-width: 100%; }
 }
 
 @media (max-width: 768px) {
+    .auth-page {
+        height: auto;
+    }
+    .auth-container{
+        min-height: auto;
+    }
+    body, html{
+        overflow-x: hidden;
+    }
+    .auth-container--register {
+        padding: 90px 16px 24px;
+    }
+
+    .auth-card--register {
+        flex-direction: column;
+        max-width: 100%;
+        min-height: auto;
+    }
+
+    .auth-register__left,
+    .auth-register__right {
+        width: 100%;
+    }
+
+    .auth-register__left {
+        border-right: none;
+        border-bottom: 1px solid #eee;
+        padding: 20px 16px;
+    }
+
+    .auth-register__right {
+        padding: 24px 16px;
+    }
+
+    .auth-form--register {
+        grid-template-columns: 1fr;
+    }
+
     .header__hamburger {
         display: block !important; 
     }
-
     .navbar__container {
         display: none;
     }

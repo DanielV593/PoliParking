@@ -142,7 +142,7 @@ const Login = () => {
                 <>
                   <div className="form-group">
                     <label>Correo Institucional</label>
-                    <input type="email" placeholder="u@epn.edu.ec" className="auth-input" value={email} onChange={e=>setEmail(e.target.value)} required />
+                    <input type="email" placeholder="@epn.edu.ec" className="auth-input" value={email} onChange={e=>setEmail(e.target.value)} required />
                   </div>
                   
                   <div className="form-group">
