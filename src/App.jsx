@@ -3,7 +3,9 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Landing from './pages/Landing';
 import Login from './pages/Login';
 import Register from './pages/Register';
-import Dashboard from './pages/Dashboard'; // <--- IMPORTA ESTO
+// 1. Importamos DashboardUser (que es el que tiene el mapa y las reservas)
+import DashboardUser from './pages/DashboardUser'; 
+import DashboardAdmin from './pages/DashboardAdmin'; 
 
 // --- IMPORTAMOS ANIMACIONES ---
 import AOS from 'aos';
@@ -27,7 +29,11 @@ function App() {
         <Route path="/" element={<Landing />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/dashboard" element={<Dashboard />} /> {/* <--- NUEVA RUTA */}
+        
+        {/* 2. Corregimos la ruta para que coincida con el nombre de tu componente y lo que pusimos en el Login */}
+        <Route path="/dashboard-user" element={<DashboardUser />} /> 
+        
+        <Route path="/dashboard-admin" element={<DashboardAdmin />} />
         
         <Route path="*" element={<h1 style={{textAlign:'center', marginTop:'100px'}}>404 - No encontrado</h1>} />
       </Routes>

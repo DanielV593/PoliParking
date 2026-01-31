@@ -17,11 +17,11 @@ const Header = () => {
                 {/* LADO IZQUIERDO */}
                 <div className="header-left">
                     <img 
-                        src="https://upload.wikimedia.org/wikipedia/commons/5/51/Escuela_Polit%C3%A9cnica_Nacional.png" 
+                        src="https://media.istockphoto.com/id/1349223345/vector/car-parking-vector-icon-parking-sign.jpg?s=612x612&w=0&k=20&c=vU7b48VYPukuwPhEvwOm8pKfizX3XLi3EGOrWMiYg2g=" 
                         alt="Logo EPN" 
                         className="logo" 
                     />
-                    <h1 className="header-title">Escuela Politécnica Nacional</h1>
+                    <h1 className="header-title">Gestión Inteligente de Parqueaderos</h1>
                 </div>
 
                 {/* LADO DERECHO (Solo la hamburguesa en móvil) */}

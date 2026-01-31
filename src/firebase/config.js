@@ -3,15 +3,16 @@ import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore"; 
 
 const firebaseConfig = {
-  apiKey: "AIzaSyDalcjyKgA6ds7g1asdfENU6GZTTfZyYqE",
-  authDomain: "poliparking-93499.firebaseapp.com",
-  projectId: "poliparking-93499",
-  storageBucket: "poliparking-93499.firebasestorage.app",
-  messagingSenderId: "245614523278",
-  appId: "1:245614523278:web:cafb667153763e0d7e6adf"
+  apiKey: "AIzaSyCwnNACddZOy675I0PLKbs_kV_l9-_XGv4",
+  authDomain: "proyectogestion-c021a.firebaseapp.com",
+  projectId: "proyectogestion-c021a",
+  storageBucket: "proyectogestion-c021a.firebasestorage.app",
+  messagingSenderId: "568080376655",
+  appId: "1:568080376655:web:8db92b5b7436e192bf1b3a",
+  measurementId: "G-4KTYQC4R72"
 };
 
 const app = initializeApp(firebaseConfig);
 
 export const auth = getAuth(app);
-export const db = getFirestore(app);
+export const db = getFirestore(app); // Esta es la línea clave para el formulario
