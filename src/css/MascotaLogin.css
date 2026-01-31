@@ -1,0 +1,93 @@
+/* --- ESTILO BASE (Para tarjetas pequeñas) --- */
+.mascota-container {
+  width: 100%;
+  height: 140px;
+  background-color: #f3f4f6;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+/* --- ESTILO FULL SCREEN (Para Login/Register) --- */
+.mascota-container.mascota-full {
+  width: 100%;
+  height: 100%; /* Ocupa todo el panel izquierdo */
+  background-color: #4F46E5; /* Fondo AZUL INTENSO */
+  align-items: center; /* Centrado verticalmente */
+  flex-direction: column;
+}
+
+/* Ajustes del personaje en modo Full */
+.mascota-full .head {
+  transform: scale(1.5); /* Hacemos la cabeza más grande */
+  box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+}
+
+.mascota-full .shape-blob {
+  background-color: #fb923c;
+  width: 150px; height: 150px; /* Más grandes */
+  left: 10%; bottom: 20%;
+}
+
+.mascota-full .shape-rect {
+  background-color: #1e1b4b; /* Azul muy oscuro */
+  width: 100px; height: 200px;
+  right: 10%; bottom: 0;
+}
+
+/* Decoraciones extra flotantes */
+.decor-circle {
+  position: absolute;
+  top: 10%; right: 20%;
+  width: 50px; height: 50px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 50%;
+}
+
+/* --- ESTILOS COMUNES DEL PERSONAJE --- */
+.head {
+  width: 140px; height: 100px;
+  background-color: #4F46E5; 
+  /* En modo full, cambiamos el color de la cabeza para que resalte sobre el fondo azul */
+  border-radius: 20px 20px 0 0;
+  display: flex; justify-content: center;
+  padding-top: 25px; gap: 12px;
+  position: relative; z-index: 10;
+}
+
+/* IMPORTANTE: Cuando el fondo es azul (full), la cabeza debe resaltar */
+.mascota-full .head {
+  background-color: #6366f1; /* Un azul un poco más claro */
+  border: 4px solid rgba(255,255,255,0.1);
+}
+
+.eye-socket {
+  width: 32px; height: 32px;
+  background: white; border-radius: 50%;
+  position: relative; overflow: hidden;
+}
+
+.pupil {
+  width: 14px; height: 14px; background: #0f172a;
+  border-radius: 50%; position: absolute; top: 9px; left: 9px;
+  transition: transform 0.05s linear;
+}
+
+.eyelid {
+  position: absolute; top: -100%; left: 0;
+  width: 100%; height: 100%; background: #6366f1; /* Ajustado al color de cabeza */
+  transition: top 0.2s ease; z-index: 10;
+}
+.eyelid.closed { top: 0; }
+
+.shape-blob {
+  width: 70px; height: 70px; background-color: #fb923c;
+  border-radius: 50%; position: absolute; bottom: -20px; left: 15%; z-index: 1;
+}
+.shape-rect {
+  width: 50px; height: 90px; background-color: #1e293b;
+  border-radius: 10px 10px 0 0; position: absolute; bottom: 0; right: 15%; z-index: 1;
+}

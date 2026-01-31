@@ -20,6 +20,27 @@ html, body {
     overflow-x: hidden;
 }
 
+/* --- TRUCO PARA EL MENÚ FIJO (GLOBAL) --- */
+html {
+  scroll-behavior: smooth;
+}
+
+section {
+  /* Esto empuja el contenido hacia abajo cuando haces click en el menú para que no lo tape el header */
+  scroll-margin-top: 100px;
+}
+
+/* --- SOLO EN MÓVIL (Pantallas menores a 768px) --- */
+/* Esto hace que en el celular las secciones se centren y ocupen todo el alto (efecto App) */
+@media (max-width: 768px) {
+  section {
+    min-height: 100vh; 
+    display: flex;
+    flex-direction: column;
+    justify-content: center; 
+  }
+}
+
 body {
     font-family: 'Lato', sans-serif;
     background-color: var(--colorFondo);
@@ -36,13 +57,6 @@ h1, h2, h3, h4 {
 }
 
 img { display: block; max-width: 100%; }
-
-
-
-
-
-
-
 
 
 /* =========================================
@@ -165,7 +179,6 @@ img { display: block; max-width: 100%; }
         padding: 20px 10px; /* Añadimos un poco de padding lateral */
     }
 
-    /* CAMBIO CLAVE: De vertical (column) a horizontal (row) */
     .navbar__container.active ul {
         display: flex; /* Aseguramos que sea flex */
         flex-direction: row; /* Alineación horizontal */

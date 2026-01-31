@@ -3,6 +3,7 @@ import { auth, db } from '../firebase/config';
 import { collection, addDoc, query, where, onSnapshot, deleteDoc, doc, getDocs } from 'firebase/firestore';
 import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
+import { signOut } from 'firebase/auth'; // Importación necesaria
 
 const DashboardUser = () => {
     const navigate = useNavigate();
@@ -11,7 +12,13 @@ const DashboardUser = () => {
     const [misReservas, setMisReservas] = useState([]);
     const [loading, setLoading] = useState(true);
     
-    const fechaHoy = new Date().toISOString().split('T')[0];
+    // --- LÓGICA DE FECHAS (5 DÍAS MÁXIMO) ---
+    const today = new Date();
+    const maxDate = new Date();
+    maxDate.setDate(today.getDate() + 5); 
+    const fechaHoy = today.toISOString().split('T')[0];
+    const fechaMax = maxDate.toISOString().split('T')[0];
+    // ----------------------------------------
 
     const [reservaForm, setReservaForm] = useState({
         lugar: 'Edificio CEC',
@@ -51,16 +58,15 @@ const DashboardUser = () => {
     useEffect(() => {
         if (!realRole) return;
 
-        // 1. Cargar disponibilidad del mapa (Todos ven esto)
+        // Cargar mapa
         const qMapa = query(collection(db, "reservas"), where("fecha", "==", reservaForm.fecha), where("lugar", "==", reservaForm.lugar));
         const unsubMapa = onSnapshot(qMapa, (snapshot) => {
             setReservasTotales(snapshot.docs.map(d => d.data()));
         });
 
-        // 2. Cargar MIS RESERVAS (Ajustado para Invitados)
+        // Cargar mis reservas
         const identificador = auth.currentUser?.email || "Invitado_Anonimo";
         const qMias = query(collection(db, "reservas"), where("usuario", "==", identificador));
-        
         const unsubMias = onSnapshot(qMias, (snapshot) => {
             setMisReservas(snapshot.docs.map(d => ({ id: d.id, ...d.data() })));
         });
@@ -73,15 +79,14 @@ const DashboardUser = () => {
         const identificador = auth.currentUser?.email || "Invitado_Anonimo";
 
         if (reservaForm.fecha < fechaHoy) {
-            return Swal.fire('Fecha inválida', 'No puedes reservar en fechas pasadas.', 'error');
+            return Swal.fire('Error', 'No puedes reservar en el pasado.', 'error');
         }
         if (!reservaForm.espacio) return Swal.fire('Aviso', 'Selecciona un espacio.', 'info');
         
         try {
-            // Validar si ya tiene reserva (Para invitados permitimos más o puedes limitarlo igual)
             const q = query(collection(db, "reservas"), where("usuario", "==", identificador), where("fecha", "==", reservaForm.fecha));
             const snap = await getDocs(q);
-            if (!snap.empty) return Swal.fire('Límite', 'Ya existe una reserva bajo este perfil hoy.', 'warning');
+            if (!snap.empty) return Swal.fire('Límite', 'Ya tienes reserva hoy.', 'warning');
 
             await addDoc(collection(db, "reservas"), {
                 ...reservaForm,
@@ -93,6 +98,13 @@ const DashboardUser = () => {
         } catch (e) { 
             Swal.fire('Error', 'No se pudo reservar', 'error'); 
         }
+    };
+
+    // --- LOGOUT ARREGLADO ---
+    const handleLogout = async () => {
+        await signOut(auth);
+        localStorage.clear();
+        navigate('/login');
     };
 
     if (loading) return (
@@ -107,7 +119,7 @@ const DashboardUser = () => {
                 <div style={brandStyle}><span style={{color:'#0a3d62'}}>POLI</span><span style={{color:'#ffc107'}}>PARKING</span></div>
                 <div style={{display:'flex', alignItems:'center', gap:'15px'}}>
                     <span style={{fontSize:'0.9rem'}}>Hola, <strong>{auth.currentUser?.email?.split('@')[0] || 'Invitado'}</strong></span>
-                    <button onClick={() => { auth.signOut(); localStorage.clear(); navigate('/login'); }} style={logoutBtn}>Salir</button>
+                    <button onClick={handleLogout} style={logoutBtn}>Salir</button>
                 </div>
             </nav>
 
@@ -130,7 +142,8 @@ const DashboardUser = () => {
                             <div style={{display:'flex', gap:'10px'}}>
                                 <div style={{flex:1}}>
                                     <label style={labelStyle}>Fecha</label>
-                                    <input type="date" min={fechaHoy} style={inputStyle} value={reservaForm.fecha} onChange={(e) => setReservaForm({...reservaForm, fecha: e.target.value})} />
+                                    {/* INPUT FECHA CON LÍMITES */}
+                                    <input type="date" min={fechaHoy} max={fechaMax} style={inputStyle} value={reservaForm.fecha} onChange={(e) => setReservaForm({...reservaForm, fecha: e.target.value})} />
                                 </div>
                                 <div style={{flex:1}}>
                                     <label style={labelStyle}>Hora</label>
@@ -213,7 +226,7 @@ const DashboardUser = () => {
     );
 };
 
-// --- ESTILOS ---
+// --- ESTILOS ORIGINALES (NO TOCAR) ---
 const bgStyle = { minHeight: '100vh', background: '#f4f7f6', padding: '20px' };
 const navStyle = { display: 'flex', justifyContent: 'space-between', alignItems:'center', padding: '10px 5%', background: '#fff', borderRadius:'10px', marginBottom: '20px' };
 const brandStyle = { fontSize: '1.2rem', fontWeight: 'bold' };
