@@ -3,10 +3,10 @@ import { useNavigate } from 'react-router-dom';
 import { auth, db } from '../firebase/config';
 import { signOut } from 'firebase/auth';
 import { 
-    collection, getDocs, deleteDoc, doc, updateDoc, addDoc, query, orderBy, writeBatch 
+    collection, getDocs, deleteDoc, doc, updateDoc, addDoc, query, orderBy, writeBatch, onSnapshot 
 } from 'firebase/firestore';
 import Swal from 'sweetalert2';
-import { FaChartBar, FaUsers, FaEnvelope, FaCar, FaSignOutAlt, FaTrashAlt, FaCheckSquare, FaSquare, FaFilter, FaCheckCircle, FaBan, FaHistory, FaUserCircle, FaSearch } from 'react-icons/fa';
+import { FaChartBar, FaUsers, FaEnvelope, FaCar, FaSignOutAlt, FaTrashAlt, FaCheckSquare, FaSquare, FaFilter, FaCheckCircle, FaBan, FaHistory, FaUserCircle, FaSearch, FaExclamationTriangle, FaDownload, FaListUl, FaChartPie, FaDatabase, FaClock, FaBars, FaTimes } from 'react-icons/fa';
 
 const DashboardAdmin = () => {
     const navigate = useNavigate();
@@ -15,74 +15,66 @@ const DashboardAdmin = () => {
     const [invitados, setInvitados] = useState([]);
     const [reservas, setReservas] = useState([]);
     const [mensajes, setMensajes] = useState([]);
-    const [historial, setHistorial] = useState([]); 
     const [loading, setLoading] = useState(true);
+    const [currentTime, setCurrentTime] = useState(new Date());
     
     const [modoMasivo, setModoMasivo] = useState(false);
     const [seleccionados, setSeleccionados] = useState([]);
-    
-    // FILTRO INICIADO SOLO EN 'ACTIVO' Y SIN OPCIÓN 'TODOS'
     const [filtro, setFiltro] = useState({ texto: '', rol: 'todos', estado: 'activo' });
     const [filtroInvitados, setFiltroInvitados] = useState('');
-
-    // --- NUEVO ESTADO PARA FILTROS DE HISTORIAL ---
     const [filtroHistorial, setFiltroHistorial] = useState({ texto: '', lugar: 'todos' });
 
-    const [showModal, setShowModal] = useState(false);
-    const [editMode, setEditMode] = useState(false);
-    const [selectedId, setSelectedId] = useState(null);
-    const initialFormState = { nombre: '', email: '', rol: 'estudiante', placa: '', telefono: '', password: '', estado: 'activo' };
-    const [formData, setFormData] = useState(initialFormState);
+    // ESTADOS PARA RESPONSIVE
+    const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
 
     const CAPACIDAD = { "Edificio CEC": 100, "Facultad de Sistemas": 35, "Canchas Deportivas": 50 };
 
-    useEffect(() => { cargarDatos(); }, []);
+    useEffect(() => {
+        const handleResize = () => setIsMobile(window.innerWidth < 768);
+        window.addEventListener('resize', handleResize);
 
-    const cargarDatos = async () => {
-        setLoading(true);
-        try {
-            const [uSnap, iSnap, rSnap, mSnap, hSnap] = await Promise.all([
-                getDocs(collection(db, "usuarios")),
-                getDocs(collection(db, "ingresos_invitados")),
-                getDocs(collection(db, "reservas")),
-                getDocs(query(collection(db, "mensajes_contacto"), orderBy("fecha", "desc"))),
-                getDocs(query(collection(db, "historial_reservas"), orderBy("fecha", "desc")))
-            ]);
-            setUsuarios(uSnap.docs.map(d => ({ ...d.data(), id: d.id })));
-            setInvitados(iSnap.docs.map(d => ({ ...d.data(), id: d.id })));
-            setReservas(rSnap.docs.map(d => ({ ...d.data(), id: d.id })));
-            setMensajes(mSnap.docs.map(d => ({ ...d.data(), id: d.id })));
-            setHistorial(hSnap.docs.map(d => ({ ...d.data(), id: d.id })));
-        } catch (error) { console.error("Error cargando datos:", error); }
+        const unsubU = onSnapshot(collection(db, "usuarios"), (s) => setUsuarios(s.docs.map(d => ({...d.data(), id: d.id}))));
+        const unsubR = onSnapshot(collection(db, "reservas"), (s) => setReservas(s.docs.map(d => ({...d.data(), id: d.id}))));
+        const unsubM = onSnapshot(query(collection(db, "mensajes_contacto"), orderBy("fecha", "desc")), (s) => setMensajes(s.docs.map(d => ({...d.data(), id: d.id}))));
+        const unsubI = onSnapshot(collection(db, "ingresos_invitados"), (s) => setInvitados(s.docs.map(d => ({...d.data(), id: d.id}))));
+        
+        const timer = setInterval(() => setCurrentTime(new Date()), 1000);
+        
         setLoading(false);
-    };
+        return () => { 
+            unsubU(); unsubR(); unsubM(); unsubI(); 
+            clearInterval(timer); 
+            window.removeEventListener('resize', handleResize);
+        };
+    }, []);
 
-    // --- LÓGICA DE SEGURIDAD PARA FILTRO DE BLOQUEADOS ---
+    // --- ESTILOS INTERNOS PARA EL BUZÓN ---
+    const messageCardStyle = { background: '#fff', border: '1px solid #edf2f7', borderRadius: '12px', padding: '15px', boxShadow: '0 2px 4px rgba(0,0,0,0.02)', marginBottom: '15px' };
+    const avatarCircle = { width: '35px', height: '35px', background: '#e2e8f0', color: '#0a3d62', borderRadius: '50%', display: 'flex', justifyContent: 'center', alignItems: 'center', fontWeight: 'bold', fontSize: '0.9rem', border: '1px solid #0a3d62' };
+    const messageBubble = { background: '#f8fafc', padding: '12px 16px', borderRadius: '0 12px 12px 12px', borderLeft: '4px solid #ffc107', fontSize: '0.95rem', fontStyle: 'italic', color: '#333', wordBreak: 'break-word' };
+    const dateBadge = { fontSize: '0.7rem', color: '#718096', background: '#f1f5f9', padding: '4px 10px', borderRadius: '12px', display: 'flex', alignItems: 'center', gap: '5px' };
+    const btnMiniDel = { background: '#fee2e2', border: 'none', color: '#e30613', fontSize: '0.75rem', cursor: 'pointer', padding: '5px 10px', borderRadius: '6px', display: 'flex', alignItems: 'center', gap: '5px', fontWeight: 'bold' };
+
     const handleCambioFiltroEstado = async (e) => {
         const nuevoEstado = e.target.value;
-        
         if (nuevoEstado === 'bloqueado') {
             const { value: password } = await Swal.fire({
                 title: 'Acceso Restringido',
-                text: 'Ingrese la contraseña de administrador para ver usuarios bloqueados:',
+                text: 'Ingrese la contraseña de administrador:',
                 input: 'password',
                 inputPlaceholder: 'Contraseña',
                 showCancelButton: true,
                 confirmButtonColor: '#0a3d62',
             });
-
-            if (password === 'admin123') { // CONTRASEÑA DE SEGURIDAD
-                setFiltro({ ...filtro, estado: nuevoEstado });
-            } else {
+            if (password === 'admin123') { setFiltro({ ...filtro, estado: nuevoEstado }); }
+            else { 
                 if (password !== undefined) Swal.fire('Error', 'Contraseña incorrecta', 'error');
                 setFiltro({ ...filtro, estado: 'activo' }); 
             }
-        } else {
-            setFiltro({ ...filtro, estado: nuevoEstado });
-        }
+        } else { setFiltro({ ...filtro, estado: nuevoEstado }); }
     };
 
-    // --- NUEVA FUNCIÓN: VER PERFIL COMPLETO CON HISTORIAL ---
     const verPerfilUsuario = (u) => {
         const susReservas = reservas.filter(r => r.usuario === u.email);
         Swal.fire({
@@ -93,7 +85,7 @@ const DashboardAdmin = () => {
                     <p><strong>Placa:</strong> ${u.placa || 'N/A'}</p>
                     <p><strong>Rol:</strong> ${u.rol.toUpperCase()}</p>
                     <hr/>
-                    <p><strong>Historial de Reservas (${susReservas.length}):</strong></p>
+                    <p><strong>Reservas actuales (${susReservas.length}):</strong></p>
                     <div style="max-height: 150px; overflow-y: auto;">
                         ${susReservas.length > 0 ? susReservas.map(r => `• ${r.fecha} - ${r.lugar} (#${r.espacio})<br/>`).join('') : 'Sin registros actuales'}
                     </div>
@@ -132,7 +124,7 @@ const DashboardAdmin = () => {
                 seleccionados.forEach(id => { batch.delete(doc(db, coleccion, id)); });
                 await batch.commit();
                 Swal.fire('Eliminados', '', 'success');
-                setSeleccionados([]); cargarDatos();
+                setSeleccionados([]);
             } catch (e) { Swal.fire('Error', 'Fallo masivo', 'error'); }
         }
     };
@@ -142,7 +134,6 @@ const DashboardAdmin = () => {
     const ejecutarAccionMasivaUsuarios = async (tipo) => {
         if (seleccionados.length === 0) return;
         if (tipo === 'borrar') { await ejecutarBorradoMasivo('usuarios'); return; }
-        
         let accionLabel = estanBloqueados ? 'Activar' : 'Desactivar';
         const result = await Swal.fire({ title: `¿${accionLabel} ${seleccionados.length} usuarios?`, icon: 'question', showCancelButton: true });
         if (result.isConfirmed) {
@@ -154,40 +145,23 @@ const DashboardAdmin = () => {
                 });
                 await batch.commit();
                 Swal.fire('Éxito', 'Estado actualizado', 'success');
-                setSeleccionados([]); cargarDatos();
+                setSeleccionados([]);
             } catch (e) { console.error(e); }
         }
     };
 
     const toggleBloqueo = async (u) => { 
         const estaBloqueado = (u.estado || 'activo') === 'bloqueado';
-        const accion = estaBloqueado ? 'Activar' : 'Bloquear';
-        const result = await Swal.fire({ 
-            title: `¿${accion} usuario?`, 
-            text: estaBloqueado ? "El usuario podrá volver a reservar." : "El usuario no podrá realizar nuevas reservas.",
-            icon: 'question', 
-            showCancelButton: true 
-        });
+        const result = await Swal.fire({ title: `¿${estaBloqueado ? 'Activar':'Bloquear'} usuario?`, icon: 'question', showCancelButton: true });
         if (result.isConfirmed) {
             const nuevoEstado = estaBloqueado ? 'activo' : 'bloqueado';
             await updateDoc(doc(db, "usuarios", u.id), {estado: nuevoEstado}); 
-            cargarDatos(); 
-            Swal.fire('Éxito', `Usuario ${nuevoEstado}`, 'success');
         }
     };
 
     const eliminarRegistro = async (col, id) => { 
         const result = await Swal.fire({ title: '¿Borrar registro?', icon: 'warning', showCancelButton: true });
-        if(result.isConfirmed){ await deleteDoc(doc(db, col, id)); cargarDatos(); Swal.fire('Borrado','','success'); } 
-    };
-
-    const handleSaveUser = async (e) => { 
-        e.preventDefault(); 
-        try { 
-            if(editMode){ const {password,...d}=formData; await updateDoc(doc(db,"usuarios",selectedId),d); }
-            else{ await addDoc(collection(db,"usuarios"),formData); }
-            setShowModal(false); cargarDatos(); Swal.fire('Guardado','','success');
-        } catch(e) { console.error(e); }
+        if(result.isConfirmed){ await deleteDoc(doc(db, col, id)); Swal.fire('Borrado','','success'); } 
     };
 
     const getColorSemaforo = (ocupados, total) => {
@@ -197,91 +171,125 @@ const DashboardAdmin = () => {
         return '#2ecc71';
     };
 
-    const usuariosFiltrados = usuarios.filter(u => {
-        const coincideTexto = u.nombre.toLowerCase().includes(filtro.texto.toLowerCase()) || (u.placa || '').toLowerCase().includes(filtro.texto.toLowerCase());
-        const coincideRol = filtro.rol === 'todos' || u.rol === filtro.rol;
-        const coincideEstado = (u.estado || 'activo') === filtro.estado;
-        return coincideTexto && coincideRol && coincideEstado;
-    });
+    const usuariosFiltrados = usuarios.filter(u => 
+        (u.nombre.toLowerCase().includes(filtro.texto.toLowerCase()) || (u.placa || '').toLowerCase().includes(filtro.texto.toLowerCase())) &&
+        (filtro.rol === 'todos' || u.rol === filtro.rol) && (u.estado || 'activo') === filtro.estado
+    );
 
     const invitadosFiltrados = invitados.filter(i => 
         i.nombre.toLowerCase().includes(filtroInvitados.toLowerCase()) || (i.placa || '').toLowerCase().includes(filtroInvitados.toLowerCase())
     );
 
-    // --- LÓGICA FILTRADO DE HISTORIAL ---
     const historialFiltrado = reservas.filter(h => {
-        const textoBusqueda = filtroHistorial.texto.toLowerCase();
-        const coincideTexto = 
-            h.usuario.toLowerCase().includes(textoBusqueda) || 
-            (h.nombre_invitado || '').toLowerCase().includes(textoBusqueda) ||
-            h.hora.includes(textoBusqueda) ||
-            h.fecha.includes(textoBusqueda);
-        const coincideLugar = filtroHistorial.lugar === 'todos' || h.lugar === filtroHistorial.lugar;
-        return coincideTexto && coincideLugar;
+        const texto = filtroHistorial.texto.toLowerCase();
+        return (h.usuario.toLowerCase().includes(texto) || (h.nombre_invitado || '').toLowerCase().includes(texto) || h.hora.includes(texto) || h.fecha.includes(texto)) && (filtroHistorial.lugar === 'todos' || h.lugar === filtroHistorial.lugar);
     });
 
-    const renderResumen = () => (
-        <div>
-            <div style={{display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:'20px'}}>
-                <h3 style={{margin:0, color:'#0a3d62'}}>Estado Actual</h3>
-                <button onClick={async () => {
-                    const result = await Swal.fire({title: '¿Archivar vencidos?', icon: 'question', showCancelButton: true});
-                    if(result.isConfirmed) {
-                        const hoy = new Date().toISOString().split('T')[0];
-                        reservas.forEach(async r => { 
-                            if(r.fecha < hoy) {
-                                await addDoc(collection(db, "historial_reservas"), { ...r, estado_final: "archivado", fecha_archivado: new Date() });
-                                await deleteDoc(doc(db,"reservas",r.id)); 
-                            }
-                        });
-                        cargarDatos();
-                    }
-                }} style={{...btnEdit, background:'#e67e22'}}><FaTrashAlt/> Archivar Vencidos</button>
-            </div>
-            <div style={statsGrid}>
-                {Object.keys(CAPACIDAD).map(lugar => {
-                    const ocupados = reservas.filter(r => r.lugar === lugar).length;
-                    const disponibles = CAPACIDAD[lugar] - ocupados;
-                    return (
-                        <div key={lugar} style={parkCard}>
-                            <div style={{display:'flex', justifyContent:'center', alignItems:'center', gap:'8px', marginBottom:'5px'}}>
-                                <div style={{width:'10px', height:'10px', borderRadius:'50%', background: getColorSemaforo(ocupados, CAPACIDAD[lugar])}}></div>
-                                <h4 style={{fontSize:'1rem', color:'#0a3d62', margin:0}}>{lugar}</h4>
+    const exportarCSV = () => {
+        let contenido = "Fecha,Hora,Usuario/Placa,Lugar,Puesto\n";
+        historialFiltrado.forEach(h => {
+            contenido += `${h.fecha},${h.hora},${h.usuario},${h.lugar},#${h.espacio}\n`;
+        });
+        const blob = new Blob([contenido], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.setAttribute("href", url);
+        link.setAttribute("download", "reporte_parking.csv");
+        link.click();
+    };
+
+    const renderResumen = () => {
+        const totalOcupados = reservas.length;
+        const totalCapacidad = Object.values(CAPACIDAD).reduce((a, b) => a + b, 0);
+        
+        return (
+            <div>
+                <div style={{display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:'20px', flexWrap: 'wrap', gap: '10px'}}>
+                    <h3 style={{margin:0, color:'#0a3d62'}}>Monitor de Ocupación Real</h3>
+                    <button onClick={async () => {
+                        const result = await Swal.fire({title: '¿Archivar vencidos?', icon: 'question', showCancelButton: true});
+                        if(result.isConfirmed) {
+                            const hoy = new Date().toISOString().split('T')[0];
+                            reservas.forEach(async r => { 
+                                if(r.fecha < hoy) {
+                                    await addDoc(collection(db, "historial_reservas"), { ...r, estado_final: "archivado", fecha_archivado: new Date() });
+                                    await deleteDoc(doc(db,"reservas",r.id)); 
+                                }
+                            });
+                        }
+                    }} style={{...btnEdit, background:'#e67e22'}}><FaTrashAlt/> Archivar Vencidos</button>
+                </div>
+                
+                <div style={statsGrid}>
+                    {Object.keys(CAPACIDAD).map(lugar => {
+                        const ocupados = reservas.filter(r => r.lugar === lugar).length;
+                        const porc = (ocupados / CAPACIDAD[lugar]) * 100;
+                        return (
+                            <div key={lugar} style={parkCard}>
+                                <h4 style={{margin:0, color:'#0a3d62'}}>{lugar}</h4>
+                                <div style={{height:'10px', background:'#eee', borderRadius:'5px', margin:'15px 0', overflow:'hidden'}}>
+                                    <div style={{width:`${porc}%`, height:'100%', background: getColorSemaforo(ocupados, CAPACIDAD[lugar]), transition:'0.5s'}}></div>
+                                </div>
+                                <p style={{fontSize:'1.5rem', fontWeight:'bold', margin:0, color: getColorSemaforo(ocupados, CAPACIDAD[lugar])}}>{ocupados} / {CAPACIDAD[lugar]}</p>
+                                <span style={{fontSize:'0.8rem', color:'#666'}}>Espacios ocupados</span>
                             </div>
-                            <p style={{ fontSize: '2.5rem', margin: '10px 0', fontWeight:'bold', color: disponibles > 0 ? '#2ecc71' : '#e30613' }}>{disponibles}</p>
-                            <span style={{fontSize:'0.8rem', color:'#666'}}>Libres de {CAPACIDAD[lugar]}</span>
+                        );
+                    })}
+                </div>
+
+                <div style={{ marginTop:'30px', display:'grid', gridTemplateColumns: window.innerWidth < 1100 ? '1fr' : '1.5fr 1fr', gap:'20px' }}>
+                    <div style={{display:'flex', flexDirection:'column', gap:'20px'}}>
+                        <div style={tableContainer}>
+                            <h4 style={{color:'#0a3d62', display:'flex', alignItems:'center', gap:'10px', marginTop: 0}}>
+                                <FaListUl/> Últimas Reservas del Día
+                            </h4>
+                            <div style={{maxHeight:'300px', overflowY:'auto'}}>
+                                {reservas.length > 0 ? reservas.slice(0, 8).map(r => (
+                                    <div key={r.id} style={{padding:'12px', borderBottom:'1px solid #eee', fontSize:'0.85rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+                                        <div>
+                                            <strong>{r.usuario.split('@')[0]}</strong> <br/>
+                                            <span style={{fontSize: '0.75rem', color: '#666'}}>Puesto #{r.espacio} en {r.lugar}</span>
+                                        </div>
+                                        <span style={{color: '#0a3d62', fontWeight: 'bold'}}>{r.hora}</span>
+                                    </div>
+                                )) : <p style={{textAlign: 'center', color: '#999', padding: '20px'}}>No hay reservas hoy.</p>}
+                            </div>
                         </div>
-                    );
-                })}
+                    </div>
+
+                    <div style={{display:'flex', flexDirection:'column', gap:'20px'}}>
+                        <div style={{...tableContainer, background: '#0a3d62', color: 'white', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', padding: '40px'}}>
+                            <FaChartPie size={60} style={{marginBottom: '20px', opacity: 0.9}}/>
+                            <div style={{fontSize: '4rem', fontWeight: 'bold', lineHeight: 1}}>{totalOcupados}</div>
+                            <div style={{fontSize: '1.1rem', marginTop: '10px', opacity: 0.8, textAlign: 'center'}}>Vehículos en el Campus</div>
+                            <div style={{marginTop: '20px', fontSize: '0.9rem', background: 'rgba(255,255,255,0.1)', padding: '5px 15px', borderRadius: '15px'}}>
+                                Capacidad total: {totalCapacidad} puestos
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>
-    );
+        );
+    };
 
     const renderUsuarios = () => (
         <div style={tableContainer}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems:'center', marginBottom: '15px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems:'center', marginBottom: '15px', flexWrap: 'wrap', gap: '10px' }}>
                 <h3 style={{ color: '#0a3d62', margin: 0 }}>Gestión de Usuarios</h3>
-                <div style={{display:'flex', gap:'10px'}}>
-                    <button onClick={() => { setModoMasivo(!modoMasivo); setSeleccionados([]); }} style={{ ...btnEdit, background: modoMasivo ? '#7f8c8d' : '#0a3d62' }}>{modoMasivo ? 'Cancelar' : 'Gestión Masiva'}</button>
-                    <button onClick={() => { setEditMode(false); setFormData(initialFormState); setShowModal(true); }} style={btnCreate}>+ Nuevo</button>
-                </div>
+                <button onClick={() => { setModoMasivo(!modoMasivo); setSeleccionados([]); }} style={{ ...btnEdit, background: modoMasivo ? '#7f8c8d' : '#0a3d62' }}>{modoMasivo ? 'Cancelar' : 'Gestión Masiva'}</button>
             </div>
             <div style={{ background: '#f8f9fa', padding: '15px', borderRadius: '8px', marginBottom: '15px', display: 'flex', gap: '10px', flexWrap: 'wrap', alignItems: 'center' }}>
                 <FaFilter color="#999" />
-                <input placeholder="Nombre o placa..." style={{ ...inputStyle, width: '200px', margin: 0 }} value={filtro.texto} onChange={e => setFiltro({ ...filtro, texto: e.target.value })} />
-                
-                <select style={{ ...inputStyle, width: '120px', margin: 0 }} value={filtro.rol} onChange={e => setFiltro({ ...filtro, rol: e.target.value })}>
-                    <option value="todos">Todos los Roles</option>
+                <input placeholder="Nombre o placa..." style={{ ...inputStyle, width: '200px', margin: 0, flex: '1 1 200px' }} value={filtro.texto} onChange={e => setFiltro({ ...filtro, texto: e.target.value })} />
+                <select style={{ ...inputStyle, width: '120px', margin: 0, flex: '1 1 120px' }} value={filtro.rol} onChange={e => setFiltro({ ...filtro, rol: e.target.value })}>
+                    <option value="todos">Todos</option>
                     <option value="estudiante">Estudiante</option>
                     <option value="docente">Docente</option>
                 </select>
-
-                {/* FILTRO DE ESTADO SEGURO */}
-                <select style={{ ...inputStyle, width: '120px', margin: 0, fontWeight:'bold', color: filtro.estado === 'bloqueado' ? 'red' : 'green' }} value={filtro.estado} onChange={handleCambioFiltroEstado}>
+                <select style={{ ...inputStyle, width: '120px', margin: 0, flex: '1 1 120px', fontWeight:'bold', color: filtro.estado === 'bloqueado' ? 'red' : 'green' }} value={filtro.estado} onChange={handleCambioFiltroEstado}>
                     <option value="activo">Activos</option>
                     <option value="bloqueado">Bloqueados</option>
                 </select>
-
                 {modoMasivo && seleccionados.length > 0 && (
                     <div style={{ marginLeft: 'auto', display: 'flex', gap: '8px' }}>
                         <button onClick={() => ejecutarAccionMasivaUsuarios('estado')} style={{ ...btnEdit, background: estanBloqueados ? '#27ae60' : '#f39c12' }}>{estanBloqueados ? <FaCheckCircle/> : <FaBan/>} {estanBloqueados ? 'Activar':'Bloquear'}</button>
@@ -290,29 +298,25 @@ const DashboardAdmin = () => {
                 )}
             </div>
             <div style={{ overflowX: 'auto' }}>
-                <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: '600px' }}>
                     <thead>
                         <tr style={{ background: '#f8f9fa', textAlign: 'left' }}>
                             {modoMasivo && <th style={{ width: '40px' }}><div onClick={() => seleccionarTodo(usuariosFiltrados)} style={{cursor:'pointer'}}>{seleccionados.length === usuariosFiltrados.length ? <FaCheckSquare color="#0a3d62"/> : <FaSquare color="#ddd"/>}</div></th>}
-                            <th style={thStyle}>Nombre</th>
-                            <th style={thStyle}>Email</th>
-                            <th style={thStyle}>Estado</th>
-                            {!modoMasivo && <th style={thStyle}>Acciones</th>}
+                            <th style={thStyle}>Nombre</th><th style={thStyle}>Email</th><th style={thStyle}>Estado</th>{!modoMasivo && <th style={thStyle}>Acciones</th>}
                         </tr>
                     </thead>
                     <tbody>
                         {usuariosFiltrados.map(u => {
-                            const estaBloqueado = (u.estado || 'activo') === 'bloqueado';
+                            const bloqueado = (u.estado || 'activo') === 'bloqueado';
                             return (
                                 <tr key={u.id} style={{ borderBottom: '1px solid #eee', background: seleccionados.includes(u.id) ? '#f0f7ff' : 'transparent' }}>
                                     {modoMasivo && <td><div onClick={() => toggleSeleccion(u.id)} style={{cursor:'pointer'}}>{seleccionados.includes(u.id) ? <FaCheckSquare color="#0a3d62"/> : <FaSquare color="#ddd"/>}</div></td>}
-                                    <td style={tdStyle}>{u.nombre}</td>
-                                    <td style={tdStyle}>{u.email}</td>
-                                    <td style={tdStyle}><span style={{color: estaBloqueado ? 'red' : 'green', fontWeight:'bold'}}>{(u.estado || 'activo').toUpperCase()}</span></td>
+                                    <td style={tdStyle}>{u.nombre}</td><td style={tdStyle}>{u.email}</td>
+                                    <td style={tdStyle}><span style={{color: bloqueado ? 'red' : 'green', fontWeight:'bold'}}>{(u.estado || 'activo').toUpperCase()}</span></td>
                                     {!modoMasivo && (
                                         <td style={tdStyle}>
                                             <button onClick={() => verPerfilUsuario(u)} style={{...btnEdit, background:'#3498db'}} title="Ver Perfil"><FaUserCircle/></button>
-                                            <button onClick={() => toggleBloqueo(u)} style={{ ...btnEdit, background: estaBloqueado ? '#27ae60' : '#f39c12', width: '90px' }}>{estaBloqueado ? 'Activar' : 'Bloquear'}</button>
+                                            <button onClick={() => toggleBloqueo(u)} style={{ ...btnEdit, background: bloqueado ? '#27ae60' : '#f39c12', width: '90px' }}>{bloqueado ? 'Activar' : 'Bloquear'}</button>
                                             <button onClick={() => eliminarRegistro('usuarios', u.id)} style={btnDel}>X</button>
                                         </td>
                                     )}
@@ -325,72 +329,25 @@ const DashboardAdmin = () => {
         </div>
     );
 
-    const renderInvitados = () => (
-        <div style={tableContainer}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems:'center', marginBottom: '15px' }}>
-                <h3 style={{ color: '#0a3d62', margin: 0 }}>Invitados Registrados</h3>
-                <button onClick={() => { setModoMasivo(!modoMasivo); setSeleccionados([]); }} style={{ ...btnEdit, background: modoMasivo ? '#7f8c8d' : '#0a3d62' }}>{modoMasivo ? 'Cancelar' : 'Gestión Masiva'}</button>
-            </div>
-            <div style={{ background: '#f8f9fa', padding: '15px', borderRadius: '8px', marginBottom: '15px', display: 'flex', gap: '10px' }}>
-                <input placeholder="Buscar placa o nombre..." style={{ ...inputStyle, width: '250px', margin: 0 }} value={filtroInvitados} onChange={e => setFiltroInvitados(e.target.value)} />
-                {modoMasivo && seleccionados.length > 0 && (
-                    <button onClick={() => ejecutarBorradoMasivo('ingresos_invitados')} style={{ ...btnDel, marginLeft: 'auto' }}>Eliminar ({seleccionados.length})</button>
-                )}
-            </div>
-            <table style={{width:'100%', borderCollapse:'collapse'}}>
-                <thead>
-                    <tr style={{background:'#f8f9fa', textAlign:'left'}}>
-                        {modoMasivo && <th><div onClick={() => seleccionarTodo(invitadosFiltrados)} style={{cursor:'pointer'}}>{seleccionados.length === invitadosFiltrados.length ? <FaCheckSquare color="#0a3d62"/> : <FaSquare color="#ddd"/>}</div></th>}
-                        <th style={thStyle}>Nombre</th><th style={thStyle}>Placa</th>{!modoMasivo && <th>Acciones</th>}
-                    </tr>
-                </thead>
-                <tbody>
-                    {invitadosFiltrados.map(i => (
-                        <tr key={i.id} style={{borderBottom:'1px solid #eee', background: seleccionados.includes(i.id) ? '#f0f7ff' : 'transparent'}}>
-                            {modoMasivo && <td><div onClick={() => toggleSeleccion(i.id)} style={{cursor:'pointer'}}>{seleccionados.includes(i.id) ? <FaCheckSquare color="#0a3d62"/> : <FaSquare color="#ddd"/>}</div></td>}
-                            <td style={tdStyle}>{i.nombre}</td><td style={tdStyle}>{i.placa}</td>
-                            {!modoMasivo && <td style={tdStyle}><button onClick={() => eliminarRegistro("ingresos_invitados",i.id)} style={btnDel}>X</button></td>}
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
-        </div>
-    );
-
     const renderHistorial = () => (
         <div style={tableContainer}>
-            <h3 style={{color:'#0a3d62', marginBottom:'15px'}}>Historial Global de Reservas</h3>
-            
-            {/* FILTROS DE HISTORIAL AVANZADOS */}
-            <div style={{ background: '#f0f4f8', padding: '15px', borderRadius: '10px', marginBottom: '20px', display: 'flex', gap: '10px', alignItems: 'center' }}>
+            <div style={{display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:'15px', flexWrap: 'wrap', gap: '10px'}}>
+                <h3 style={{margin:0, color:'#0a3d62'}}>Historial Global</h3>
+                <button onClick={exportarCSV} style={{...btnEdit, background:'#27ae60'}}><FaDownload/> Exportar CSV</button>
+            </div>
+            <div style={{ background: '#f0f4f8', padding: '15px', borderRadius: '10px', marginBottom: '20px', display: 'flex', gap: '10px', alignItems: 'center', flexWrap: 'wrap' }}>
                 <FaSearch color="#0a3d62" />
-                <input 
-                    placeholder="Buscar por placa, nombre o fecha..." 
-                    style={{ ...inputStyle, flex: 1, margin: 0 }} 
-                    value={filtroHistorial.texto} 
-                    onChange={e => setFiltroHistorial({ ...filtroHistorial, texto: e.target.value })} 
-                />
-                <select 
-                    style={{ ...inputStyle, width: '180px', margin: 0 }} 
-                    value={filtroHistorial.lugar} 
-                    onChange={e => setFiltroHistorial({ ...filtroHistorial, lugar: e.target.value })}
-                >
-                    <option value="todos">Todos los Sectores</option>
-                    {Object.keys(CAPACIDAD).map(l => <option key={l} value={l}>{l}</option>)}
+                <input placeholder="Filtrar por placa, nombre, fecha o hora..." style={{ ...inputStyle, flex: '1 1 250px', margin: 0 }} value={filtroHistorial.texto} onChange={e => setFiltroHistorial({ ...filtroHistorial, texto: e.target.value })} />
+                <select style={{ ...inputStyle, width: '180px', margin: 0, flex: '1 1 150px' }} value={filtroHistorial.lugar} onChange={e => setFiltroHistorial({ ...filtroHistorial, lugar: e.target.value })}>
+                    <option value="todos">Todos los Sectores</option>{Object.keys(CAPACIDAD).map(l => <option key={l} value={l}>{l}</option>)}
                 </select>
             </div>
-
             <div style={{overflowX:'auto'}}>
-                <table style={{width:'100%', borderCollapse:'collapse'}}>
+                <table style={{width:'100%', borderCollapse:'collapse', minWidth: '600px'}}>
                     <thead><tr style={{background:'#f8f9fa', textAlign:'left'}}><th style={thStyle}>Fecha / Hora</th><th style={thStyle}>Usuario/Placa</th><th style={thStyle}>Lugar</th><th style={thStyle}>Puesto</th></tr></thead>
                     <tbody>
                         {historialFiltrado.map(h => (
-                            <tr key={h.id} style={{borderBottom:'1px solid #eee'}}>
-                                <td style={tdStyle}><strong>{h.fecha}</strong> <br/> <small>{h.hora}</small></td>
-                                <td style={tdStyle}>{h.usuario}</td>
-                                <td style={tdStyle}>{h.lugar}</td>
-                                <td style={tdStyle}>#{h.espacio}</td>
-                            </tr>
+                            <tr key={h.id} style={{borderBottom:'1px solid #eee'}}><td style={tdStyle}><strong>{h.fecha}</strong> <br/> <small>{h.hora}</small></td><td style={tdStyle}>{h.usuario}</td><td style={tdStyle}>{h.lugar}</td><td style={tdStyle}>#{h.espacio}</td></tr>
                         ))}
                     </tbody>
                 </table>
@@ -400,14 +357,57 @@ const DashboardAdmin = () => {
 
     const renderMensajes = () => (
         <div style={tableContainer}>
-            <h3 style={{color:'#0a3d62', marginBottom:'15px'}}>Buzón de Contacto</h3>
-            <div style={{display:'flex', flexDirection:'column', gap:'10px', maxHeight:'500px', overflowY:'auto'}}>
-                {mensajes.length === 0 ? (<p style={{textAlign:'center', color:'#888'}}>Sin mensajes nuevos 📩</p>) : mensajes.map(m => (
-                    <div key={m.id} style={{padding:'15px', background:'#f8f9fa', borderRadius:'8px', borderLeft:'4px solid #0a3d62'}}>
-                        <strong>{m.nombre}</strong> <small>({m.fecha?.toDate ? m.fecha.toDate().toLocaleDateString() : 'Reciente'})</small>
-                        <p style={{margin:'5px 0', fontSize:'0.9rem'}}>"{m.mensaje}"</p>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+                <h3 style={{ color: '#0a3d62', margin: 0 }}>Buzón de Contacto</h3>
+                <span style={{ background: '#0a3d62', color: 'white', padding: '4px 12px', borderRadius: '20px', fontSize: '0.8rem' }}>{mensajes.length} totales</span>
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '15px', maxHeight: '500px', overflowY: 'auto' }}>
+                {mensajes.length === 0 ? (<p style={{textAlign:'center', color:'#999'}}>No hay mensajes nuevos.</p>) : mensajes.map(m => (
+                    <div key={m.id} style={messageCardStyle}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '10px' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                                <div style={avatarCircle}>{m.nombre.charAt(0).toUpperCase()}</div>
+                                <div><strong style={{ color: '#0a3d62', fontSize: '1rem' }}>{m.nombre}</strong><div style={{ fontSize: '0.75rem', color: '#666' }}>Usuario PoliParking</div></div>
+                            </div>
+                            <span style={dateBadge}><FaHistory size={10} /> {m.fecha?.toDate ? m.fecha.toDate().toLocaleDateString() : 'Reciente'}</span>
+                        </div>
+                        <div style={messageBubble}><p style={{ margin: 0 }}>"{m.mensaje}"</p></div>
+                        <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '10px' }}><button onClick={() => eliminarRegistro("mensajes_contacto", m.id)} style={btnMiniDel}><FaTrashAlt size={12} /> Eliminar</button></div>
                     </div>
                 ))}
+            </div>
+        </div>
+    );
+
+    const renderInvitados = () => (
+        <div style={tableContainer}>
+            <h3 style={{ color: '#0a3d62', margin: 0, marginBottom:'15px' }}>Invitados Registrados</h3>
+            <input placeholder="Buscar placa..." style={inputStyle} value={filtroInvitados} onChange={e=>setFiltroInvitados(e.target.value)} />
+            
+            {/* SOLUCIÓN RESPONSIVE PARA TABLA DE INVITADOS */}
+            <div style={{overflowX: 'auto', marginTop:'15px', borderRadius: '8px', border: '1px solid #eee'}}>
+                <table style={{width:'100%', borderCollapse:'collapse', minWidth: '450px'}}>
+                    <thead>
+                        <tr style={{background:'#f8f9fa', textAlign:'left'}}>
+                            <th style={thStyle}>Nombre</th>
+                            <th style={thStyle}>Placa</th>
+                            <th style={thStyle}>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {invitadosFiltrados.length > 0 ? invitadosFiltrados.map(i => (
+                            <tr key={i.id} style={{borderBottom: '1px solid #eee'}}>
+                                <td style={tdStyle}>{i.nombre}</td>
+                                <td style={tdStyle}><strong>{i.placa}</strong></td>
+                                <td style={tdStyle}>
+                                    <button onClick={() => eliminarRegistro("ingresos_invitados",i.id)} style={btnDel}>X</button>
+                                </td>
+                            </tr>
+                        )) : (
+                            <tr><td colSpan="3" style={{padding:'20px', textAlign:'center', color:'#999'}}>No se encontraron invitados.</td></tr>
+                        )}
+                    </tbody>
+                </table>
             </div>
         </div>
     );
@@ -419,55 +419,75 @@ const DashboardAdmin = () => {
             case 'invitados': return renderInvitados();
             case 'mensajes': return renderMensajes();
             case 'historial': return renderHistorial();
-            default: return null;
+            default: return renderResumen();
         }
     };
 
-    if (loading) return <div style={{display:'flex', justifyContent:'center', alignItems:'center', height:'100vh'}}><h2>Cargando PoliParking Admin...</h2></div>;
+    // --- ESTILO DRAWER ---
+    const sidebarStyle = {
+        width: isMobile ? '280px' : '260px',
+        background: 'white',
+        borderRight: '1px solid #eee',
+        display: 'flex',
+        flexDirection: 'column',
+        padding: '20px 10px',
+        gap: '5px',
+        position: isMobile ? 'fixed' : 'relative',
+        top: 0,
+        left: isMobile ? (isMenuOpen ? '0' : '-100%') : '0',
+        height: '100vh',
+        zIndex: 1000,
+        transition: 'left 0.3s ease'
+    };
 
     return (
         <div style={{ fontFamily: 'Lato, sans-serif', background: '#f4f7f9', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+            {isMobile && isMenuOpen && (
+                <div onClick={() => setIsMenuOpen(false)} style={{position:'fixed', top:0, left:0, width:'100%', height:'100%', background:'rgba(0,0,0,0.5)', zIndex: 999}}></div>
+            )}
+
             <nav style={navAdminStyle}>
-                <h2 style={{margin:0, color:'white', fontSize:'1.4rem'}}>PoliParking <span style={{color:'#ffc107', fontSize:'0.8rem', border:'1px solid', padding:'2px 5px', borderRadius:'4px', marginLeft:'5px'}}>ADMIN</span></h2>
-                <button onClick={handleLogout} style={btnLogoutStyle}><FaSignOutAlt/> Salir</button>
+                <div style={{display:'flex', alignItems:'center', gap:'15px'}}>
+                    {isMobile && <FaBars size={22} color="white" onClick={() => setIsMenuOpen(true)} style={{cursor:'pointer'}} />}
+                    <h2 style={{margin:0, color:'white', fontSize: isMobile ? '1.1rem' : '1.4rem'}}>PoliParking <span style={{color:'#ffc107', fontSize:'0.8rem', border:'1px solid', padding:'2px 5px', borderRadius:'4px', marginLeft:'5px'}}>ADMIN</span></h2>
+                </div>
+                <button onClick={handleLogout} style={btnLogoutStyle}><FaSignOutAlt/> {!isMobile && 'Salir'}</button>
             </nav>
+
             <div style={{ flex: 1, display: 'flex' }}>
-                <div style={{ width: '240px', background: 'white', borderRight: '1px solid #eee', display: 'flex', flexDirection: 'column', padding: '20px 10px', gap: '5px' }}>
-                    {[
-                        {id:'resumen', icon:<FaChartBar/>, l:'Resumen'}, 
+                <aside style={sidebarStyle}>
+                    {isMobile && <div style={{textAlign:'right', paddingBottom:'10px'}}><FaTimes size={20} color="#0a3d62" onClick={() => setIsMenuOpen(false)} /></div>}
+                    {[ 
+                        {id:'resumen', icon:<FaChartBar/>, l:'Monitor'}, 
                         {id:'usuarios', icon:<FaUsers/>, l:'Usuarios'}, 
-                        {id:'invitados', icon:<FaCar/>, l:'Invitados'},
-                        {id:'mensajes', icon:<FaEnvelope/>, l:'Mensajes'},
+                        {id:'invitados', icon:<FaCar/>, l:'Invitados'}, 
+                        {id:'mensajes', icon:<FaEnvelope/>, l:'Mensajes'}, 
                         {id:'historial', icon:<FaHistory/>, l:'Historial'}
                     ].map(item => (
-                        <button key={item.id} onClick={() => { setModuloActivo(item.id); setModoMasivo(false); setSeleccionados([]); }} 
-                            style={{...menuBtnStyle, background: moduloActivo === item.id ? '#0a3d62' : 'transparent', color: moduloActivo === item.id ? 'white' : '#0a3d62'}}>
-                            {item.icon} {item.l}
-                        </button>
+                        <button key={item.id} onClick={() => { setModuloActivo(item.id); if(isMobile) setIsMenuOpen(false); }} style={{...menuBtnStyle, background: moduloActivo === item.id ? '#0a3d62' : 'transparent', color: moduloActivo === item.id ? 'white' : '#0a3d62'}}>{item.icon} {item.l}</button>
                     ))}
-                </div>
-                <div style={{ flex: 1, padding: '30px', overflowY: 'auto' }}>{getContenidoActivo()}</div>
+                    <div style={{marginTop: 'auto', padding: '15px', borderTop: '1px solid #eee'}}>
+                        <div style={{display:'flex', alignItems:'center', gap:'10px', marginBottom:'15px', color: '#27ae60', fontSize:'0.85rem'}}><FaDatabase/> <span>Firebase: Online</span></div>
+                        <div style={{display:'flex', alignItems:'center', gap:'10px', color: '#0a3d62', fontSize:'0.85rem'}}><FaClock/> <span>{currentTime.toLocaleTimeString()}</span></div>
+                        <p style={{fontSize:'0.7rem', color:'#999', marginTop:'15px'}}>PoliParking v2.0 - EPN</p>
+                    </div>
+                </aside>
+                <main style={{ flex: 1, padding: isMobile ? '15px' : '30px', overflowY: 'auto' }}>{getContenidoActivo()}</main>
             </div>
-            {showModal && (
-                <div style={modalOverlay}><div style={modalContent}><h3>{editMode ? 'Editar':'Crear'}</h3><form onSubmit={handleSaveUser} style={{display:'flex', flexDirection:'column', gap:'10px'}}><input style={inputStyle} value={formData.nombre} onChange={e => setFormData({...formData, nombre: e.target.value})} placeholder="Nombre" required /><input style={inputStyle} value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} placeholder="Correo" required /><input style={inputStyle} value={formData.placa} onChange={e => setFormData({...formData, placa: e.target.value})} placeholder="Placa" /><select style={inputStyle} value={formData.rol} onChange={e => setFormData({...formData, rol: e.target.value})}><option value="estudiante">Estudiante</option><option value="docente">Docente</option><option value="administrativo">Administrativo</option></select><div style={{display:'flex', gap:'10px', marginTop:'10px'}}><button type="submit" style={btnCreate}>Guardar</button><button type="button" onClick={() => setShowModal(false)} style={{...btnDel, flex:1, background:'#7f8c8d'}}>Cerrar</button></div></form></div></div>
-            )}
         </div>
     );
 };
 
-const navAdminStyle = { background: '#0a3d62', padding: '1rem 2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', color: 'white' };
+const navAdminStyle = { background: '#0a3d62', padding: '1rem 2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', color: 'white', position: 'sticky', top: 0, zIndex: 100 };
 const btnLogoutStyle = { background: '#e30613', border: 'none', color: 'white', padding: '0.6rem 1.2rem', borderRadius: '8px', cursor: 'pointer', display:'flex', alignItems:'center', gap:'5px', fontWeight:'bold' };
-const menuBtnStyle = { display: 'flex', alignItems: 'center', gap: '10px', padding: '12px 15px', border: 'none', borderRadius: '8px', cursor: 'pointer', textAlign:'left', fontWeight:'bold' };
-const statsGrid = { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1.5rem' };
+const menuBtnStyle = { display: 'flex', alignItems: 'center', gap: '10px', padding: '12px 15px', border: 'none', borderRadius: '8px', cursor: 'pointer', textAlign:'left', fontWeight:'bold', width: '100%', transition: '0.3s' };
+const statsGrid = { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1.5rem' };
 const parkCard = { background: 'white', padding: '1.5rem', borderRadius: '15px', textAlign: 'center', boxShadow: '0 4px 10px rgba(0,0,0,0.05)' };
 const tableContainer = { background: 'white', padding: '2rem', borderRadius: '15px', boxShadow: '0 4px 20px rgba(0,0,0,0.05)' };
 const thStyle = { padding: '12px', borderBottom: '2px solid #f1f2f6', color: '#0a3d62', fontWeight:'bold' };
 const tdStyle = { padding: '12px', borderBottom: '1px solid #f1f2f6', fontSize:'0.9rem', verticalAlign: 'middle' };
-const btnCreate = { background: '#27ae60', color: 'white', border: 'none', padding: '10px 20px', borderRadius: '8px', cursor: 'pointer', fontWeight:'bold' };
 const btnEdit = { color: 'white', border: 'none', padding: '6px 10px', borderRadius: '6px', cursor: 'pointer', marginRight: '5px', fontWeight:'bold', transition: '0.3s' };
 const btnDel = { background: '#e30613', color: 'white', border: 'none', padding: '6px 12px', borderRadius: '6px', cursor: 'pointer' };
-const modalOverlay = { position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', background: 'rgba(0,0,0,0.7)', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex:1000 };
-const modalContent = { background: 'white', padding: '2rem', borderRadius: '15px', width: '400px' };
-const inputStyle = { width: '100%', padding: '12px', margin: '8px 0', borderRadius: '8px', border: '1px solid #ddd', boxSizing:'border-box' };
+const inputStyle = { width: '100%', padding: '12px', margin: '8px 0', borderRadius: '8px', border: '1px solid #ddd', boxSizing:'border-box', outline: 'none' };
 
 export default DashboardAdmin;
