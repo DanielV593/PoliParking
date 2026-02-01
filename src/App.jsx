@@ -3,10 +3,9 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Landing from './pages/Landing';
 import Login from './pages/Login';
 import Register from './pages/Register';
+// 1. Importamos DashboardUser (que es el que tiene el mapa y las reservas)
 import DashboardUser from './pages/DashboardUser'; 
 import DashboardAdmin from './pages/DashboardAdmin'; 
-// 1. IMPORTAMOS EL NUEVO DASHBOARD DE INVITADOS
-import DashboardGuest from './pages/DashboardGuest'; 
 
 // --- IMPORTAMOS ANIMACIONES ---
 import AOS from 'aos';
@@ -31,14 +30,10 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         
-        {/* Dashboard para Estudiantes y Docentes */}
+        {/* 2. Corregimos la ruta para que coincida con el nombre de tu componente y lo que pusimos en el Login */}
         <Route path="/dashboard-user" element={<DashboardUser />} /> 
         
-        {/* Dashboard para Administrador */}
         <Route path="/dashboard-admin" element={<DashboardAdmin />} />
-        
-        {/* 2. NUEVA RUTA PARA INVITADOS */}
-        <Route path="/guest" element={<DashboardGuest />} />
         
         <Route path="*" element={<h1 style={{textAlign:'center', marginTop:'100px'}}>404 - No encontrado</h1>} />
       </Routes>
