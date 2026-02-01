@@ -1,40 +1,45 @@
+/* DEFINIMOS VARIABLES POR SI NO ESTÁN EN EL GLOBAL */
+:root {
+    --colorPrincipal: #0a3d62; /* Azul EPN */
+    --colorDorado: #feca57;    /* Amarillo */
+}
+
 /* =========================================
-   10. FOOTER - VERSIÓN COMPACTA
+   10. FOOTER - VERSIÓN COMPACTA (TU CÓDIGO)
    ========================================= */
 .footer {
     background-color: var(--colorPrincipal);
     color: #fff;
-    /* REDUCIDO: de 5rem a 3rem el padding superior */
     padding: 3rem 0 1.5rem; 
 }
 
-/* CONTENEDOR PRINCIPAL */
+/* CONTENEDOR PRINCIPAL (GRID) */
 .footer-row {
     width: 90%;
     max-width: 1400px;
-    /* REDUCIDO: margen inferior de 3rem a 2rem */
     margin: 0 auto 2rem;
     display: grid;
-    /* Ajuste de minmax para que las columnas no sean tan anchas */
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 3rem; /* REDUCIDO: de 4rem a 3rem */
+    /* Esto hace la magia de las columnas automáticas */
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); 
+    gap: 3rem; 
 }
 
 /* COLUMNAS */
 .footer__col {
     display: flex;
     flex-direction: column;
-    gap: 0.8rem; /* REDUCIDO: de 1rem */
+    gap: 0.8rem; 
 }
 
 /* TÍTULOS */
 .footer__title {
     color: var(--colorDorado);
-    font-size: 1.2rem; /* REDUCIDO: de 1.35rem */
+    font-size: 1.2rem; 
     font-weight: 700;
-    margin-bottom: 1rem; /* REDUCIDO: de 1.5rem */
+    margin-bottom: 1rem; 
     position: relative;
     padding-bottom: 0.5rem;
+    margin-top: 0; /* Asegura que no tenga margen extra arriba */
 }
 
 .footer__title::after {
@@ -42,8 +47,8 @@
     position: absolute;
     left: 0;
     bottom: 0;
-    width: 40px; /* REDUCIDO: de 50px */
-    height: 2px; /* Más fino */
+    width: 40px; 
+    height: 2px; 
     background-color: var(--colorDorado);
     border-radius: 2px;
     transition: width 0.3s ease;
@@ -54,22 +59,31 @@
 }
 
 /* LISTAS */
+.footer__list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
 .footer__list li {
-    margin-bottom: 0.6rem; /* REDUCIDO: de 0.8rem */
+    margin-bottom: 0.6rem;
+    display: flex;
+    align-items: flex-start; /* Alinea íconos con texto */
 }
 
 .footer__list a {
     color: rgba(255, 255, 255, 0.85);
-    font-size: 0.95rem; /* REDUCIDO: de 1.05rem */
+    font-size: 0.95rem; 
     text-decoration: none;
     transition: all 0.3s ease;
 }
 
 /* TEXTO NORMAL */
 .footer__col p {
-    font-size: 0.95rem; /* REDUCIDO: de 1.05rem */
+    font-size: 0.95rem; 
     color: rgba(255,255,255,0.9);
-    line-height: 1.5; /* Más compacto */
+    line-height: 1.5; 
+    margin: 0;
 }
 
 /* SOCIAL ICONS */
@@ -80,25 +94,31 @@
 }
 
 .social-icons a {
-    width: 36px; /* REDUCIDO: de 42px */
-    height: 36px; /* REDUCIDO: de 42px */
+    width: 36px; 
+    height: 36px; 
     display: flex;
     align-items: center;
     justify-content: center;
     background-color: rgba(255,255,255,0.1);
     border-radius: 50%;
     color: #fff;
-    font-size: 1rem; /* REDUCIDO: de 1.2rem */
+    font-size: 1rem; 
     transition: all 0.3s ease;
+    text-decoration: none;
+}
+
+.social-icons a:hover {
+    background-color: var(--colorDorado);
+    color: var(--colorPrincipal);
 }
 
 /* FOOTER BOTTOM */
 .footer__bottom {
     text-align: center;
     border-top: 1px solid rgba(255,255,255,0.1);
-    padding-top: 1.5rem; /* REDUCIDO: de 2rem */
+    padding-top: 1.5rem; 
     color: rgba(255,255,255,0.65);
-    font-size: 0.85rem; /* REDUCIDO: de 0.95rem */
+    font-size: 0.85rem; 
 }
 
 /* RESPONSIVE */
@@ -110,3 +130,124 @@
         gap: 2rem;
     }
 }
+
+/* =========================================
+   ESTILOS DE LA VENTANA MODAL (POP-UP)
+   ========================================= */
+
+/* --- BOTÓN QUE ABRE EL MODAL --- */
+.btn-faq-trigger {
+    margin-top: 15px;
+    background-color: var(--colorDorado); 
+    color: var(--colorPrincipal);
+    border: none;
+    padding: 10px 20px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 0.9rem;
+    transition: transform 0.2s;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: fit-content; /* Para que no ocupe todo el ancho */
+}
+
+.btn-faq-trigger:hover {
+    transform: scale(1.05);
+    background-color: #fff;
+}
+
+/* --- EL FONDO OSCURO (OVERLAY) --- */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7); 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999; 
+    animation: fadeIn 0.3s ease;
+}
+
+/* --- LA CAJA BLANCA (CONTENIDO) --- */
+.modal-content {
+    background: white;
+    width: 90%;
+    max-width: 600px;
+    border-radius: 12px;
+    padding: 25px;
+    position: relative;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+    max-height: 80vh; 
+    overflow-y: auto; 
+    animation: slideUp 0.3s ease;
+    color: #333; /* Texto oscuro para que se lea en fondo blanco */
+}
+
+/* CABECERA DEL MODAL */
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #f0f0f0;
+    padding-bottom: 10px;
+}
+
+.modal-header h2 {
+    color: var(--colorPrincipal);
+    margin: 0;
+    font-size: 1.5rem;
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    font-size: 2rem;
+    cursor: pointer;
+    color: #888;
+    line-height: 1;
+}
+
+.close-btn:hover {
+    color: #e30613;
+}
+
+/* ESTILOS DEL ACORDEÓN DENTRO DEL MODAL */
+.faq-item-modal {
+    border-bottom: 1px solid #eee;
+    padding: 10px 0;
+    cursor: pointer;
+}
+
+.faq-question-modal {
+    display: flex;
+    justify-content: space-between;
+    font-weight: 600;
+    color: #333;
+    font-size: 1rem;
+}
+
+.faq-answer-modal {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+    color: #666;
+    font-size: 0.95rem;
+    margin-top: 5px;
+}
+
+.faq-answer-modal.show {
+    max-height: 150px;
+    padding-top: 5px;
+    padding-bottom: 10px;
+}
+
+/* ANIMACIONES */
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes slideUp { from { transform: translateY(20px); } to { transform: translateY(0); } }
