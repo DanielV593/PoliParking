@@ -1,6 +1,14 @@
 import React from "react";
 import './gallery.css';
 
+// IMPORTACIÓN DE IMÁGENES (CORREGIDO SEGÚN TU CARPETA)
+import img1 from '../../assets/estacionamiento1.jpg';   // .jpg
+import img2 from '../../assets/estacionamiento2.jpg';   // .jpg
+import img3 from '../../assets/estacionamiento3.jpeg';  // .jpeg (¡OJO AQUÍ!)
+import img4 from '../../assets/estacionamiento4.jpg';   // .jpg
+import img5 from '../../assets/estacionamiento5.jpeg';  // .jpeg (¡OJO AQUÍ!)
+import img6 from '../../assets/estacionamiento6.jpeg';  // .jpeg (¡OJO AQUÍ!)
+
 const Gallery = () =>{
     return (    
         <section className="gallery" data-aos="zoom-in">
@@ -8,12 +16,31 @@ const Gallery = () =>{
             <p className="gallery__description">Explora el campus de la EPN y nuestros modernos parqueaderos.</p>
             
             <div className="gallery__grid container">
-            <div className="gallery__item"><img src="https://webhistorico.epn.edu.ec/wp-content/uploads/2014/08/100_0783.jpg" alt="Parqueadero techado EPN" loading="lazy" /></div>
-            <div className="gallery__item"><img src="https://images.unsplash.com/photo-1690204704223-4844fd31e2b4?q=80&w=774&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Vista aérea EPN" loading="lazy" /></div>
-            <div className="gallery__item"><img src="https://images.unsplash.com/photo-1656589604740-781c5fe85451?q=80&w=870&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Entrada al parqueadero EPN" loading="lazy" /></div>
-            <div className="gallery__item"><img src="https://plus.unsplash.com/premium_photo-1682787494783-d0fdba8c5cf8?q=80&w=870&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Estudiante usando la app" loading="lazy" /></div>
-            <div className="gallery__item"><img src="https://images.unsplash.com/photo-1616363088386-31c4a8414858?q=80&w=870&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Parqueadero subterráneo EPN" loading="lazy" /></div>
-            <div className="gallery__item"><img src="https://images.unsplash.com/photo-1663326577034-f8424e12dddb?q=80&w=774&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Área verde campus EPN" loading="lazy" /></div>
+                
+                <div className="gallery__item">
+                    <img src={img1} alt="Estacionamiento EPN 1" loading="lazy" />
+                </div>
+                
+                <div className="gallery__item">
+                    <img src={img2} alt="Estacionamiento EPN 2" loading="lazy" />
+                </div>
+                
+                <div className="gallery__item">
+                    <img src={img3} alt="Estacionamiento EPN 3" loading="lazy" />
+                </div>
+                
+                <div className="gallery__item">
+                    <img src={img4} alt="Estacionamiento EPN 4" loading="lazy" />
+                </div>
+                
+                <div className="gallery__item">
+                    <img src={img5} alt="Estacionamiento EPN 5" loading="lazy" />
+                </div>
+                
+                <div className="gallery__item">
+                    <img src={img6} alt="Estacionamiento EPN 6" loading="lazy" />
+                </div>
+
             </div>
         </section>
     );

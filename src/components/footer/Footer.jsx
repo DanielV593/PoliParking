@@ -6,7 +6,7 @@ const Footer = () => {
     const [showFaq, setShowFaq] = useState(false);
     const [showTerms, setShowTerms] = useState(false);
     const [showRules, setShowRules] = useState(false);
-    const [showReport, setShowReport] = useState(false);
+    const [showTips, setShowTips] = useState(false); // <--- CAMBIO AQUÍ (Antes showReport)
     
     // Estado para el acordeón de preguntas
     const [selectedQuestion, setSelectedQuestion] = useState(null);
@@ -51,8 +51,9 @@ const Footer = () => {
                                     </a>
                                 </li>
                                 <li>
-                                    <a href="#" onClick={(e) => { e.preventDefault(); setShowReport(true); }}>
-                                        Reportar Incidente
+                                    {/* CAMBIO AQUÍ: Tips de Seguridad en lugar de Reportar Incidente */}
+                                    <a href="#" onClick={(e) => { e.preventDefault(); setShowTips(true); }}>
+                                        Tips de Seguridad
                                     </a>
                                 </li>
                             </ul>
@@ -67,34 +68,35 @@ const Footer = () => {
                                 <li><span className="label">Dom y Feriados:</span> Solo autorizados</li>
                             </ul>
                         </div>
-{/* COLUMNA 3: ACCIÓN DIRECTA */}
-<div className="footer__col" style={{ justifyContent: 'center' }}>
-    <h3 className="footer__title">Empieza Ahora</h3>
-    <p style={{ fontSize: '0.9rem', marginBottom: '20px' }}>
-        ¿Listo para asegurar tu lugar?
-    </p>
-    
-    <a href="/login" style={{ 
-        display: 'block',
-        textAlign: 'center',
-        background: '#feca57', 
-        color: '#0a3d62', 
-        padding: '12px', 
-        borderRadius: '5px', 
-        textDecoration: 'none', 
-        fontWeight: 'bold',
-        fontSize: '1rem',
-        boxShadow: '0 4px 0 #d4a017',
-        transition: 'transform 0.1s'
-    }}>
-        <i className="fa-solid fa-calendar-check" style={{ marginRight: '8px' }}></i>
-        Reservar Estacionamiento
-    </a>
-    
-    <p style={{ fontSize: '0.8rem', marginTop: '10px', textAlign: 'center', opacity: 0.7 }}>
-        *Acceso exclusivo con correo EPN
-    </p>
-</div>
+
+                        {/* COLUMNA 3: ACCIÓN DIRECTA (INTACTA) */}
+                        <div className="footer__col" style={{ justifyContent: 'center' }}>
+                            <h3 className="footer__title">Empieza Ahora</h3>
+                            <p style={{ fontSize: '0.9rem', marginBottom: '20px' }}>
+                                ¿Listo para asegurar tu lugar?
+                            </p>
+                            
+                            <a href="/login" style={{ 
+                                display: 'block',
+                                textAlign: 'center',
+                                background: '#feca57', 
+                                color: '#0a3d62', 
+                                padding: '12px', 
+                                borderRadius: '5px', 
+                                textDecoration: 'none', 
+                                fontWeight: 'bold',
+                                fontSize: '1rem',
+                                boxShadow: '0 4px 0 #d4a017',
+                                transition: 'transform 0.1s'
+                            }}>
+                                <i className="fa-solid fa-calendar-check" style={{ marginRight: '8px' }}></i>
+                                Reservar Estacionamiento
+                            </a>
+                            
+                            <p style={{ fontSize: '0.8rem', marginTop: '10px', textAlign: 'center', opacity: 0.7 }}>
+                                *Acceso exclusivo con correo EPN
+                            </p>
+                        </div>
                     </div>
                 </div>
                 
@@ -132,7 +134,7 @@ const Footer = () => {
                 </div>
             )}
 
-            {/* 2. TÉRMINOS Y CONDICIONES (PROFESIONAL) */}
+            {/* 2. TÉRMINOS Y CONDICIONES */}
             {showTerms && (
                 <div className="modal-overlay" onClick={() => setShowTerms(false)}>
                     <div className="modal-content" onClick={(e) => e.stopPropagation()}>
@@ -142,32 +144,20 @@ const Footer = () => {
                         </div>
                         <div className="modal-body" style={{lineHeight: '1.6', color: '#444', textAlign: 'justify'}}>
                             <p style={{marginBottom:'15px', fontStyle:'italic'}}>Última actualización: Febrero 2025</p>
-                            
                             <h4 style={{color:'#0a3d62', marginBottom:'5px'}}>1. Aceptación del Servicio</h4>
-                            <p style={{marginBottom:'15px'}}>
-                                Al acceder y utilizar la plataforma <strong>PoliParking</strong>, el usuario acepta cumplir con los presentes términos y con la normativa interna de la Escuela Politécnica Nacional (EPN). El incumplimiento podrá resultar en la suspensión temporal o definitiva de la cuenta.
-                            </p>
-
+                            <p style={{marginBottom:'15px'}}>Al utilizar PoliParking, el usuario acepta cumplir con los presentes términos y con la normativa interna de la EPN.</p>
                             <h4 style={{color:'#0a3d62', marginBottom:'5px'}}>2. Uso de la Cuenta</h4>
-                            <p style={{marginBottom:'15px'}}>
-                                La cuenta es <strong>personal e intransferible</strong>. El usuario es responsable de mantener la confidencialidad de sus credenciales. Está prohibido realizar reservas para vehículos de terceros ajenos a la institución.
-                            </p>
-
+                            <p style={{marginBottom:'15px'}}>La cuenta es <strong>personal e intransferible</strong>. El usuario es responsable de sus credenciales.</p>
                             <h4 style={{color:'#0a3d62', marginBottom:'5px'}}>3. Limitación de Responsabilidad</h4>
-                            <p style={{marginBottom:'15px'}}>
-                                PoliParking actúa únicamente como un sistema de gestión de espacios. La EPN <strong>no asume responsabilidad civil ni penal</strong> por robo total o parcial de vehículos, ni por daños ocasionados por terceros o desastres naturales dentro de las instalaciones.
-                            </p>
-
-                            <h4 style={{color:'#0a3d62', marginBottom:'5px'}}>4. Uso de Datos Personales</h4>
-                            <p style={{marginBottom:'15px'}}>
-                                Los datos recopilados (placa, nombre, correo) serán tratados estrictamente para fines de seguridad y control de acceso vehicular, conforme a la Ley Orgánica de Protección de Datos Personales.
-                            </p>
+                            <p style={{marginBottom:'15px'}}>PoliParking no se hace responsable por robos ni daños parciales o totales a los vehículos dentro de las instalaciones.</p>
+                            <h4 style={{color:'#0a3d62', marginBottom:'5px'}}>4. Datos Personales</h4>
+                            <p style={{marginBottom:'15px'}}>Los datos recopilados serán tratados estrictamente para fines de seguridad y control de acceso.</p>
                         </div>
                     </div>
                 </div>
             )}
 
-            {/* 3. REGLAMENTO DE USO (ESTILO EPN) */}
+            {/* 3. REGLAMENTO DE USO */}
             {showRules && (
                 <div className="modal-overlay" onClick={() => setShowRules(false)}>
                     <div className="modal-content" onClick={(e) => e.stopPropagation()}>
@@ -179,59 +169,74 @@ const Footer = () => {
                             <div style={{background:'#fdf2f2', borderLeft:'4px solid #e30613', padding:'10px', marginBottom:'20px'}}>
                                 <strong>IMPORTANTE:</strong> El ingreso al campus implica la aceptación de estas normas. La vigilancia es permanente.
                             </div>
-
                             <ul style={{paddingLeft: '20px', listStyleType: 'circle'}}>
-                                <li style={{marginBottom: '15px'}}>
-                                    <strong>Velocidad Máxima:</strong> La velocidad límite dentro del campus es de <strong>10 km/h</strong>. El exceso de velocidad será sancionado.
-                                </li>
-                                <li style={{marginBottom: '15px'}}>
-                                    <strong>Estacionamiento en Reversa:</strong> Por normas de seguridad y evacuación rápida, es <u>obligatorio</u> estacionar el vehículo en posición de salida (aculatar).
-                                </li>
-                                <li style={{marginBottom: '15px'}}>
-                                    <strong>Espacios Reservados:</strong> Está prohibido ocupar espacios destinados a personas con discapacidad, autoridades o vehículos de emergencia sin la debida autorización.
-                                </li>
-                                <li style={{marginBottom: '15px'}}>
-                                    <strong>Pernoctación:</strong> Prohibido dejar vehículos dentro del campus fuera del horario de atención (22:00) sin autorización escrita de la Dirección Administrativa.
-                                </li>
-                                <li style={{marginBottom: '15px'}}>
-                                    <strong>Sanciones (Uso de Cepo):</strong> Los vehículos mal estacionados o que ocupen dos plazas serán inmovilizados con cepo. La multa deberá ser cancelada en Tesorería.
-                                </li>
-                                <li style={{marginBottom: '15px'}}>
-                                    <strong>Prohibiciones:</strong> Queda terminantemente prohibido el consumo de alcohol o sustancias estupefacientes dentro de los vehículos en el estacionamiento.
-                                </li>
+                                <li style={{marginBottom: '15px'}}><strong>Velocidad Máxima:</strong> La velocidad límite dentro del campus es de <strong>10 km/h</strong>.</li>
+                                <li style={{marginBottom: '15px'}}><strong>Estacionamiento en Reversa:</strong> Por normas de seguridad, es <u>obligatorio</u> estacionar aculatado.</li>
+                                <li style={{marginBottom: '15px'}}><strong>Espacios Reservados:</strong> Respetar zonas de discapacidad y autoridades.</li>
+                                <li style={{marginBottom: '15px'}}><strong>Pernoctación:</strong> Prohibido dejar vehículos fuera del horario de atención.</li>
+                                <li style={{marginBottom: '15px'}}><strong>Sanciones:</strong> Uso de cepo para vehículos mal estacionados.</li>
                             </ul>
                         </div>
                     </div>
                 </div>
             )}
 
-            {/* 4. REPORTAR INCIDENTE */}
-            {showReport && (
-                <div className="modal-overlay" onClick={() => setShowReport(false)}>
+            {/* 4. MODAL TIPS DE SEGURIDAD (NUEVO - REEMPLAZA A REPORTAR INCIDENTE) */}
+            {showTips && (
+                <div className="modal-overlay" onClick={() => setShowTips(false)}>
                     <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+                        
                         <div className="modal-header">
-                            <h2 style={{color: '#e30613', margin: 0}}>Reportar Incidente</h2>
-                            <button className="close-btn" onClick={() => setShowReport(false)}>×</button>
+                            <h2 style={{ color: '#0a3d62', margin: 0 }}>Tips de Seguridad Vial</h2>
+                            <button className="close-btn" onClick={() => setShowTips(false)}>×</button>
                         </div>
-                        <div className="modal-body" style={{lineHeight: '1.6', color: '#444', textAlign:'center'}}>
-                            <i className="fas fa-exclamation-triangle" style={{fontSize: '3rem', color: '#e30613', marginBottom: '1rem'}}></i>
-                            <p style={{fontSize: '1.1rem'}}>
-                                Para reportar choques, robos, vehículos mal estacionados o actividades sospechosas:
-                            </p>
-                            
-                            <div style={{background: '#f9f9f9', padding: '20px', borderRadius: '8px', margin: '20px 0', border: '1px solid #eee'}}>
-                                <h4 style={{margin:'0 0 10px 0', color:'#0a3d62'}}>Central de Seguridad EPN (24h)</h4>
-                                <p style={{fontSize: '1.4rem', fontWeight: 'bold', margin: '5px 0', color:'#333'}}>
-                                </p>
-                                <p style={{fontSize: '1.2rem', fontWeight: 'bold', margin: '5px 0', color:'#333'}}>
-                                    <i className="fas fa-mobile-alt"></i> (593) 96 321 8871
-                                    <i className="fas fa-mobile-alt"></i> (593) 96 321 8871
-                                </p>
-                            </div>
 
-                            <p style={{fontSize: '0.9rem', color:'#777'}}>
-                                *Recuerda tener a la mano la placa del vehículo involucrado y tu ubicación exacta (Ej: Edificio de Sistemas, Zona B).
+                        <div className="modal-body" style={{ padding: '0 10px 20px' }}>
+                            <p style={{ color: '#666', marginBottom: '20px', fontSize: '0.95rem' }}>
+                                Cuida tu vehículo y tus pertenencias siguiendo estas recomendaciones:
                             </p>
+
+                            <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+                                <li style={{ display: 'flex', alignItems: 'start', gap: '15px', marginBottom: '20px' }}>
+                                    <div style={{ background: '#e3f2fd', color: '#1565c0', minWidth: '45px', height: '45px', borderRadius: '50%', display: 'flex', justifyContent: 'center', alignItems: 'center', fontSize: '1.2rem' }}>
+                                        <i className="fas fa-laptop"></i>
+                                    </div>
+                                    <div>
+                                        <h4 style={{ margin: '0 0 5px 0', color: '#333' }}>Objetos de Valor</h4>
+                                        <p style={{ margin: 0, fontSize: '0.9rem', color: '#666' }}>Evita dejar mochilas o laptops a la vista.</p>
+                                    </div>
+                                </li>
+
+                                <li style={{ display: 'flex', alignItems: 'start', gap: '15px', marginBottom: '20px' }}>
+                                    <div style={{ background: '#fff3e0', color: '#ef6c00', minWidth: '45px', height: '45px', borderRadius: '50%', display: 'flex', justifyContent: 'center', alignItems: 'center', fontSize: '1.2rem' }}>
+                                        <i className="fas fa-lock"></i>
+                                    </div>
+                                    <div>
+                                        <h4 style={{ margin: '0 0 5px 0', color: '#333' }}>Cierre Seguro</h4>
+                                        <p style={{ margin: 0, fontSize: '0.9rem', color: '#666' }}>Verifica que las ventanas estén cerradas.</p>
+                                    </div>
+                                </li>
+
+                                <li style={{ display: 'flex', alignItems: 'start', gap: '15px', marginBottom: '20px' }}>
+                                    <div style={{ background: '#e8f5e9', color: '#2e7d32', minWidth: '45px', height: '45px', borderRadius: '50%', display: 'flex', justifyContent: 'center', alignItems: 'center', fontSize: '1.2rem' }}>
+                                        <i className="fas fa-walking"></i>
+                                    </div>
+                                    <div>
+                                        <h4 style={{ margin: '0 0 5px 0', color: '#333' }}>Peatones</h4>
+                                        <p style={{ margin: 0, fontSize: '0.9rem', color: '#666' }}>Cede el paso siempre en los cruces cebra.</p>
+                                    </div>
+                                </li>
+
+                                <li style={{ display: 'flex', alignItems: 'start', gap: '15px' }}>
+                                    <div style={{ background: '#ffebee', color: '#c62828', minWidth: '45px', height: '45px', borderRadius: '50%', display: 'flex', justifyContent: 'center', alignItems: 'center', fontSize: '1.2rem' }}>
+                                        <i className="fas fa-car-battery"></i>
+                                    </div>
+                                    <div>
+                                        <h4 style={{ margin: '0 0 5px 0', color: '#333' }}>Luces</h4>
+                                        <p style={{ margin: 0, fontSize: '0.9rem', color: '#666' }}>Apaga las luces para cuidar tu batería.</p>
+                                    </div>
+                                </li>
+                            </ul>
                         </div>
                     </div>
                 </div>

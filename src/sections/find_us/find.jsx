@@ -53,10 +53,10 @@ const Find = () =>{
                 
                     <div className="card__footer">
                         <div className="social-icons prominent-icons">
-                        <a href="https://www.facebook.com/" target="_blank" rel="noreferrer"><i className="fab fa-facebook-f"></i></a>
-                        <a href="https://www.instagram.com/" target="_blank" rel="noreferrer"><i className="fab fa-instagram"></i></a>
-                        <a href="https://www.tiktok.com/" target="_blank" rel="noreferrer"><i className="fab fa-tiktok"></i></a>
-                        <a href="https://web.whatsapp.com/" target="_blank" rel="noreferrer"><i className="fab fa-whatsapp"></i></a>
+                        <a href="https://www.facebook.com/share/1AnpQBWTS1/?mibextid=wwXIfr" target="_blank" rel="noreferrer"><i className="fab fa-facebook-f"></i></a>
+                        <a href="https://www.instagram.com/poliparkingepn?igsh=azUyYTIzN2xldDdq&utm_source=qr" target="_blank" rel="noreferrer"><i className="fab fa-instagram"></i></a>
+                        <a href="https://www.tiktok.com/@poliparking_epn?_r=1&_t=ZS-93ZMFgPdeuD" target="_blank" rel="noreferrer"><i className="fab fa-tiktok"></i></a>
+                        <a href="https://chat.whatsapp.com/FD2VvL2kaZUJArw9fEw21f" target="_blank" rel="noreferrer"><i className="fab fa-whatsapp"></i></a>
                         </div>
                     </div>
                     </div>
