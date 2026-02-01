@@ -4,425 +4,201 @@ import { collection, addDoc, query, where, onSnapshot, deleteDoc, doc, getDocs }
 import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import { signOut } from 'firebase/auth'; 
+import { FaDownload, FaSignOutAlt, FaParking, FaTrashAlt, FaClock } from 'react-icons/fa';
+import jsPDF from 'jspdf';
 
 const DashboardUser = () => {
     const navigate = useNavigate();
-    const [realRole, setRealRole] = useState(null);
+    const [userData, setUserData] = useState({ nombre: '', placa: '', email: '' });
     const [reservasTotales, setReservasTotales] = useState([]);
     const [misReservas, setMisReservas] = useState([]);
     const [loading, setLoading] = useState(true);
-<<<<<<< HEAD
-    
-=======
 
-    const [isMobile, setIsMobile] = useState(false);
-
-    // --- LÓGICA DE FECHAS (5 DÍAS MÁXIMO) ---
->>>>>>> 1a1629e (Mejora en el control de errores en el login / Intento de adaptar a movil el DashboardUsers :c)
     const today = new Date();
-    const maxDate = new Date();
-    maxDate.setDate(today.getDate() + 5); 
+    const afterTomorrow = new Date();
+    afterTomorrow.setDate(today.getDate() + 2);
     const fechaHoy = today.toISOString().split('T')[0];
-    const fechaMax = maxDate.toISOString().split('T')[0];
+    const fechaMax = afterTomorrow.toISOString().split('T')[0];
 
-    const [reservaForm, setReservaForm] = useState({
-        lugar: 'Edificio CEC',
-        fecha: fechaHoy,
-        hora: "07:30",
-        espacio: null
+    const [reservaForm, setReservaForm] = useState({ 
+        lugar: 'Edificio CEC', 
+        fecha: fechaHoy, 
+        hora: "07:00", 
+        espacio: null 
     });
 
-    const CAPACIDADES = { "Edificio CEC": 100, "Facultad de Sistemasssss": 35, "Canchas Deportivas": 50 };
-    const horasServicio = ["06:30", "07:00", "07:30", "08:00", "08:30", "09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "12:00", "12:30", "13:00", "13:30", "14:00", "14:30", "15:00", "15:30", "16:00", "16:30", "17:00", "17:30", "18:00", "18:30", "19:00", "19:30", "20:00"];
-
-<<<<<<< HEAD
-    // --- LÓGICA DE LIMPIEZA AUTOMÁTICA (SOLO PARA ESTE USUARIO) ---
-    const limpiarReservasVencidas = async (email) => {
-        try {
-            const q = query(collection(db, "reservas"), where("usuario", "==", email));
-            const querySnapshot = await getDocs(q);
-            const hoyStr = new Date().toISOString().split('T')[0];
-
-            querySnapshot.forEach(async (documento) => {
-                if (documento.data().fecha < hoyStr) {
-                    await deleteDoc(doc(db, "reservas", documento.id));
-                }
-            });
-        } catch (error) {
-            console.error("Error al limpiar caducados:", error);
-        }
-    };
-=======
-    useEffect(()=>{
-        const handleResize = () => setIsMobile(window.innerWidth<=768);
-        handleResize();
-        window.addEventListener('resive', handleResize);
-        return () =>window.removeEventListener('resize', handleResize);
-    }, []);
->>>>>>> 1a1629e (Mejora en el control de errores en el login / Intento de adaptar a movil el DashboardUsers :c)
+    const CAPACIDADES = { "Edificio CEC": 100 };
 
     useEffect(() => {
-        const savedRole = localStorage.getItem('userRole');
+        if (misReservas.length === 0) return;
+        const interval = setInterval(() => {
+            const ahora = new Date().getTime();
+            misReservas.forEach(async (reserva) => {
+                const inicioReserva = new Date(`${reserva.fecha}T${reserva.hora}`).getTime();
+                const finReserva = inicioReserva + (8 * 60 * 60 * 1000);
+                const tiempoRestanteMin = Math.floor((finReserva - ahora) / (60 * 1000));
+                if (ahora >= finReserva) {
+                    await deleteDoc(doc(db, "reservas", reserva.id));
+                    Swal.fire('Reserva Expirada', `Tu tiempo en el puesto #${reserva.espacio} terminó.`, 'info');
+                } else if ([30, 20, 10].includes(tiempoRestanteMin)) {
+                    Swal.mixin({ toast: true, position: 'top-end', showConfirmButton: false, timer: 5000 }).fire({
+                        icon: 'warning', title: `Tu reserva #${reserva.espacio} vence en ${tiempoRestanteMin} min.`
+                    });
+                }
+            });
+        }, 60000);
+        return () => clearInterval(interval);
+    }, [misReservas]);
+
+    const generarTicketPro = async (reserva) => {
+        try {
+            const docPDF = new jsPDF({ orientation: 'portrait', unit: 'mm', format: [80, 160] });
+            const pageWidth = docPDF.internal.pageSize.getWidth();
+            docPDF.setDrawColor(10, 61, 98); docPDF.setLineWidth(1); docPDF.circle(pageWidth / 2, 18, 10, 'S'); 
+            docPDF.setFontSize(22); docPDF.setFont("helvetica", "bold"); docPDF.text("P", pageWidth / 2, 21.5, { align: 'center' });
+            docPDF.setFontSize(18); docPDF.text("POLIPARKING", pageWidth / 2, 38, { align: 'center' });
+            docPDF.setFontSize(8); docPDF.setFont("helvetica", "normal"); docPDF.text("Comprobante de Reserva - EPN", pageWidth / 2, 43, { align: 'center' });
+            docPDF.setLineWidth(0.5); docPDF.line(10, 48, 70, 48);
+            docPDF.setFontSize(12); docPDF.setFont("helvetica", "bold"); docPDF.text("DETALLES DEL TICKET", pageWidth / 2, 55, { align: 'center' });
+            const xPos = 12;
+            docPDF.setFontSize(9); docPDF.text("USUARIO:", xPos, 65);
+            docPDF.setFont("helvetica", "normal"); docPDF.text((userData.nombre || "Usuario").toUpperCase(), xPos, 69);
+            docPDF.setFont("helvetica", "bold"); docPDF.text("PLACA:", xPos, 77);
+            docPDF.setFont("helvetica", "normal"); docPDF.text((userData.placa || "N/A").toUpperCase(), xPos, 81);
+            docPDF.setFont("helvetica", "bold"); docPDF.text("UBICACIÓN:", xPos, 89);
+            docPDF.setFont("helvetica", "normal"); docPDF.text((reserva.lugar || "CEC").toUpperCase(), xPos, 93);
+            docPDF.setDrawColor(200); docPDF.line(10, 98, 70, 98);
+            docPDF.setFont("helvetica", "bold"); docPDF.text("FECHA ENTRADA:", xPos, 105);
+            docPDF.setFont("helvetica", "normal"); docPDF.text(reserva.fecha, 50, 105);
+            docPDF.setFont("helvetica", "bold"); docPDF.text("HORA ENTRADA:", xPos, 112);
+            docPDF.setFont("helvetica", "normal"); docPDF.text(reserva.hora, 50, 112);
+            docPDF.setFont("helvetica", "bold"); docPDF.text("VALIDEZ:", xPos, 119);
+            docPDF.setFont("helvetica", "normal"); docPDF.text("8 HORAS", 50, 119);
+            docPDF.setDrawColor(0); docPDF.setLineWidth(0.7); docPDF.rect(15, 125, 50, 15); 
+            docPDF.setFontSize(16); docPDF.setFont("helvetica", "bold"); docPDF.text(`PUESTO: ${reserva.espacio || '?'}`, pageWidth / 2, 135, { align: 'center' });
+            docPDF.save(`Ticket_${userData.placa}.pdf`);
+        } catch (e) { console.error(e); }
+    };
+
+    useEffect(() => {
         const unsubscribe = auth.onAuthStateChanged(async (user) => {
             if (user) {
-                // Ejecutar limpieza al entrar
-                limpiarReservasVencidas(user.email);
-                try {
-                    const q = query(collection(db, "usuarios"), where("email", "==", user.email));
-                    const querySnapshot = await getDocs(q);
-                    if (!querySnapshot.empty) {
-                        setRealRole(querySnapshot.docs[0].data().rol);
-                    } else {
-                        setRealRole(savedRole || 'estudiante');
-                    }
-                } catch (error) {
-                    setRealRole(savedRole);
-                }
-            } else if (savedRole === 'invitado') {
-                setRealRole('invitado');
-            } else {
-                navigate('/login');
-            }
+                const q = query(collection(db, "usuarios"), where("email", "==", user.email));
+                const snap = await getDocs(q);
+                if (!snap.empty) setUserData({ ...snap.docs[0].data(), email: user.email });
+            } else navigate('/login');
             setLoading(false);
         });
         return () => unsubscribe();
     }, [navigate]);
 
     useEffect(() => {
-        if (!realRole) return;
-
         const qMapa = query(collection(db, "reservas"), where("fecha", "==", reservaForm.fecha), where("lugar", "==", reservaForm.lugar));
-        const unsubMapa = onSnapshot(qMapa, (snapshot) => {
-            setReservasTotales(snapshot.docs.map(d => d.data()));
-        });
-
-        const identificador = auth.currentUser?.email || "Invitado_Anonimo";
-        const qMias = query(collection(db, "reservas"), where("usuario", "==", identificador));
-        
-        const unsubMias = onSnapshot(qMias, (snapshot) => {
-            setMisReservas(snapshot.docs.map(d => ({ id: d.id, ...d.data() })));
-        });
-
+        const unsubMapa = onSnapshot(qMapa, (s) => setReservasTotales(s.docs.map(d => d.data())));
+        const qMias = query(collection(db, "reservas"), where("usuario", "==", auth.currentUser?.email || ""));
+        const unsubMias = onSnapshot(qMias, (s) => setMisReservas(s.docs.map(d => ({ id: d.id, ...d.data() }))));
         return () => { unsubMapa(); unsubMias(); };
-    }, [reservaForm.fecha, reservaForm.lugar, realRole]);
+    }, [reservaForm.fecha, reservaForm.lugar]);
 
     const handleReserva = async (e) => {
         e.preventDefault();
-        const identificador = auth.currentUser?.email || "Invitado_Anonimo";
-
-        if (reservaForm.fecha < fechaHoy) {
-            return Swal.fire('Error', 'No puedes reservar en el pasado.', 'error');
-        }
-        if (!reservaForm.espacio) return Swal.fire('Aviso', 'Selecciona un espacio.', 'info');
-        
-        try {
-            const q = query(collection(db, "reservas"), where("usuario", "==", identificador), where("fecha", "==", reservaForm.fecha));
+        const hr = parseInt(reservaForm.hora.split(':')[0]);
+        if (hr < 7 || hr >= 20) return Swal.fire('Error', 'Horario de atención: 07:00 AM - 08:00 PM', 'error');
+        if (!reservaForm.espacio) return Swal.fire('Aviso', 'Selecciona un puesto en el mapa', 'info');
+        const res = await Swal.fire({ title: '¿Confirmar?', text: `Puesto #${reservaForm.espacio} - ${reservaForm.fecha}`, icon: 'question', showCancelButton: true });
+        if (res.isConfirmed) {
+            const q = query(collection(db, "reservas"), where("usuario", "==", userData.email), where("fecha", "==", reservaForm.fecha));
             const snap = await getDocs(q);
-            if (!snap.empty) return Swal.fire('Límite', 'Ya tienes reserva hoy.', 'warning');
-
-            await addDoc(collection(db, "reservas"), {
-                ...reservaForm,
-                usuario: identificador,
-                rol: realRole
-            });
-            Swal.fire('Éxito', 'Reserva confirmada', 'success');
-            setReservaForm({...reservaForm, espacio: null});
-        } catch (e) { 
-            Swal.fire('Error', 'No se pudo reservar', 'error'); 
+            if (!snap.empty) return Swal.fire('Límite', 'Ya tienes una reserva para hoy.', 'warning');
+            await addDoc(collection(db, "reservas"), { ...reservaForm, usuario: userData.email, rol: 'estudiante' });
+            Swal.fire({ title: '¡Exitoso!', text: 'Reserva activa por 8 horas.', icon: 'success', showCancelButton: true, confirmButtonText: 'Descargar Ticket' })
+                .then((r) => { if(r.isConfirmed) generarTicketPro(reservaForm); });
+            setReservaForm({ ...reservaForm, espacio: null });
         }
     };
 
-    const handleLogout = async () => {
-        await signOut(auth);
-        localStorage.clear();
-        navigate('/login');
-    };
+    const handleLogout = async () => { if ((await Swal.fire({ title: '¿Cerrar sesión?', icon: 'warning', showCancelButton: true })).isConfirmed) { await signOut(auth); navigate('/login'); } };
 
-    if (loading) return (
-        <div style={{display:'flex', justifyContent:'center', alignItems:'center', height:'100vh', background:'#f4f7f6'}}>
-            <h2 style={{color:'#0a3d62'}}>Cargando PoliParking...</h2>
-        </div>
-    );
-
-const responsiveBgStyle = isMobile ? { ...bgStyle, padding: '12px' } : bgStyle;
-const responsiveNavStyle = isMobile ? { ...navStyle, flexDirection: 'column', alignItems: 'flex-start', gap: '8px', padding: '10px' } : navStyle;
-const responsiveBrandStyle = isMobile ? { ...brandStyle, fontSize: '1rem' } : brandStyle;
-const responsiveLogoutBtn = isMobile ? { ...logoutBtn, width: '100%', justifyContent: 'center' } : logoutBtn;
-const responsiveMainGrid = isMobile ? { ...mainGrid, gridTemplateColumns: '1fr', gap: '12px' } : mainGrid;
-const responsiveGlassCard = isMobile ? { ...glassCard, padding: '14px' } : glassCard;
-const responsiveSectionTitle = isMobile ? { ...sectionTitle, fontSize: '0.95rem' } : sectionTitle;
-const responsiveMapGrid = isMobile ? { ...mapGrid, maxHeight: '320px', gridTemplateColumns: 'repeat(auto-fill, minmax(36px, 1fr))' } : mapGrid;
-const formRowStyle = isMobile ? { display: 'flex', flexDirection: 'column', gap: '10px' } : { display: 'flex', gap: '10px' };
-const columnStackStyle = isMobile ? { display: 'flex', flexDirection: 'column', gap: '12px' } : { display: 'flex', flexDirection: 'column', gap: '20px' };
-const navActionsStyle = isMobile
-        ? { display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap', width: '100%' }
-        : { display: 'flex', alignItems: 'center', gap: '15px' };
+    if (loading) return <div style={{textAlign:'center', padding:'50px'}}><h2>Cargando...</h2></div>;
 
     return (
-        <div style={responsiveBgStyle}>
-            <nav style={responsiveNavStyle}>
-                <div style={responsiveBrandStyle}><span style={{color:'#0a3d62'}}>POLI</span><span style={{color:'#ffc107'}}>PARKING</span></div>
-                <div style={navActionsStyle}>
-                    <span style={{fontSize:'0.9rem'}}>Hola, <strong>{auth.currentUser?.email?.split('@')[0] || 'Invitado'}</strong></span>
-                    <button onClick={handleLogout} style={responsiveLogoutBtn}>Salir</button>
+        <div style={bgStyle}>
+            <nav style={navStyle}>
+                <div style={brandStyle}><FaParking color="#ffc107"/> POLI<span style={{color:'#ffc107'}}>PARKING</span></div>
+                <div style={{display:'flex', alignItems:'center', gap:'15px'}}>
+                    <div style={{textAlign:'right', lineHeight:'1.4'}}>
+                        <div style={{fontWeight:'bold', color:'#0a3d62', fontSize:'1rem'}}>¡Bienvenido/a, {userData.nombre.split(' ')[0]}!</div>
+                        <div style={{fontSize:'0.85rem', color:'#666', fontWeight:'500'}}>Tu Placa es: <span style={{color:'#ffc107', fontWeight:'bold'}}>{userData.placa.toUpperCase()}</span></div>
+                    </div>
+                    <div style={avatarStyle}>
+                        {userData.nombre ? userData.nombre.charAt(0).toUpperCase() : 'U'}
+                    </div>
+                    <button onClick={handleLogout} style={logoutBtn}><FaSignOutAlt/></button>
                 </div>
             </nav>
 
-<<<<<<< HEAD
             <div style={mainGrid}>
                 <div style={{display:'flex', flexDirection:'column', gap:'20px'}}>
-                    <section style={glassCard}>
-                        <h3 style={sectionTitle}>Nueva Reserva</h3>
+                    <section style={cardStyle}>
+                        <h3 style={titleStyle}>Nueva Reserva</h3>
                         <form onSubmit={handleReserva}>
-                            <label style={labelStyle}>Ubicación</label>
-                            <select style={inputStyle} value={reservaForm.lugar} onChange={(e) => setReservaForm({...reservaForm, lugar: e.target.value, espacio: null})}>
-                                <option value="Edificio CEC">Edificio CEC</option>
-                                {realRole === 'docente' && (
-                                    <>
-                                        <option value="Facultad de Sistemas">Facultad de Sistemas</option>
-                                        <option value="Canchas Deportivas">Canchas Deportivas</option>
-                                    </>
-                                )}
-                            </select>
-
-                            <div style={{display:'flex', gap:'10px'}}>
-                                <div style={{flex:1}}>
-                                    <label style={labelStyle}>Fecha</label>
-                                    <input type="date" min={fechaHoy} max={fechaMax} style={inputStyle} value={reservaForm.fecha} onChange={(e) => setReservaForm({...reservaForm, fecha: e.target.value})} />
+                            <label style={labelStyle}>Ubicación (Solo Estudiantes):</label>
+                            <input style={{...inputStyle, background: '#f0f0f0', cursor: 'not-allowed'}} value="Edificio CEC" disabled />
+                            <label style={labelStyle}>Fecha (Hoy + 2 días):</label>
+                            <input type="date" style={inputStyle} value={reservaForm.fecha} min={fechaHoy} max={fechaMax} onKeyDown={e => e.preventDefault()} onChange={e => setReservaForm({...reservaForm, fecha: e.target.value, espacio: null})} />
+                            <label style={labelStyle}>Hora de inicio:</label>
+                            <input type="time" style={inputStyle} value={reservaForm.hora} onChange={e => setReservaForm({...reservaForm, hora: e.target.value})} />
+                            <button type="submit" style={mainBtn}>{reservaForm.espacio ? `Reservar #${reservaForm.espacio}` : "Seleccione en el mapa"}</button>
+                        </form>
+                    </section>
+                    <section style={cardStyle}>
+                        <h4 style={titleStyle}>Mis Reservas</h4>
+                        {misReservas.map(res => (
+                            <div key={res.id} style={reservaItem}>
+                                <div><div style={{fontWeight:'bold'}}>#{res.espacio} - {res.lugar}</div><div style={{fontSize:'0.7rem'}}><FaClock/> {res.fecha} | {res.hora}</div></div>
+                                <div style={{display:'flex', gap:'8px'}}>
+                                    <button onClick={() => generarTicketPro(res)} style={iconBtn}><FaDownload/></button>
+                                    <button onClick={async () => { if((await Swal.fire({title:'¿Cancelar?', icon:'warning', showCancelButton:true})).isConfirmed) deleteDoc(doc(db,"reservas",res.id)); }} style={{...iconBtn, color:'red', background:'#fee2e2'}}><FaTrashAlt/></button>
                                 </div>
-                                <div style={{flex:1}}>
-                                    <label style={labelStyle}>Hora</label>
-                                    <select style={inputStyle} value={reservaForm.hora} onChange={(e) => setReservaForm({...reservaForm, hora: e.target.value})}>
-                                        {horasServicio.map(h => <option key={h} value={h}>{h}</option>)}
-                                    </select>
-                                </div>
-=======
-            <div style={responsiveMainGrid}>
-                {isMobile ? (
-                    <div style={columnStackStyle}>
-                        <section style={responsiveGlassCard}>
-                            <h3 style={responsiveSectionTitle}>Mapa: {reservaForm.lugar}</h3>
-                            <div style={responsiveMapGrid}>
-                                {[...Array(CAPACIDADES[reservaForm.lugar] || 0)].map((_, i) => {
-                                    const num = i + 1;
-                                    const estaOcupado = reservasTotales.some(r => r.espacio === num);
-                                    return (
-                                        <div key={num} onClick={() => !estaOcupado && setReservaForm({...reservaForm, espacio: num})}
-                                            style={{
-                                                ...spotStyle, 
-                                                background: estaOcupado ? '#dfe6e9' : (reservaForm.espacio === num ? '#0a3d62' : '#fff'),
-                                                color: estaOcupado ? '#b2bec3' : (reservaForm.espacio === num ? '#fff' : '#000'),
-                                                cursor: estaOcupado ? 'not-allowed' : 'pointer'
-                                            }}
-                                        >{num}</div>
-                                    );
-                                })}
->>>>>>> 1a1629e (Mejora en el control de errores en el login / Intento de adaptar a movil el DashboardUsers :c)
                             </div>
-                        </section>
-
-                        <section style={responsiveGlassCard}>
-                            <h3 style={responsiveSectionTitle}>Nueva Reserva</h3>
-                            <form onSubmit={handleReserva}>
-                                <label style={labelStyle}>Ubicación</label>
-                                <select style={inputStyle} value={reservaForm.lugar} onChange={(e) => setReservaForm({...reservaForm, lugar: e.target.value, espacio: null})}>
-                                    <option value="Edificio CEC">Edificio CEC</option>
-                                    {realRole === 'docente' && (
-                                        <>
-                                            <option value="Facultad de Sistemas">Facultad de Sistemas</option>
-                                            <option value="Canchas Deportivas">Canchas Deportivas</option>
-                                        </>
-                                    )}
-                                </select>
-
-                                <div style={formRowStyle}>
-                                    <div style={{flex:1}}>
-                                        <label style={labelStyle}>Fecha</label>
-                                        {/* INPUT FECHA CON LÍMITES */}
-                                        <input type="date" min={fechaHoy} max={fechaMax} style={inputStyle} value={reservaForm.fecha} onChange={(e) => setReservaForm({...reservaForm, fecha: e.target.value})} />
-                                    </div>
-                                    <div style={{flex:1}}>
-                                        <label style={labelStyle}>Hora</label>
-                                        <select style={inputStyle} value={reservaForm.hora} onChange={(e) => setReservaForm({...reservaForm, hora: e.target.value})}>
-                                            {horasServicio.map(h => <option key={h} value={h}>{h}</option>)}
-                                        </select>
-                                    </div>
-                                </div>
-                                <button type="submit" style={mainBtn}>Reservar Espacio {reservaForm.espacio || ''}</button>
-                            </form>
-                        </section>
-
-                        <section style={responsiveGlassCard}>
-                            <h4 style={{color:'#0a3d62', marginBottom:'12px', fontSize:'0.9rem'}}>Tus Reservas</h4>
-                            {misReservas.length === 0 ? (
-                                <p style={{fontSize:'0.8rem', color:'#888'}}>No hay reservas activas.</p>
-                            ) : (
-                                <div style={{display: 'flex', flexDirection: 'column', gap: '10px'}}>
-                                    {misReservas.map(res => (
-                                        <div key={res.id} style={{
-                                            ...reservaItem,
-                                            display: 'grid',
-                                            gridTemplateColumns: '1fr auto',
-                                            alignItems: 'center',
-                                            borderLeft: '4px solid #ffc107'
-                                        }}>
-                                            <div>
-                                                <div style={{fontWeight: 'bold', color: '#0a3d62', fontSize: '0.85rem'}}>
-                                                    Puesto #{res.espacio} - {res.lugar}
-                                                </div>
-                                                <div style={{fontSize: '0.75rem', color: '#666'}}>
-                                                    📅 {res.fecha} | 🕒 {res.hora}
-                                                </div>
-                                            </div>
-                                            <button 
-                                                onClick={() => {
-                                                    Swal.fire({
-                                                        title: '¿Cancelar reserva?',
-                                                        icon: 'warning',
-                                                        showCancelButton: true,
-                                                        confirmButtonColor: '#e30613',
-                                                        confirmButtonText: 'Sí, cancelar'
-                                                    }).then((result) => {
-                                                        if (result.isConfirmed) {
-                                                            deleteDoc(doc(db, "reservas", res.id));
-                                                            Swal.fire('Eliminada', 'La reserva ha sido cancelada.', 'success');
-                                                        }
-                                                    });
-                                                }} 
-                                                style={{border:'none', color:'#e30613', background:'#fee2e2', borderRadius:'50%', width:'30px', height:'30px', cursor:'pointer'}}
-                                            >✕</button>
-                                        </div>
-                                    ))}
-                                </div>
-                            )}
-                        </section>
+                        ))}
+                    </section>
+                </div>
+                <section style={cardStyle}>
+                    <div style={{display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:'15px'}}>
+                        <h3 style={titleStyle}>Mapa: Edificio CEC ({reservaForm.fecha})</h3>
+                        <div style={{fontSize:'0.8rem', color:'#666'}}>{100 - reservasTotales.length} Libres</div>
                     </div>
-                ) : (
-                    <>
-                        <div style={columnStackStyle}>
-                            <section style={responsiveGlassCard}>
-                                <h3 style={responsiveSectionTitle}>Nueva Reserva</h3>
-                                <form onSubmit={handleReserva}>
-                                    <label style={labelStyle}>Ubicación</label>
-                                    <select style={inputStyle} value={reservaForm.lugar} onChange={(e) => setReservaForm({...reservaForm, lugar: e.target.value, espacio: null})}>
-                                        <option value="Edificio CEC">Edificio CEC</option>
-                                        {realRole === 'docente' && (
-                                            <>
-                                                <option value="Facultad de Sistemas">Facultad de Sistemas</option>
-                                                <option value="Canchas Deportivas">Canchas Deportivas</option>
-                                            </>
-                                        )}
-                                    </select>
-
-                                    <div style={formRowStyle}>
-                                        <div style={{flex:1}}>
-                                            <label style={labelStyle}>Fecha</label>
-                                            {/* INPUT FECHA CON LÍMITES */}
-                                            <input type="date" min={fechaHoy} max={fechaMax} style={inputStyle} value={reservaForm.fecha} onChange={(e) => setReservaForm({...reservaForm, fecha: e.target.value})} />
-                                        </div>
-                                        <div style={{flex:1}}>
-                                            <label style={labelStyle}>Hora</label>
-                                            <select style={inputStyle} value={reservaForm.hora} onChange={(e) => setReservaForm({...reservaForm, hora: e.target.value})}>
-                                                {horasServicio.map(h => <option key={h} value={h}>{h}</option>)}
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <button type="submit" style={mainBtn}>Reservar Espacio {reservaForm.espacio || ''}</button>
-                                </form>
-                            </section>
-
-                            <section style={responsiveGlassCard}>
-                                <h4 style={{color:'#0a3d62', marginBottom:'15px', fontSize:'0.9rem'}}>Tus Reservas</h4>
-                                {misReservas.length === 0 ? (
-                                    <p style={{fontSize:'0.8rem', color:'#888'}}>No hay reservas activas.</p>
-                                ) : (
-                                    <div style={{display: 'flex', flexDirection: 'column', gap: '10px'}}>
-                                        {misReservas.map(res => (
-                                            <div key={res.id} style={{
-                                                ...reservaItem,
-                                                display: 'grid',
-                                                gridTemplateColumns: '1fr auto',
-                                                alignItems: 'center',
-                                                borderLeft: '4px solid #ffc107'
-                                            }}>
-                                                <div>
-                                                    <div style={{fontWeight: 'bold', color: '#0a3d62', fontSize: '0.85rem'}}>
-                                                        Puesto #{res.espacio} - {res.lugar}
-                                                    </div>
-                                                    <div style={{fontSize: '0.75rem', color: '#666'}}>
-                                                        📅 {res.fecha} | 🕒 {res.hora}
-                                                    </div>
-                                                </div>
-                                                <button 
-                                                    onClick={() => {
-                                                        Swal.fire({
-                                                            title: '¿Cancelar reserva?',
-                                                            icon: 'warning',
-                                                            showCancelButton: true,
-                                                            confirmButtonColor: '#e30613',
-                                                            confirmButtonText: 'Sí, cancelar'
-                                                        }).then((result) => {
-                                                            if (result.isConfirmed) {
-                                                                deleteDoc(doc(db, "reservas", res.id));
-                                                                Swal.fire('Eliminada', 'La reserva ha sido cancelada.', 'success');
-                                                            }
-                                                        });
-                                                    }} 
-                                                    style={{border:'none', color:'#e30613', background:'#fee2e2', borderRadius:'50%', width:'30px', height:'30px', cursor:'pointer'}}
-                                                >✕</button>
-                                            </div>
-                                        ))}
-                                    </div>
-                                )}
-                            </section>
-                        </div>
-
-                        <section style={responsiveGlassCard}>
-                            <h3 style={responsiveSectionTitle}>Mapa: {reservaForm.lugar}</h3>
-                            <div style={responsiveMapGrid}>
-                                {[...Array(CAPACIDADES[reservaForm.lugar] || 0)].map((_, i) => {
-                                    const num = i + 1;
-                                    const estaOcupado = reservasTotales.some(r => r.espacio === num);
-                                    return (
-                                        <div key={num} onClick={() => !estaOcupado && setReservaForm({...reservaForm, espacio: num})}
-                                            style={{
-                                                ...spotStyle, 
-                                                background: estaOcupado ? '#dfe6e9' : (reservaForm.espacio === num ? '#0a3d62' : '#fff'),
-                                                color: estaOcupado ? '#b2bec3' : (reservaForm.espacio === num ? '#fff' : '#000'),
-                                                cursor: estaOcupado ? 'not-allowed' : 'pointer'
-                                            }}
-                                        >{num}</div>
-                                    );
-                                })}
-                            </div>
-                        </section>
-                    </>
-                )}
+                    <div style={mapGrid}>
+                        {[...Array(100)].map((_, i) => {
+                            const num = i + 1; const oc = reservasTotales.some(r => r.espacio === num); const sel = reservaForm.espacio === num;
+                            return (
+                                <div key={num} onClick={() => !oc && setReservaForm({...reservaForm, espacio: num})}
+                                    style={{ ...spotStyle, background: oc ? '#dfe6e9' : (sel ? '#0a3d62' : '#fff'), color: oc ? '#b2bec3' : (sel ? '#fff' : '#333'), border: sel ? '2px solid #ffc107' : '1px solid #eee', cursor: oc ? 'not-allowed' : 'pointer' }}
+                                >{num}</div>
+                            );
+                        })}
+                    </div>
+                </section>
             </div>
         </div>
     );
 };
 
-<<<<<<< HEAD
 const bgStyle = { minHeight: '100vh', background: '#f4f7f6', padding: '20px' };
-=======
-
-// --- ESTILOS ORIGINALES (NO TOCAR) ---
-const bgStyle = { minHeight: '100vh', background: '#f4f7f6', padding: '10px' };
->>>>>>> 1a1629e (Mejora en el control de errores en el login / Intento de adaptar a movil el DashboardUsers :c)
-const navStyle = { display: 'flex', justifyContent: 'space-between', alignItems:'center', padding: '10px 5%', background: '#fff', borderRadius:'10px', marginBottom: '20px' };
-const brandStyle = { fontSize: '1.2rem', fontWeight: 'bold' };
-const logoutBtn = { background: '#e30613', color: '#fff', border: 'none', padding: '5px 12px', borderRadius: '5px', cursor:'pointer' };
-const mainGrid = { display: 'grid', gridTemplateColumns: '1fr 1.6fr', gap: '20px' };
-const glassCard = { background: '#fff', padding: '20px', borderRadius: '12px', boxShadow: '0 4px 12px rgba(0,0,0,0.05)' };
-const sectionTitle = { color: '#0a3d62', marginBottom:'15px', fontSize:'1rem' };
-const labelStyle = { fontSize:'0.75rem', fontWeight:'bold', color:'#666' };
-const inputStyle = { width: '100%', padding: '8px', margin: '5px 0 10px 0', borderRadius:'6px', border:'1px solid #ddd' };
+const navStyle = { display: 'flex', justifyContent: 'space-between', alignItems:'center', padding: '10px 5%', background: '#fff', borderRadius:'12px', marginBottom: '20px', boxShadow: '0 2px 10px rgba(0,0,0,0.05)' };
+const brandStyle = { fontSize: '1.2rem', fontWeight: 'bold', display:'flex', alignItems:'center', gap:'8px', color:'#0a3d62' };
+const avatarStyle = { width: '45px', height:'45px', background:'#0a3d62', color:'white', borderRadius:'50%', display:'flex', justifyContent:'center', alignItems:'center', fontWeight:'bold', fontSize:'1.2rem', border: '2px solid #ffc107' };
+const logoutBtn = { background: 'none', border: 'none', color: '#e30613', cursor:'pointer', fontSize:'1.1rem' };
+const mainGrid = { display: 'grid', gridTemplateColumns: '350px 1fr', gap: '20px' };
+const cardStyle = { background: '#fff', padding: '20px', borderRadius: '15px', boxShadow: '0 4px 15px rgba(0,0,0,0.05)' };
+const titleStyle = { marginTop: 0, color: '#0a3d62', fontSize:'1rem', marginBottom:'10px' };
+const labelStyle = { fontSize:'0.75rem', color:'#666', fontWeight:'bold' };
+const inputStyle = { width: '100%', padding: '12px', marginBottom: '10px', borderRadius: '8px', border:'1px solid #eee', outline:'none' };
 const mainBtn = { width: '100%', padding: '12px', background: '#0a3d62', color: '#fff', border: 'none', borderRadius: '8px', fontWeight:'bold', cursor:'pointer' };
-const mapGrid = { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(40px, 1fr))', gap: '6px', maxHeight: '450px', overflowY: 'auto' };
-const spotStyle = { height: '40px', border: '1px solid #eee', borderRadius:'4px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize:'0.75rem' };
-const reservaItem = { display:'flex', justifyContent:'space-between', padding:'8px', background:'#f8f9fa', borderRadius:'6px', marginBottom:'5px', fontSize:'0.8rem' };
-
-
+const mapGrid = { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(45px, 1fr))', gap: '8px' };
+const spotStyle = { height: '45px', borderRadius:'8px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize:'0.8rem', fontWeight: 'bold', cursor: 'pointer' };
+const reservaItem = { display:'flex', justifyContent:'space-between', alignItems:'center', padding:'12px', background:'#f8f9fa', borderRadius:'10px', marginBottom:'8px', borderLeft:'4px solid #ffc107' };
+const iconBtn = { border:'none', background:'#e3f2fd', color:'#1976d2', padding:'8px', borderRadius:'8px', cursor:'pointer' };
 
 export default DashboardUser;

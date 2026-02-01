@@ -41,18 +41,31 @@ const Login = () => {
       }
     }
 
-    // --- LOGICA DE INVITADO ---
+    // --- LOGICA DE INVITADO (CORREGIDA PARA LIMPIAR SESIÓN PREVIA) ---
     if (rol === 'invitado') {
       try {
-        await addDoc(collection(db, "ingresos_invitados"), {
+        // IMPORTANTE: Limpiamos rastro de cualquier login anterior
+        await signOut(auth);
+        localStorage.clear();
+
+        const guestData = {
           nombre: nombreInv,
           celular: celularInv,
-          placa: placaInv.toUpperCase(),
+          placa: placaInv.toUpperCase()
+        };
+
+        await addDoc(collection(db, "ingresos_invitados"), {
+          ...guestData,
           fecha: new Date().toLocaleString(),
           rol: 'invitado'
         });
+
+        // Guardamos la identidad del nuevo invitado
         localStorage.setItem('userRole', 'invitado');
-        window.location.href = '/dashboard-user'; 
+        localStorage.setItem('guestData', JSON.stringify(guestData));
+        
+        // Redirigimos al dashboard de invitados
+        navigate('/guest'); 
         return;
       } catch (err) {
         setError('Error al registrar invitado.');
@@ -82,7 +95,8 @@ const Login = () => {
         }
 
         localStorage.setItem('userRole', userData.rol);
-        window.location.href = '/dashboard-user'; 
+        // Cambiamos a navigate para mantener el estado de React
+        navigate('/dashboard-user'); 
 
       } else {
         await signOut(auth);
@@ -99,19 +113,14 @@ const Login = () => {
       <Header />
       <div className="auth-container">
         <div className="auth-card" data-aos="fade-up">
-          
-          {/* 1. LA MASCOTA ARRIBA (Estilo Card) */}
           <MascotaLogin 
             isPasswordFocused={isPasswordFocused} 
             showPassword={showPassword}
           />
-
           <div className="auth-content">
             <h2 className="auth-title">Bienvenido</h2>
             <p className="auth-subtitle">Ingresa para reservar tu sitio</p>
-            
             {error && <div className="error-msg">{error}</div>}
-
             <form onSubmit={handleLogin} className="auth-form">
               <div className="form-group">
                 <label className="auth-label">Soy:</label>
@@ -126,11 +135,11 @@ const Login = () => {
               {rol === 'invitado' ? (
                 <>
                    <div className="form-group">
-                      <label>Nombre</label>
+                      <label>Nombre Completo</label>
                       <input type="text" className="auth-input" value={nombreInv} onChange={e=>setNombreInv(e.target.value)} required />
                    </div>
                    <div className="form-group">
-                      <label>Placa</label>
+                      <label>Placa del Vehículo</label>
                       <input type="text" className="auth-input" value={placaInv} onChange={e=>setPlacaInv(e.target.value)} required />
                    </div>
                    <div className="form-group">
@@ -144,7 +153,6 @@ const Login = () => {
                     <label>Correo Institucional</label>
                     <input type="email" placeholder="@epn.edu.ec" className="auth-input" value={email} onChange={e=>setEmail(e.target.value)} required />
                   </div>
-                  
                   <div className="form-group">
                     <label>Contraseña</label>
                     <div style={{position:'relative', display:'flex', alignItems:'center'}}>
@@ -165,10 +173,8 @@ const Login = () => {
                   </div>
                 </>
               )}
-
               <button type="submit" className="btn-auth">Ingresar</button>
             </form>
-
             {rol !== 'invitado' && rol !== 'administrador' && (
               <p className="auth-footer">
                 ¿No tienes cuenta? <Link to="/register">Regístrate</Link>

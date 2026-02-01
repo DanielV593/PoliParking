@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from 'react-router-dom';
-import logoPoli from '../../assets/Logo PoliParking-CMoCI8Fp.jpg';
+import logoPoli from '../../assets/Logo PoliParking.png';
 import campusEpn from '../../assets/campus-epn.jpg';
 import './hero.css'
 
