@@ -1,39 +1,39 @@
-
 /* =========================================
-   8. CONTACTO
+   8. CONTACTO - AJUSTADO PARA UNA VENTANA
    ========================================= */
 .contact {
     width: 95%;
-    max-width: 1600px;
+    max-width: 1400px; /* Reducido para mayor cohesión visual */
     margin: 0 auto;
-    padding: 6rem 0;
-
-    /* CLAVE PARA HEADER FIXED */
-    scroll-margin-top: 100px;
+    /* Reducimos el padding de 6rem a 2.5rem para ganar espacio vertical */
+    padding: 2.5rem 0;
+    scroll-margin-top: 80px;
 }
 
 .contact__title {
     text-align: center;
-    font-size: 3rem;
-    margin-bottom: 3rem;
+    font-size: 2.2rem; /* Ajustado para que combine con Servicios y Nosotros */
+    margin-bottom: 2rem; /* Reducido de 3rem */
     color: var(--colorPrincipal);
+    font-weight: 800;
 }
 
 /* Layout */
 .contact__row {
     display: flex;
-    gap: 4rem;
+    gap: 2.5rem; /* Reducido de 4rem */
     align-items: stretch;
 }
 
-/* FORMULARIO */
+/* FORMULARIO COMPACTO */
 .contact__form {
     flex: 1;
     background: #ffffff;
-    padding: 3.5rem;
+    /* Reducimos el padding interno de 3.5rem a 2rem */
+    padding: 2rem; 
     border-radius: 18px;
     border: 1px solid var(--bordeSuave);
-    box-shadow: 0 20px 45px rgba(0,0,0,0.08);
+    box-shadow: 0 15px 35px rgba(0,0,0,0.06);
 }
 
 .contact__form form {
@@ -41,90 +41,82 @@
     flex-direction: column;
 }
 
-/* Inputs */
+/* Inputs más estilizados y menos altos */
 .contact__form input:not([type="checkbox"]),
 .contact__form textarea {
     width: 100%;
-    padding: 1.1rem;
-    margin-bottom: 1.4rem;
-    border: 1px solid #d2d2d2;
+    padding: 0.9rem; /* Reducido de 1.1rem */
+    margin-bottom: 1rem; /* Reducido de 1.4rem */
+    border: 1px solid #e2e2e2;
     border-radius: 8px;
-    font-size: 1.05rem;
+    font-size: 1rem;
     background-color: #fcfcfc;
+    box-sizing: border-box;
 }
 
 .contact__form textarea {
-    resize: vertical;
-    min-height: 100px;
+    resize: none; /* Evitamos que el usuario estire la sección */
+    min-height: 80px; /* Reducido de 100px para ahorrar espacio */
 }
 
 /* CHECKBOX */
 .checkbox__label {
     display: flex;
-    align-items: flex-start;
-    gap: 0.75rem;
-    font-size: 0.95rem;
-    margin: 0.5rem 0 2rem;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 0.9rem;
+    margin: 0 0 1.5rem; /* Espaciado más ajustado */
     cursor: pointer;
-}
-
-.checkbox__label input {
-    width: auto;
-    margin-top: 0.25rem;
+    color: var(--colorTextoClaro);
 }
 
 /* BOTÓN */
 .contact__form button {
     width: 100%;
-    padding: 1.15rem;
-    font-size: 1.15rem;
+    padding: 1rem;
+    font-size: 1.1rem;
     font-weight: 700;
     border-radius: 10px;
     border: none;
     background-color: var(--colorPrincipal);
     color: #fff;
     cursor: pointer;
-    transition: background 0.3s, transform 0.2s;
+    transition: all 0.3s ease;
 }
 
 .contact__form button:hover {
     background-color: #082a45;
     transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(10, 61, 98, 0.2);
 }
 
-/* MAPA */
+/* MAPA AJUSTADO */
 .contact__map {
-    flex: 1.2;
+    flex: 1.1;
     border-radius: 18px;
     overflow: hidden;
-    box-shadow: 0 20px 45px rgba(0,0,0,0.08);
+    box-shadow: 0 15px 35px rgba(0,0,0,0.06);
+    border: 1px solid var(--bordeSuave);
 }
 
 .contact__map iframe {
     width: 100%;
     height: 100%;
-    min-height: 520px;
+    /* Altura mínima ajustada para que no estire la ventana */
+    min-height: 400px; 
     border: none;
+    display: block;
 }
 
 /* RESPONSIVE */
-@media (max-width: 900px) {
-    .contact__row {
-        flex-direction: column;
-    }
-
-    .contact__map iframe {
-        min-height: 380px;
-    }
+@media (max-width: 1024px) {
+    .contact__row { gap: 1.5rem; }
+    .contact__form { padding: 1.5rem; }
 }
 
-.alerta-exito {
-    background-color: #d4edda;
-    color: #155724;
-    padding: 10px;
-    border-radius: 5px;
-    margin-bottom: 15px;
-    border: 1px solid #c3e6cb;
-    text-align: center;
-    font-weight: bold;
+@media (max-width: 900px) {
+    .contact { padding: 2rem 0; }
+    .contact__row { flex-direction: column; }
+    .contact__map iframe { min-height: 300px; }
+    .contact__title { font-size: 1.8rem; }
 }

@@ -2,9 +2,14 @@
    HERO SECTION BASE
 ========================== */
 .hero-background {
-  padding-top: 85px;
-  padding-bottom: 2.5rem;
-  min-height: 85vh;
+  /* Ajuste: Cambiamos 85px por un padding más equilibrado. 
+     Si tu header es pegajoso (fixed), asegúrate de que este valor sea suficiente */
+  padding-top: 100px; 
+  padding-bottom: 5rem;
+  
+  /* Ajuste: 100vh asegura que la sección ocupe toda la pantalla y no deje huecos abajo */
+  min-height: 100vh; 
+  
   display: flex;
   align-items: center;
   width: 100%;
@@ -16,10 +21,10 @@
   width: 100%;
   max-width: 1650px;
   margin: 0 auto;
-  padding: 0 1.5rem;
+  padding: 0 2.5rem; /* Aumentado un poco para mejor respiro lateral */
   display: flex;
   align-items: center;
-  gap: 5rem;
+  gap: 4rem; /* Ajustado de 5rem a 4rem para compactar el centro */
 }
 
 .main-content {
@@ -29,7 +34,6 @@
 /* ==========================
    HERO TITLE EFFECT
 ========================== */
-
 .block-effect {
   font-size: clamp(2.8rem, 5vw, 4rem);
   line-height: 1.1;
@@ -48,7 +52,6 @@
   display: inline-block;
 }
 
-/* Cajas animadas */
 .block-reveal::after {
   content: '';
   width: 0%;
@@ -61,7 +64,6 @@
              revealingOut var(--td) var(--t) forwards;
 }
 
-/* Colores finales */
 .block-reveal.blue {
   animation: revealBlue 0s var(--t) forwards;
 }
@@ -85,8 +87,8 @@
 .main-description {
   font-size: 1.08rem;
   color: var(--colorTextoClaro);
-  margin-bottom: 2rem;
-  max-width: 85%;
+  margin-bottom: 2.5rem; /* Aumentado ligeramente para separar de los tags */
+  max-width: 95%; /* Ajustado del 85% para llenar más el espacio visual */
 }
 
 /* ==========================
@@ -94,22 +96,22 @@
 ========================== */
 .hero-features {
   display: flex;
-  gap: 2rem;
+  gap: 1.5rem; /* Ajustado para que no se vea tan disperso */
   flex-wrap: wrap;
-  margin-bottom: 2.5rem;
+  margin-bottom: 3rem;
 }
 
 .hero-features span {
   background: rgba(10, 61, 98, 0.06);
   color: var(--colorPrincipal);
-  padding: 0.5rem 1.2rem;
+  padding: 0.6rem 1.4rem;
   border-radius: 30px;
   font-weight: 700;
   font-size: 0.95rem;
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  box-shadow: 0 6px 15px rgba(10,61,98,0.08);
+  box-shadow: 0 4px 12px rgba(10,61,98,0.05);
   animation: fadeUp 0.8s ease forwards;
   opacity: 0;
 }
@@ -132,17 +134,18 @@
   display: inline-block;
   background-color: var(--colorPrincipal);
   color: white;
-  padding: 1.05rem 3rem;
+  padding: 1.1rem 3.5rem;
   font-weight: 700;
   font-size: 1.15rem;
-  border-radius: 10px;
-  box-shadow: 0 10px 20px rgba(10, 61, 98, 0.2);
-  transition: transform 0.3s ease, background 0.3s ease;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(10, 61, 98, 0.2);
+  transition: all 0.3s ease;
 }
 
 .btn-reserva:hover {
-  transform: translateY(-3px);
+  transform: translateY(-4px);
   background-color: #082a45;
+  box-shadow: 0 15px 30px rgba(10, 61, 98, 0.3);
 }
 
 /* ==========================
@@ -151,58 +154,53 @@
 .main-image {
   flex: 1;
   display: flex;
-  justify-content: flex-end;
+  justify-content: center; /* Centrado para mejor equilibrio */
 }
 
 .main-image img {
   max-width: 100%;
-  border-radius: 20px;
-  box-shadow: 20px 20px 0 rgba(0,0,0,0.05);
+  height: auto;
+  border-radius: 25px;
+  /* Cambio: Sombra con "blur" (difuminado) para que no parezca un bloque sólido */
+  box-shadow: 0 20px 40px rgba(0,0,0,0.12); 
+  transition: transform 0.5s ease;
+}
+
+.main-image img:hover {
+    transform: scale(1.02);
 }
 
 /* ==========================
-   ANIMATIONS
+   ANIMATIONS (Iguales)
 ========================== */
-@keyframes revealBlue {
-  100% { color: var(--colorPrincipal); }
-}
-
-@keyframes revealGold {
-  100% { color: var(--colorDorado); }
-}
-
-@keyframes revealingIn {
-  from { width: 0; }
-  to { width: 100%; }
-}
-
-@keyframes revealingOut {
-  from { transform: translateX(0); }
-  to { transform: translateX(100%); }
-}
-
+@keyframes revealBlue { 100% { color: var(--colorPrincipal); } }
+@keyframes revealGold { 100% { color: var(--colorDorado); } }
+@keyframes revealingIn { from { width: 0; } to { width: 100%; } }
+@keyframes revealingOut { from { transform: translateX(0); } to { transform: translateX(100%); } }
 @keyframes fadeUp {
-  from {
-    opacity: 0;
-    transform: translateY(15px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 /* ==========================
    RESPONSIVE
 ========================== */
 @media (max-width: 900px) {
+  .hero-background {
+    padding-top: 120px; /* Más espacio para el menú móvil */
+    min-height: auto; /* En móviles es mejor que crezca con el contenido */
+  }
+
   .main-container {
     flex-direction: column;
     text-align: center;
+    gap: 3rem;
   }
 
   .main-description {
     max-width: 100%;
+    margin-left: auto;
+    margin-right: auto;
   }
 
   .hero-features {
@@ -210,6 +208,7 @@
   }
 
   .main-image {
-    justify-content: center;
+    order: -1; /* Opcional: pone la imagen arriba en móviles */
+    margin-bottom: 1rem;
   }
 }

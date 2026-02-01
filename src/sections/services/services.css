@@ -1,41 +1,104 @@
-
 /* =========================================
-   5. SERVICIOS
+   5. SERVICIOS - AJUSTADO PARA UNA VENTANA
    ========================================= */
-#services{
-    scroll-margin-top: 90px;
+#services {
+    scroll-margin-top: 70px;
 }
-.services {padding: 4.5rem 0; background: #fff; }
-.services__title { text-align: center; font-size: 3rem; margin-bottom: 0.4rem; }
-.services__text { text-align: center; font-size: 1.15rem; color: var(--colorTextoClaro); margin-bottom: 3rem; }
+
+.services {
+    /* Padding reducido para que quepa en la pantalla sin scroll excesivo */
+    padding: 2.5rem 0; 
+    background: #fff; 
+    min-height: auto;
+}
+
+.services__title { 
+    text-align: center; 
+    font-size: 2.2rem; /* Tamaño optimizado para pantallas estándar */
+    margin-bottom: 0.2rem; 
+    color: var(--colorPrincipal);
+    font-weight: 800;
+}
+
+.services__text { 
+    text-align: center; 
+    font-size: 1rem; 
+    color: var(--colorTextoClaro); 
+    margin-bottom: 2rem; /* Espacio reducido para subir las tarjetas */
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
 .services__container {
-    width: 90%; max-width: 1200px; margin: 0 auto;
-    display: grid; grid-template-columns: 1fr 1fr; gap: 3rem;
+    width: 92%; 
+    max-width: 1150px; 
+    margin: 0 auto;
+    display: grid; 
+    /* Forzamos las dos columnas para que no se estiren verticalmente */
+    grid-template-columns: repeat(2, 1fr); 
+    gap: 1.5rem; 
 }
+
 .service-card {
-    background: #fff; padding: 2.5rem 2.5rem; border-radius: 15px; text-align: center;
-    border: 1px solid var(--bordeSuave); box-shadow: 0 8px 30px rgba(0,0,0,0.06);
-    transition: transform 0.3s, box-shadow 0.3s; 
-    height: 100%;
+    background: #fff; 
+    /* Padding equilibrado: más ancho que alto para ahorrar espacio vertical */
+    padding: 2rem 2.5rem; 
+    border-radius: 18px; 
+    text-align: center;
+    border: 1px solid rgba(0, 0, 0, 0.06); 
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease; 
+    /* Altura automática basada en contenido para evitar que crezca de más */
+    height: auto; 
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
 }
-.service-card:hover { transform: translateY(-6px); box-shadow: 0 14px 40px rgba(0,0,0,0.1); border-color: var(--colorPrincipal); }
-.service-card img { width: 70px; margin-bottom: 2rem; }
-.service-card__title { font-size: 1.4rem; color: var(--colorPrincipal); margin-bottom: 0.8rem; }
-.service-card p{
-    font-size: 1.06rem;
 
+.service-card:hover { 
+    transform: translateY(-5px); 
+    box-shadow: 0 15px 40px rgba(10, 61, 98, 0.1); 
+    border-color: var(--colorPrincipal); 
 }
-@media (max-width: 768px) {
+
+.service-card img { 
+    width: 50px; /* Tamaño compacto para que la tarjeta no sea alta */
+    height: auto;
+    margin-bottom: 1rem;
+}
+
+.service-card__title { 
+    font-size: 1.3rem; 
+    color: var(--colorPrincipal); 
+    margin-bottom: 0.6rem; 
+    font-weight: 700;
+}
+
+.service-card p {
+    font-size: 0.95rem;
+    color: var(--colorTextoClaro);
+    line-height: 1.4;
+    margin: 0;
+}
+
+/* AJUSTE PARA PANTALLAS PEQUEÑAS */
+@media (max-width: 992px) {
     .services__container {
-        grid-template-columns: 1fr;
-        gap: 2rem;
+        gap: 1rem;
     }
-
     .service-card {
-        padding: 2rem;
+        padding: 1.5rem;
     }
 }
 
+@media (max-width: 768px) {
+    .services {
+        padding: 2rem 0;
+    }
+    .services__container {
+        grid-template-columns: 1fr; /* En móvil sí necesitamos una columna */
+        max-width: 450px;
+    }
+}
