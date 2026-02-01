@@ -183,32 +183,74 @@
 }
 
 /* ==========================
-   RESPONSIVE
+   RESPONSIVE HERO 
 ========================== */
 @media (max-width: 900px) {
   .hero-background {
-    padding-top: 120px; /* Más espacio para el menú móvil */
-    min-height: auto; /* En móviles es mejor que crezca con el contenido */
+    padding-top: 110px; /* Espacio para el header */
+    padding-bottom: 3rem;
+    min-height: auto; /* Permite que el contenido fluya hacia abajo */
+    display: block;   /* Cambiamos a block para un flujo más natural */
   }
 
   .main-container {
-    flex-direction: column;
+    flex-direction: column; 
     text-align: center;
-    gap: 3rem;
+    gap: 2.5rem;
+  }
+
+  /* --- ELIMINAMOS LOS 'ORDER' PARA QUE SIGA EL FLUJO DEL HTML --- */
+  .main-content {
+    width: 100%;
+  }
+
+  .main-image {
+    width: 100%;
+    max-width: 450px;
+    margin: 0 auto;
+  }
+
+  /* Ajustes de texto para móvil */
+  .block-effect {
+    justify-content: center;
+    font-size: 2.4rem; /* Un poco más grande como en tu captura */
+    margin-bottom: 1rem;
+  }
+
+  .hero-subtitle {
+    font-size: 1.3rem;
+    margin-bottom: 1.5rem;
   }
 
   .main-description {
     max-width: 100%;
-    margin-left: auto;
-    margin-right: auto;
+    margin-bottom: 2rem;
+    font-size: 1rem;
+    padding: 0 10px;
   }
 
+  /* Centrado de botones y etiquetas */
   .hero-features {
     justify-content: center;
+    gap: 0.8rem;
+    margin-bottom: 2.5rem;
   }
 
-  .main-image {
-    order: -1; /* Opcional: pone la imagen arriba en móviles */
-    margin-bottom: 1rem;
+.btn-reserva {
+    width: 100%; 
+    max-width: 280px; /* Un poco más estrecho para que no se vea gigante */
+    
+    /* REDUCIMOS EL GROSOR AQUÍ */
+    padding: 0.8rem 1.5rem; /* Bajamos de 1.1rem a 0.8rem para que sea más fino */
+    
+    font-size: 1.05rem; /* Ajustamos ligeramente el tamaño de la letra */
+    border-radius: 10px; /* Bordes un poco menos redondeados para que se vea más limpio */
+    margin: 0 auto 2rem; /* Lo centramos y damos espacio antes de la imagen */
+    display: inline-block;
   }
-}
+
+/* Ajuste fino para pantallas muy pequeñas */
+@media (max-width: 480px) {
+  .block-effect { font-size: 2rem; }
+  .main-container { padding: 0 1.2rem; }
+}}
