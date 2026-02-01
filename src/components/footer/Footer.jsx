@@ -62,33 +62,39 @@ const Footer = () => {
                         <div className="footer__col">
                             <h3 className="footer__title">Horarios de Atención</h3>
                             <ul className="footer__list">
-                                <li><span className="label">Lunes - Viernes:</span> 06:30 - 21:30</li>
+                                <li><span className="label">Lunes - Viernes:</span> 06:30 - 20:00</li>
                                 <li><span className="label">Sábados:</span> 07:00 - 13:00</li>
                                 <li><span className="label">Dom y Feriados:</span> Solo autorizados</li>
                             </ul>
                         </div>
-
-                        {/* COLUMNA 3: CONTACTO */}
-                        <div className="footer__col">
-                            <h3 className="footer__title">Contáctanos</h3>
-                            <ul className="footer__list contact-list">
-                                <li>
-                                    <i className="fa-solid fa-phone" style={{ marginRight: '10px', verticalAlign: 'top', marginTop: '5px' }}></i>
-                                    <div style={{ display: 'inline-block' }}>
-                                        (593) 96 321 8871 - Soporte 1 <br />
-                                        (593) 96 735 0803 - Soporte 2
-                                    </div>
-                                </li>
-                                <li>
-                                    <i className="fa-solid fa-envelope" style={{ marginRight: '10px' }}></i>
-                                    admin.parqueadero@epn.edu.ec
-                                </li>
-                                <li>
-                                    <i className="fa-solid fa-location-dot" style={{ marginRight: '10px' }}></i>
-                                    Campus Politécnico J. Rubén Orellana
-                                </li>
-                            </ul>
-                        </div>
+{/* COLUMNA 3: ACCIÓN DIRECTA */}
+<div className="footer__col" style={{ justifyContent: 'center' }}>
+    <h3 className="footer__title">Empieza Ahora</h3>
+    <p style={{ fontSize: '0.9rem', marginBottom: '20px' }}>
+        ¿Listo para asegurar tu lugar?
+    </p>
+    
+    <a href="/login" style={{ 
+        display: 'block',
+        textAlign: 'center',
+        background: '#feca57', 
+        color: '#0a3d62', 
+        padding: '12px', 
+        borderRadius: '5px', 
+        textDecoration: 'none', 
+        fontWeight: 'bold',
+        fontSize: '1rem',
+        boxShadow: '0 4px 0 #d4a017',
+        transition: 'transform 0.1s'
+    }}>
+        <i className="fa-solid fa-calendar-check" style={{ marginRight: '8px' }}></i>
+        Reservar Estacionamiento
+    </a>
+    
+    <p style={{ fontSize: '0.8rem', marginTop: '10px', textAlign: 'center', opacity: 0.7 }}>
+        *Acceso exclusivo con correo EPN
+    </p>
+</div>
                     </div>
                 </div>
                 
@@ -176,7 +182,7 @@ const Footer = () => {
 
                             <ul style={{paddingLeft: '20px', listStyleType: 'circle'}}>
                                 <li style={{marginBottom: '15px'}}>
-                                    <strong>Velocidad Máxima:</strong> La velocidad límite dentro del campus es de <strong>20 km/h</strong>. El exceso de velocidad será sancionado.
+                                    <strong>Velocidad Máxima:</strong> La velocidad límite dentro del campus es de <strong>10 km/h</strong>. El exceso de velocidad será sancionado.
                                 </li>
                                 <li style={{marginBottom: '15px'}}>
                                     <strong>Estacionamiento en Reversa:</strong> Por normas de seguridad y evacuación rápida, es <u>obligatorio</u> estacionar el vehículo en posición de salida (aculatar).
