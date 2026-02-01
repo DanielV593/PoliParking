@@ -9,7 +9,6 @@ import Contact from '../sections/contact/contact';
 import Find from '../sections/find_us/find';
 import Footer from '../components/footer/Footer';
 
-import logoEsfot from '../assets/Logo ESFOT.png';
 
 const Landing = () => {
 return (

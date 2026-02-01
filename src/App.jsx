@@ -25,7 +25,6 @@ function App() {
   }, []);
 
   return (
-    <BrowserRouter>
       <Routes>
         <Route path="/" element={<Landing />} />
         <Route path="/login" element={<Login />} />
@@ -42,7 +41,6 @@ function App() {
         
         <Route path="*" element={<h1 style={{textAlign:'center', marginTop:'100px'}}>404 - No encontrado</h1>} />
       </Routes>
-    </BrowserRouter>
   );
 }
 
