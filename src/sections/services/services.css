@@ -1,104 +1,105 @@
 /* =========================================
-   5. SERVICIOS - AJUSTADO PARA UNA VENTANA
+   5. SERVICIOS - FULL VIEWPORT (100vh)
    ========================================= */
-#services {
-    scroll-margin-top: 70px;
+.services {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    /* Los dos siguientes centran todo el bloque en la pantalla */
+    justify-content: center; 
+    align-items: center;
+    padding: 2rem 0; /* Espacio de seguridad */
 }
 
-.services {
-    /* Padding reducido para que quepa en la pantalla sin scroll excesivo */
-    padding: 2.5rem 0; 
-    background: #fff; 
-    min-height: auto;
-}
 
 .services__title { 
     text-align: center; 
-    font-size: 2.2rem; /* Tamaño optimizado para pantallas estándar */
-    margin-bottom: 0.2rem; 
+    font-size: 2.2rem; 
+    margin-bottom: 0.5rem; 
     color: var(--colorPrincipal);
     font-weight: 800;
 }
 
 .services__text { 
-    text-align: center; 
+    text-align: center; /* Centra el texto por dentro */
     font-size: 1rem; 
     color: var(--colorTextoClaro); 
-    margin-bottom: 2rem; /* Espacio reducido para subir las tarjetas */
-    max-width: 600px;
+    
+    /* Centra el bloque de texto en la pantalla */
     margin-left: auto;
     margin-right: auto;
+    
+    /* Espaciado controlado */
+    margin-bottom: 2.5rem; 
+    max-width: 650px; /* Evita que las líneas sean demasiado largas */
+    line-height: 1.6;
+    padding: 0 1rem; /* Margen de seguridad para móviles */
 }
-
 .services__container {
-    width: 92%; 
-    max-width: 1150px; 
-    margin: 0 auto;
-    display: grid; 
-    /* Forzamos las dos columnas para que no se estiren verticalmente */
-    grid-template-columns: repeat(2, 1fr); 
-    gap: 1.5rem; 
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
+    width: 90%;
+    max-width: 1100px;
+    /* Centra el grid si el max-width es menor al ancho de pantalla */
+    margin: 0 auto; 
 }
 
 .service-card {
     background: #fff; 
-    /* Padding equilibrado: más ancho que alto para ahorrar espacio vertical */
-    padding: 2rem 2.5rem; 
-    border-radius: 18px; 
+    /* Reducimos el padding interno para que la tarjeta no crezca hacia abajo */
+    padding: 1.8rem; 
+    border-radius: 20px; 
     text-align: center;
-    border: 1px solid rgba(0, 0, 0, 0.06); 
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-    transition: all 0.3s ease; 
-    /* Altura automática basada en contenido para evitar que crezca de más */
-    height: auto; 
+    border: 1px solid rgba(0, 0, 0, 0.05); 
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    transition: all 0.3s ease;
 }
 
 .service-card:hover { 
-    transform: translateY(-5px); 
+    transform: translateY(-8px); 
     box-shadow: 0 15px 40px rgba(10, 61, 98, 0.1); 
-    border-color: var(--colorPrincipal); 
+    border-color: var(--colorDorado); 
 }
 
+/* Iconos más pequeños para ahorrar espacio vertical */
 .service-card img { 
-    width: 50px; /* Tamaño compacto para que la tarjeta no sea alta */
+    width: 45px; 
     height: auto;
     margin-bottom: 1rem;
 }
 
 .service-card__title { 
-    font-size: 1.3rem; 
+    font-size: 1.2rem; 
     color: var(--colorPrincipal); 
     margin-bottom: 0.6rem; 
     font-weight: 700;
 }
 
 .service-card p {
-    font-size: 0.95rem;
+    font-size: 0.9rem;
     color: var(--colorTextoClaro);
-    line-height: 1.4;
+    line-height: 1.5;
     margin: 0;
 }
 
-/* AJUSTE PARA PANTALLAS PEQUEÑAS */
+/* AJUSTES RESPONSIVE */
 @media (max-width: 992px) {
-    .services__container {
-        gap: 1rem;
-    }
-    .service-card {
-        padding: 1.5rem;
-    }
+    .services__container { gap: 1.5rem; }
+    .services__title { font-size: 1.8rem; }
 }
 
 @media (max-width: 768px) {
     .services {
-        padding: 2rem 0;
+        height: auto; /* En móviles pequeños es mejor permitir el scroll */
+        padding: 5rem 0;
     }
     .services__container {
-        grid-template-columns: 1fr; /* En móvil sí necesitamos una columna */
-        max-width: 450px;
+        grid-template-columns: 1fr;
+        max-width: 400px;
     }
 }
