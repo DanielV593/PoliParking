@@ -1,45 +1,51 @@
-/* DEFINIMOS VARIABLES POR SI NO ESTÁN EN EL GLOBAL */
+/* =========================================
+   VARIABLES INSTITUCIONALES
+   ========================================= */
 :root {
     --colorPrincipal: #0a3d62; /* Azul EPN */
-    --colorDorado: #feca57;    /* Amarillo */
+    --colorDorado: #ffc107;    /* Amarillo */
 }
 
 /* =========================================
-   10. FOOTER - VERSIÓN COMPACTA (TU CÓDIGO)
+   ESTILOS GENERALES DEL FOOTER
    ========================================= */
 .footer {
     background-color: var(--colorPrincipal);
     color: #fff;
-    padding: 3rem 0 1.5rem; 
+    padding: 4rem 0 2rem; /* Más aire arriba */
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 /* CONTENEDOR PRINCIPAL (GRID) */
 .footer-row {
     width: 90%;
     max-width: 1400px;
-    margin: 0 auto 2rem;
+    margin: 0 auto 3rem;
     display: grid;
-    /* Esto hace la magia de las columnas automáticas */
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); 
-    gap: 3rem; 
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
+    gap: 4rem;
+    /* CAMBIO CLAVE: Alinea todas las columnas al tope */
+    align-items: start; 
 }
 
 /* COLUMNAS */
 .footer__col {
     display: flex;
     flex-direction: column;
-    gap: 0.8rem; 
+    /* Eliminamos el justifyContent: 'center' que podrías tener en el inline style */
+    gap: 1.2rem; 
 }
 
 /* TÍTULOS */
 .footer__title {
     color: var(--colorDorado);
-    font-size: 1.2rem; 
+    font-size: 1.3rem; 
     font-weight: 700;
-    margin-bottom: 1rem; 
+    margin-bottom: 1.5rem; 
     position: relative;
-    padding-bottom: 0.5rem;
-    margin-top: 0; /* Asegura que no tenga margen extra arriba */
+    padding-bottom: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
 .footer__title::after {
@@ -47,18 +53,13 @@
     position: absolute;
     left: 0;
     bottom: 0;
-    width: 40px; 
-    height: 2px; 
+    width: 50px; 
+    height: 3px; 
     background-color: var(--colorDorado);
     border-radius: 2px;
-    transition: width 0.3s ease;
 }
 
-.footer__title:hover::after{
-    width: 55px;
-}
-
-/* LISTAS */
+/* LISTAS Y ENLACES */
 .footer__list {
     list-style: none;
     padding: 0;
@@ -66,188 +67,194 @@
 }
 
 .footer__list li {
-    margin-bottom: 0.6rem;
+    margin-bottom: 1rem; /* Más espacio entre filas */
     display: flex;
-    align-items: flex-start; /* Alinea íconos con texto */
+    align-items: center;
 }
 
 .footer__list a {
-    color: rgba(255, 255, 255, 0.85);
-    font-size: 0.95rem; 
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 1rem; 
     text-decoration: none;
     transition: all 0.3s ease;
-}
-
-/* TEXTO NORMAL */
-.footer__col p {
-    font-size: 0.95rem; 
-    color: rgba(255,255,255,0.9);
-    line-height: 1.5; 
-    margin: 0;
-}
-
-/* SOCIAL ICONS */
-.social-icons {
-    display: flex;
-    gap: 0.8rem;
-    margin-top: 0.5rem;
-}
-
-.social-icons a {
-    width: 36px; 
-    height: 36px; 
     display: flex;
     align-items: center;
-    justify-content: center;
-    background-color: rgba(255,255,255,0.1);
-    border-radius: 50%;
+    gap: 10px;
+}
+
+.footer__list a:hover {
+    color: var(--colorDorado);
+    transform: translateX(5px); /* Efecto sutil al pasar el mouse */
+}
+
+/* --- SECCIÓN DE HORARIOS (MEJORADA) --- */
+.footer__list--hours li {
+    display: flex;
+    flex-direction: column; /* Apilados por defecto */
+    align-items: flex-start;
+    gap: 5px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    padding-bottom: 8px;
+    margin-bottom: 1.2rem;
+}
+
+.hour-label {
+    font-size: 0.85rem;
+    font-weight: 800;
+    color: var(--colorDorado);
+    text-transform: uppercase;
+}
+
+.hour-value {
+    font-size: 1.1rem;
     color: #fff;
-    font-size: 1rem; 
-    transition: all 0.3s ease;
-    text-decoration: none;
 }
 
-.social-icons a:hover {
-    background-color: var(--colorDorado);
-    color: var(--colorPrincipal);
+.hour-value--special {
+    font-style: italic;
+    opacity: 0.8;
+    font-size: 0.95rem;
 }
 
-/* FOOTER BOTTOM */
+/* --- BOTÓN DE RESERVA EN EL FOOTER --- */
+.footer-btn-reserva {
+    display: flex; /* Cambiado de block a flex para mejor control */
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    background: var(--colorDorado); 
+    color: var(--colorPrincipal) !important; 
+    padding: 14px 20px !important; 
+    border-radius: 8px; 
+    text-decoration: none; 
+    font-weight: 800;
+    font-size: 1rem;
+    box-shadow: 0 4px 0 #b38600;
+    transition: all 0.2s ease;
+    /* Asegura que no se estire demasiado */
+    width: 100%;
+    max-width: 300px; 
+    margin-top: 5px;
+}
+
+.footer-btn-reserva:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 0 #b38600;
+    background-color: #ffffff;
+}
+
+/* --- FOOTER BOTTOM --- */
 .footer__bottom {
     text-align: center;
     border-top: 1px solid rgba(255,255,255,0.1);
-    padding-top: 1.5rem; 
-    color: rgba(255,255,255,0.65);
-    font-size: 0.85rem; 
+    padding: 2rem 1rem; 
+    color: rgba(255,255,255,0.5);
+    font-size: 0.9rem; 
 }
 
-/* RESPONSIVE */
-@media (max-width: 768px) {
-    .footer {
-        padding: 2.5rem 0 1.5rem;
-    }
-    .footer-row {
-        gap: 2rem;
-    }
+.footer__col p {
+    margin-bottom: 5px; /* Menos espacio para que el botón suba */
 }
 
 /* =========================================
-   ESTILOS DE LA VENTANA MODAL (POP-UP)
+   MODALES (FAQ, TÉRMINOS, ETC.)
    ========================================= */
-
-/* --- BOTÓN QUE ABRE EL MODAL --- */
-.btn-faq-trigger {
-    margin-top: 15px;
-    background-color: var(--colorDorado); 
-    color: var(--colorPrincipal);
-    border: none;
-    padding: 10px 20px;
-    border-radius: 20px;
-    cursor: pointer;
-    font-weight: bold;
-    font-size: 0.9rem;
-    transition: transform 0.2s;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    width: fit-content; /* Para que no ocupe todo el ancho */
-}
-
-.btn-faq-trigger:hover {
-    transform: scale(1.05);
-    background-color: #fff;
-}
-
-/* --- EL FONDO OSCURO (OVERLAY) --- */
 .modal-overlay {
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.7); 
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.8); 
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 9999; 
-    animation: fadeIn 0.3s ease;
+    z-index: 2000; 
+    backdrop-filter: blur(5px);
 }
 
-/* --- LA CAJA BLANCA (CONTENIDO) --- */
 .modal-content {
     background: white;
     width: 90%;
-    max-width: 600px;
-    border-radius: 12px;
-    padding: 25px;
-    position: relative;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-    max-height: 80vh; 
+    max-width: 650px;
+    border-radius: 15px;
+    padding: 30px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+    max-height: 85vh; 
     overflow-y: auto; 
-    animation: slideUp 0.3s ease;
-    color: #333; /* Texto oscuro para que se lea en fondo blanco */
+    color: #333;
+    animation: slideUp 0.3s ease-out;
 }
 
-/* CABECERA DEL MODAL */
 .modal-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 20px;
     border-bottom: 2px solid #f0f0f0;
-    padding-bottom: 10px;
-}
-
-.modal-header h2 {
-    color: var(--colorPrincipal);
-    margin: 0;
-    font-size: 1.5rem;
+    padding-bottom: 15px;
 }
 
 .close-btn {
-    background: none;
-    border: none;
-    font-size: 2rem;
-    cursor: pointer;
-    color: #888;
-    line-height: 1;
+    background: none; border: none;
+    font-size: 2.5rem; color: #999;
+    cursor: pointer; line-height: 1;
 }
 
-.close-btn:hover {
-    color: #e30613;
-}
+.close-btn:hover { color: #ff4757; }
 
-/* ESTILOS DEL ACORDEÓN DENTRO DEL MODAL */
+/* FAQ ACORDEÓN */
 .faq-item-modal {
-    border-bottom: 1px solid #eee;
-    padding: 10px 0;
-    cursor: pointer;
+    border-bottom: 1px solid #f1f1f1;
+    padding: 15px 0;
 }
 
 .faq-question-modal {
     display: flex;
     justify-content: space-between;
-    font-weight: 600;
-    color: #333;
-    font-size: 1rem;
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: var(--colorPrincipal);
 }
 
 .faq-answer-modal {
     max-height: 0;
     overflow: hidden;
-    transition: max-height 0.3s ease;
+    transition: all 0.3s ease;
     color: #666;
-    font-size: 0.95rem;
-    margin-top: 5px;
+    line-height: 1.6;
 }
 
 .faq-answer-modal.show {
-    max-height: 150px;
-    padding-top: 5px;
-    padding-bottom: 10px;
+    max-height: 200px;
+    margin-top: 10px;
 }
 
 /* ANIMACIONES */
-@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-@keyframes slideUp { from { transform: translateY(20px); } to { transform: translateY(0); } }
+@keyframes slideUp {
+    from { transform: translateY(30px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+/* =========================================
+   RESPONSIVE
+   ========================================= */
+@media (max-width: 992px) {
+    .footer-row {
+        grid-template-columns: 1fr; /* Una columna en móvil */
+        gap: 3rem;
+        text-align: center;
+    }
+    .footer__title::after {
+        left: 50%;
+        transform: translateX(-50%);
+    }
+    .footer__list li {
+        justify-content: center;
+    }
+    .footer__list--hours li {
+        align-items: center;
+    }
+    .footer-btn-reserva {
+        width: 80%;
+        margin: 10px auto;
+    }
+}

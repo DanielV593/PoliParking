@@ -59,15 +59,24 @@ const Footer = () => {
                             </ul>
                         </div>
 
-                        {/* COLUMNA 2: HORARIOS */}
-                        <div className="footer__col">
-                            <h3 className="footer__title">Horarios de Atención</h3>
-                            <ul className="footer__list">
-                                <li><span className="label">Lunes - Viernes:</span> 06:30 - 20:00</li>
-                                <li><span className="label">Sábados:</span> 07:00 - 13:00</li>
-                                <li><span className="label">Dom y Feriados:</span> Solo autorizados</li>
-                            </ul>
-                        </div>
+                        {/* COLUMNA 2: HORARIOS ACTUALIZADA */}
+<div className="footer__col">
+    <h3 className="footer__title">Horarios de Atención</h3>
+    <ul className="footer__list footer__list--hours">
+        <li>
+            <span className="hour-label">Lunes - Viernes</span>
+            <span className="hour-value">06:30 - 20:00</span>
+        </li>
+        <li>
+            <span className="hour-label">Sábados</span>
+            <span className="hour-value">07:00 - 13:00</span>
+        </li>
+        <li>
+            <span className="hour-label">Dom y Feriados</span>
+            <span className="hour-value hour-value--special">Solo autorizados</span>
+        </li>
+    </ul>
+</div>
 
                         {/* COLUMNA 3: ACCIÓN DIRECTA (INTACTA) */}
                         <div className="footer__col" style={{ justifyContent: 'center' }}>

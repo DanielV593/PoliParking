@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Link } from "react-router-dom";
-// CAMBIO 1: Importamos HashLink en lugar de NavHashLink
 import { HashLink } from 'react-router-hash-link';
 import './header.css';
 
@@ -11,6 +10,8 @@ import logoEpn from '../../assets/EPN.png';
 
 const Header = () => {
     const [menuActive, setMenuActive] = useState(false);
+    
+    // Función para alternar y cerrar el menú
     const toggleMenu = () => setMenuActive(!menuActive);
     const closeMenu = () => setMenuActive(false);
 
@@ -30,15 +31,13 @@ const Header = () => {
                         />
                     </Link>
 
-                    {/* Separador */}
+                    {/* Separador y Créditos (Se ocultan en móvil vía CSS) */}
                     <div className="separator"></div>
 
-                    {/* 2. CRÉDITOS (LETRAS NEGRAS) */}
                     <div className="credits-container">
                         <span className="credits-label">ELABORADO POR:</span>
                         
                         <div className="logos-row">
-                            {/* ESFOT */}
                             <div className="inst-item">
                                 <span className="inst-name">ESFOT</span>
                                 <img src={logoEsfot} alt="ESFOT" className="logo-inst" />
@@ -46,7 +45,6 @@ const Header = () => {
                             
                             <span className="connector">X</span>
                             
-                            {/* EPN */}
                             <div className="inst-item">
                                 <span className="inst-name">EPN</span>
                                 <img src={logoEpn} alt="EPN" className="logo-inst logo-epn-fix" />
@@ -56,13 +54,13 @@ const Header = () => {
                 </div>
 
                 {/* === DERECHA: MENÚ === */}
+                {/* Ícono Hamburguesa / Cerrar */}
                 <div className="header__hamburger" onClick={toggleMenu}>
                     <i className={menuActive ? "fas fa-times" : "fas fa-bars"}></i>
                 </div>
 
                 <nav className={`navbar__container ${menuActive ? "active" : ""}`}>
                     <ul>
-                        {/* CAMBIO 2: Usamos <HashLink> para evitar el error de "isActive" */}
                         <li><HashLink smooth to="/#inicio" onClick={closeMenu}>Inicio</HashLink></li>
                         <li><HashLink smooth to="/#nosotros" onClick={closeMenu}>Nosotros</HashLink></li>
                         <li><HashLink smooth to="/#servicios" onClick={closeMenu}>Servicios</HashLink></li>

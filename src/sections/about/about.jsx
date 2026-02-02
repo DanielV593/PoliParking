@@ -23,7 +23,7 @@ const About = () =>{
 
                     <div className="about__stats">
                     <div className="stat">
-                        <span>500+</span>
+                        <span>250+</span>
                         <small>Espacios</small>
                     </div>
                     <div className="stat">
