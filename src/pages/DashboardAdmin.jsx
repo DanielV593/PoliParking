@@ -67,7 +67,7 @@ const DashboardAdmin = () => {
                 showCancelButton: true,
                 confirmButtonColor: '#0a3d62',
             });
-            if (password === 'admin123') { setFiltro({ ...filtro, estado: nuevoEstado }); }
+            if (password === 'admin1234') { setFiltro({ ...filtro, estado: nuevoEstado }); }
             else { 
                 if (password !== undefined) Swal.fire('Error', 'Contraseña incorrecta', 'error');
                 setFiltro({ ...filtro, estado: 'activo' }); 

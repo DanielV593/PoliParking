@@ -68,11 +68,22 @@ const DashboardUser = ({ isGuest = false }) => {
         return () => clearInterval(interval);
     }, [misReservas]);
 
-    // --- PDF PROFESIONAL ---
+// --- PDF PROFESIONAL ACTUALIZADO ---
     const generarTicketPro = async (reserva) => {
         try {
             const docPDF = new jsPDF({ orientation: 'portrait', unit: 'mm', format: [80, 160] });
             const pageWidth = docPDF.internal.pageSize.getWidth();
+            
+            // Cálculo de hora de salida
+            const [horas, minutos] = reserva.hora.split(':').map(Number);
+            const duracion = (reserva.rol === 'invitado' || userData.rol === 'invitado') ? 3 : 8;
+            
+            // Creamos objeto fecha para calcular el fin
+            const fechaFin = new Date();
+            fechaFin.setHours(horas + duracion, minutos);
+            const horaSalida = fechaFin.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
+
+            // Encabezado y Estilo
             docPDF.setDrawColor(10, 61, 98); docPDF.setLineWidth(1); docPDF.circle(pageWidth / 2, 18, 10, 'S'); 
             docPDF.setFontSize(22); docPDF.setFont("helvetica", "bold"); docPDF.text("P", pageWidth / 2, 21.5, { align: 'center' });
             docPDF.setFontSize(18); docPDF.text("POLIPARKING", pageWidth / 2, 38, { align: 'center' });
@@ -81,26 +92,46 @@ const DashboardUser = ({ isGuest = false }) => {
             
             const xPos = 12; 
             docPDF.setFontSize(9); 
-            docPDF.setFont("helvetica", "bold"); docPDF.text("USUARIO:", xPos, 65);
-            docPDF.setFont("helvetica", "normal"); docPDF.text((reserva.nombre || userData.nombre || "Usuario").toUpperCase(), xPos, 69);
-            docPDF.setFont("helvetica", "bold"); docPDF.text("PLACA:", xPos, 77);
-            docPDF.setFont("helvetica", "normal"); docPDF.text((reserva.placa || userData.placa || "N/A").toUpperCase(), xPos, 81);
-            docPDF.setFont("helvetica", "bold"); docPDF.text("UBICACIÓN:", xPos, 89);
-            docPDF.setFont("helvetica", "normal"); docPDF.text((reserva.lugar || "CEC").toUpperCase(), xPos, 93);
-            docPDF.setDrawColor(200); docPDF.line(10, 98, 70, 98);
             
-            docPDF.setFont("helvetica", "bold"); docPDF.text("FECHA:", xPos, 105);
-            docPDF.setFont("helvetica", "normal"); docPDF.text(reserva.fecha, 35, 105);
-            docPDF.setFont("helvetica", "bold"); docPDF.text("HORA:", xPos, 110);
-            docPDF.setFont("helvetica", "normal"); docPDF.text(reserva.hora, 35, 110);
+            // Datos del Usuario y Rol
+            docPDF.setFont("helvetica", "bold"); docPDF.text("USUARIO:", xPos, 60);
+            docPDF.setFont("helvetica", "normal"); docPDF.text((reserva.nombre || userData.nombre || "Usuario").toUpperCase(), xPos, 64);
             
-            docPDF.setDrawColor(0); docPDF.setLineWidth(0.7); docPDF.rect(15, 125, 50, 15); 
-            docPDF.setFontSize(16); docPDF.setFont("helvetica", "bold"); 
-            docPDF.text(`PUESTO: ${reserva.espacio || '?'}`, pageWidth / 2, 135, { align: 'center' });
-            docPDF.save(`Ticket_${reserva.placa || 'parking'}.pdf`);
-        } catch (e) { console.error(e); }
-    };
+            docPDF.setFont("helvetica", "bold"); docPDF.text("TIPO:", xPos, 72);
+            docPDF.setFont("helvetica", "bold"); 
+            docPDF.setTextColor(10, 61, 98); // Azul para el rol
+            docPDF.text((reserva.rol || userData.rol || "ESTUDIANTE").toUpperCase(), 35, 72);
+            docPDF.setTextColor(0, 0, 0); // Reset a negro
 
+            docPDF.setFont("helvetica", "bold"); docPDF.text("PLACA:", xPos, 80);
+            docPDF.setFont("helvetica", "normal"); docPDF.text((reserva.placa || userData.placa || "N/A").toUpperCase(), xPos, 84);
+            
+            docPDF.setFont("helvetica", "bold"); docPDF.text("UBICACIÓN:", xPos, 92);
+            docPDF.setFont("helvetica", "normal"); docPDF.text((reserva.lugar || "EDIFICIO CEC").toUpperCase(), xPos, 96);
+            
+            docPDF.setDrawColor(200); docPDF.line(10, 100, 70, 100);
+            
+            // Horarios de Entrada y Salida
+            docPDF.setFont("helvetica", "bold"); docPDF.text("FECHA:", xPos, 108);
+            docPDF.setFont("helvetica", "normal"); docPDF.text(reserva.fecha, 35, 108);
+            
+            docPDF.setFont("helvetica", "bold"); docPDF.text("ENTRADA:", xPos, 115);
+            docPDF.setFont("helvetica", "normal"); docPDF.text(reserva.hora, 35, 115);
+            
+            docPDF.setFont("helvetica", "bold"); docPDF.text("SALIDA MAX:", xPos, 122);
+            docPDF.setFont("helvetica", "bold"); 
+            docPDF.setTextColor(227, 6, 19); // Rojo para la hora de salida (alerta)
+            docPDF.text(horaSalida, 35, 122);
+            docPDF.setTextColor(0, 0, 0);
+
+            // Recuadro del Puesto
+            docPDF.setDrawColor(0); docPDF.setLineWidth(0.7); docPDF.rect(15, 135, 50, 15); 
+            docPDF.setFontSize(16); docPDF.setFont("helvetica", "bold"); 
+            docPDF.text(`PUESTO: ${reserva.espacio || '?'}`, pageWidth / 2, 145, { align: 'center' });
+            
+            docPDF.save(`Ticket_PoliParking_${reserva.placa || 'EPN'}.pdf`);
+        } catch (e) { console.error("Error al generar PDF:", e); }
+    };
     // --- AUTH Y CARGA DE ROL ---
     useEffect(() => {
         if (isGuest) {
@@ -122,50 +153,74 @@ const DashboardUser = ({ isGuest = false }) => {
         return () => unsubscribe();
     }, [navigate, isGuest]);
 
-    // --- DATA MONITOR ---
-    useEffect(() => {
-        const qMapa = query(collection(db, "reservas"), where("fecha", "==", reservaForm.fecha), where("lugar", "==", reservaForm.lugar));
-        const unsubMapa = onSnapshot(qMapa, (s) => setReservasTotales(s.docs.map(d => d.data())));
+// --- DATA MONITOR (CORREGIDO) ---
+    useEffect(() => {
+        // Monitor de puestos ocupados en el mapa
+        const qMapa = query(collection(db, "reservas"), where("fecha", "==", reservaForm.fecha), where("lugar", "==", reservaForm.lugar));
+        const unsubMapa = onSnapshot(qMapa, (s) => setReservasTotales(s.docs.map(d => d.data())));
+        
+        // Monitor de TUS reservas personales
+        let unsubMias = () => {};
         
-        const currentUserEmail = isGuest ? guestIdRef.current : auth.currentUser?.email;
-        let unsubMias = () => {};
-        if (currentUserEmail) {
-            const qMias = query(collection(db, "reservas"), where("usuario", "==", currentUserEmail));
-            unsubMias = onSnapshot(qMias, (s) => setMisReservas(s.docs.map(d => ({ id: d.id, ...d.data() }))));
-        }
-        return () => { unsubMapa(); unsubMias(); };
-    }, [reservaForm.fecha, reservaForm.lugar, isGuest]);
-
-    // --- ACCIONES ---
-    const handleReserva = async (e) => {
-        e.preventDefault();
-        if (misReservas.length > 0) return Swal.fire({ title: 'Límite', text: 'Solo puedes tener una reserva activa.', icon: 'warning' });
-        
-        const [hSeleccionada, mSeleccionada] = reservaForm.hora.split(':').map(Number);
-        const minutosTotales = hSeleccionada * 60 + mSeleccionada;
-        if (minutosTotales < 390 || minutosTotales > 1230) return Swal.fire({ title: 'Horario', text: 'Atención de 06:30 a 20:30', icon: 'error' });
-        
-        if (reservaForm.fecha === fechaHoy) {
-            const ahora = new Date();
-            const tiempoReserva = new Date();
-            tiempoReserva.setHours(hSeleccionada, mSeleccionada, 0);
-            if (tiempoReserva < ahora) return Swal.fire('Error', 'Hora ya pasada.', 'error');
-        }
-
-        if (!reservaForm.espacio) return Swal.fire('Aviso', 'Selecciona un puesto en el mapa.', 'info');
-
-        try {
-            await addDoc(collection(db, "reservas"), { 
-                ...reservaForm, usuario: userData.email, rol: userData.rol, nombre: userData.nombre, placa: userData.placa
+        // Usamos userData.email que se llena al cargar el perfil
+        if (userData.email) {
+            const qMias = query(collection(db, "reservas"), where("usuario", "==", userData.email));
+            unsubMias = onSnapshot(qMias, (s) => {
+                setMisReservas(s.docs.map(d => ({ id: d.id, ...d.data() })));
             });
-            
-            Swal.fire({ title: '¡Listo!', text: 'Reserva confirmada.', icon: 'success', confirmButtonText: 'Descargar Ticket' }).then((r) => { 
-                if(r.isConfirmed) generarTicketPro({ ...reservaForm, nombre: userData.nombre, placa: userData.placa });
-            });
-            setReservaForm({ ...reservaForm, espacio: null });
-        } catch (e) { Swal.fire('Error', 'Intenta nuevamente.', 'error'); }
-    };
+        }
+        
+        return () => { unsubMapa(); unsubMias(); };
+        
+    // Agregamos userData.email a las dependencias para que React sepa cuándo refrescar
+    }, [reservaForm.fecha, reservaForm.lugar, userData.email]);
 
+// --- ACCIONES ---
+const handleReserva = async (e) => {
+    e.preventDefault();
+    if (misReservas.length > 0) return Swal.fire({ title: 'Límite', text: 'Solo puedes tener una reserva activa.', icon: 'warning' });
+    
+    const [hSeleccionada, mSeleccionada] = reservaForm.hora.split(':').map(Number);
+    const minutosTotales = hSeleccionada * 60 + mSeleccionada;
+    
+    // Validación de horario institucional
+    if (minutosTotales < 390 || minutosTotales > 1230) return Swal.fire({ title: 'Horario', text: 'Atención de 06:30 a 20:30', icon: 'error' });
+    
+    // CORRECCIÓN DE LÓGICA DE FECHA/HORA
+    const ahora = new Date();
+    // Creamos la fecha de la reserva basándonos en lo elegido en el form
+    const [anio, mes, dia] = reservaForm.fecha.split('-').map(Number);
+    const tiempoReserva = new Date(anio, mes - 1, dia, hSeleccionada, mSeleccionada, 0);
+
+    // Solo validamos que la hora no haya pasado si la reserva es para el mismo día de hoy
+    if (tiempoReserva < ahora) {
+        return Swal.fire('Error', 'La fecha u hora seleccionada ya ha pasado.', 'error');
+    }
+
+    if (!reservaForm.espacio) return Swal.fire('Aviso', 'Selecciona un puesto en el mapa.', 'info');
+
+    try {
+        await addDoc(collection(db, "reservas"), { 
+            ...reservaForm, 
+            usuario: userData.email, 
+            rol: userData.rol, 
+            nombre: userData.nombre, 
+            placa: userData.placa
+        });
+        
+        Swal.fire({ 
+            title: '¡Listo!', 
+            text: 'Reserva confirmada.', 
+            icon: 'success', 
+            confirmButtonText: 'Descargar Ticket' 
+        }).then((r) => { 
+            if(r.isConfirmed) generarTicketPro({ ...reservaForm, nombre: userData.nombre, placa: userData.placa });
+        });
+        setReservaForm({ ...reservaForm, espacio: null });
+    } catch (e) { 
+        Swal.fire('Error', 'Intenta nuevamente.', 'error'); 
+    }
+};
     const liberarPuesto = async (id) => {
         if ((await Swal.fire({ title: '¿Liberar?', icon: 'warning', showCancelButton: true })).isConfirmed) {
             await deleteDoc(doc(db, "reservas", id));
