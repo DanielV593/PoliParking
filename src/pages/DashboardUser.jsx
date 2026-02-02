@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { auth, db } from '../firebase/config';
 import { collection, addDoc, query, where, onSnapshot, deleteDoc, doc, getDocs } from 'firebase/firestore';
 import { useNavigate } from 'react-router-dom';
@@ -7,16 +7,18 @@ import { signOut } from 'firebase/auth';
 import { FaDownload, FaSignOutAlt, FaParking, FaTrashAlt, FaClock, FaCheckCircle, FaTimes } from 'react-icons/fa';
 import jsPDF from 'jspdf';
 
-const DashboardUser = () => {
+const DashboardUser = ({ isGuest = false }) => {
     const navigate = useNavigate();
     const [userData, setUserData] = useState({ nombre: '', placa: '', email: '' });
     const [reservasTotales, setReservasTotales] = useState([]);
     const [misReservas, setMisReservas] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [mapVisible, setMapVisible] = useState(false); // Estado para controlar la visibilidad del mapa
+    const [mapVisible, setMapVisible] = useState(false); 
     const [isMobile, setIsMobile] = useState(false);
 
-    // Detectar tamaño de pantalla
+    // Referencia para mantener el ID del invitado durante la sesión sin que cambie
+    const guestIdRef = useRef('guest_' + Math.floor(Math.random() * 100000));
+
     useEffect(() => {
         const checkMobile = () => setIsMobile(window.innerWidth < 900);
         checkMobile();
@@ -39,17 +41,23 @@ const DashboardUser = () => {
 
     const CAPACIDADES = { "Edificio CEC": 100 };
 
+    // --- LOGICA DE EXPIRACIÓN (ACTUALIZADA: 3 HORAS INVITADO / 8 HORAS ESTUDIANTE) ---
     useEffect(() => {
         if (misReservas.length === 0) return;
         const interval = setInterval(() => {
             const ahora = new Date().getTime();
             misReservas.forEach(async (reserva) => {
                 const inicioReserva = new Date(`${reserva.fecha}T${reserva.hora}`).getTime();
-                const finReserva = inicioReserva + (8 * 60 * 60 * 1000);
+                
+                // CAMBIO: Definir duración según el rol
+                const horasDuracion = reserva.rol === 'invitado' ? 3 : 8;
+                
+                const finReserva = inicioReserva + (horasDuracion * 60 * 60 * 1000);
                 const tiempoRestanteMin = Math.floor((finReserva - ahora) / (60 * 1000));
+                
                 if (ahora >= finReserva) {
                     await deleteDoc(doc(db, "reservas", reserva.id));
-                    Swal.fire('Reserva Expirada', `Tu tiempo en el puesto #${reserva.espacio} terminó.`, 'info');
+                    Swal.fire('Reserva Expirada', `Tu tiempo de ${horasDuracion} horas en el puesto #${reserva.espacio} terminó.`, 'info');
                 } else if ([30, 20, 10].includes(tiempoRestanteMin)) {
                     Swal.mixin({ toast: true, position: 'top-end', showConfirmButton: false, timer: 5000 }).fire({
                         icon: 'warning', title: `Tu reserva #${reserva.espacio} vence en ${tiempoRestanteMin} min.`
@@ -72,52 +80,93 @@ const DashboardUser = () => {
             docPDF.setFontSize(12); docPDF.setFont("helvetica", "bold"); docPDF.text("DETALLES DEL TICKET", pageWidth / 2, 55, { align: 'center' });
             const xPos = 12;
             docPDF.setFontSize(9); docPDF.text("USUARIO:", xPos, 65);
-            docPDF.setFont("helvetica", "normal"); docPDF.text((userData.nombre || "Usuario").toUpperCase(), xPos, 69);
+            docPDF.setFont("helvetica", "normal"); docPDF.text((reserva.nombre || userData.nombre || "Usuario").toUpperCase(), xPos, 69);
             docPDF.setFont("helvetica", "bold"); docPDF.text("PLACA:", xPos, 77);
-            docPDF.setFont("helvetica", "normal"); docPDF.text((userData.placa || "N/A").toUpperCase(), xPos, 81);
+            docPDF.setFont("helvetica", "normal"); docPDF.text((reserva.placa || userData.placa || "N/A").toUpperCase(), xPos, 81);
             docPDF.setFont("helvetica", "bold"); docPDF.text("UBICACIÓN:", xPos, 89);
             docPDF.setFont("helvetica", "normal"); docPDF.text((reserva.lugar || "CEC").toUpperCase(), xPos, 93);
             docPDF.setDrawColor(200); docPDF.line(10, 98, 70, 98);
-            docPDF.setFont("helvetica", "bold"); docPDF.text("FECHA ENTRADA:", xPos, 105);
-            docPDF.setFont("helvetica", "normal"); docPDF.text(reserva.fecha, 50, 105);
-            docPDF.setFont("helvetica", "bold"); docPDF.text("HORA ENTRADA:", xPos, 112);
-            docPDF.setFont("helvetica", "normal"); docPDF.text(reserva.hora, 50, 112);
-            docPDF.setFont("helvetica", "bold"); docPDF.text("VALIDEZ:", xPos, 119);
-            docPDF.setFont("helvetica", "normal"); docPDF.text("8 HORAS", 50, 119);
+            docPDF.setFontSize(10); 
+            docPDF.setFont("helvetica", "bold"); docPDF.text("FECHA:", xPos, 105);
+            docPDF.setFont("helvetica", "normal"); docPDF.text(reserva.fecha, 45, 105);
+            docPDF.setFont("helvetica", "bold"); docPDF.text("HORA:", xPos, 110);
+            docPDF.setFont("helvetica", "normal"); docPDF.text(reserva.hora, 45, 110);
+            
+            // CAMBIO: Mostrar validez dinámica en el PDF
+            const textoValidez = reserva.rol === 'invitado' ? "3 HORAS (INVITADO)" : "8 HORAS";
+            
+            docPDF.setFont("helvetica", "bold"); docPDF.text("VALIDEZ:", xPos, 115);
+            docPDF.setFont("helvetica", "normal"); docPDF.text(textoValidez, 45, 115);
+            
             docPDF.setDrawColor(0); docPDF.setLineWidth(0.7); docPDF.rect(15, 125, 50, 15); 
             docPDF.setFontSize(16); docPDF.setFont("helvetica", "bold"); docPDF.text(`PUESTO: ${reserva.espacio || '?'}`, pageWidth / 2, 135, { align: 'center' });
-            docPDF.save(`Ticket_${userData.placa}.pdf`);
+            docPDF.save(`Ticket_${reserva.placa || 'invitado'}.pdf`);
         } catch (e) { console.error(e); }
     };
 
+    // --- LOGICA DE USUARIO ---
     useEffect(() => {
+        if (isGuest) {
+            // Asignamos una identidad temporal al invitado para esta sesión
+            setUserData({ 
+                nombre: 'Invitado', 
+                placa: 'VISITA', 
+                email: guestIdRef.current 
+            });
+            setLoading(false);
+            return;
+        }
+
         const unsubscribe = auth.onAuthStateChanged(async (user) => {
             if (user) {
                 const q = query(collection(db, "usuarios"), where("email", "==", user.email));
                 const snap = await getDocs(q);
                 if (!snap.empty) setUserData({ ...snap.docs[0].data(), email: user.email });
-            } else navigate('/login');
+            } else {
+                navigate('/login');
+            }
             setLoading(false);
         });
         return () => unsubscribe();
-    }, [navigate]);
+    }, [navigate, isGuest]);
 
     useEffect(() => {
         const qMapa = query(collection(db, "reservas"), where("fecha", "==", reservaForm.fecha), where("lugar", "==", reservaForm.lugar));
         const unsubMapa = onSnapshot(qMapa, (s) => setReservasTotales(s.docs.map(d => d.data())));
-        const qMias = query(collection(db, "reservas"), where("usuario", "==", auth.currentUser?.email || ""));
-        const unsubMias = onSnapshot(qMias, (s) => setMisReservas(s.docs.map(d => ({ id: d.id, ...d.data() }))));
+        
+        // Consultar mis reservas (funciona para guest usando su ID temporal o usuario logueado)
+        const currentUserEmail = isGuest ? guestIdRef.current : auth.currentUser?.email;
+        
+        let unsubMias = () => {};
+        if (currentUserEmail) {
+            const qMias = query(collection(db, "reservas"), where("usuario", "==", currentUserEmail));
+            unsubMias = onSnapshot(qMias, (s) => setMisReservas(s.docs.map(d => ({ id: d.id, ...d.data() }))));
+        }
 
         return () => { unsubMapa(); unsubMias(); };
-    }, [reservaForm.fecha, reservaForm.lugar]);
+    }, [reservaForm.fecha, reservaForm.lugar, isGuest]);
 
     const handleReserva = async (e) => {
         e.preventDefault();
+
+        // --- CAMBIO: VALIDACIONES ESPECÍFICAS PARA INVITADO ---
+        if (isGuest) {
+            // Restricción: Solo pueden reservar para hoy
+            if (reservaForm.fecha !== fechaHoy) {
+                return Swal.fire({
+                    title: 'Restricción de Invitado',
+                    text: 'Los invitados solo pueden reservar espacios para el día de hoy.',
+                    icon: 'warning'
+                });
+            }
+            // (Opcional) Restricción: Solo una reserva activa
+            if (misReservas.length > 0) {
+                 return Swal.fire('Límite', 'Como invitado solo puedes tener una reserva activa.', 'warning');
+            }
+        }
         
-        // Si no hay espacio seleccionado y estamos en móviles, mostrar el mapa
         if (!reservaForm.espacio && isMobile) {
             setMapVisible(true);
-            // Desplazarse hacia el mapa
             setTimeout(() => {
                 document.querySelector('.map-section-mobile')?.scrollIntoView({ 
                     behavior: 'smooth', 
@@ -127,6 +176,7 @@ const DashboardUser = () => {
             return Swal.fire('Info', 'Por favor, selecciona un espacio del mapa.', 'info');
         }
         
+        // Validar que no sea hora pasada (solo si es hoy)
         if (reservaForm.fecha === fechaHoy) {
             const ahora = new Date();
             const [hRes, mRes] = reservaForm.hora.split(':');
@@ -140,40 +190,51 @@ const DashboardUser = () => {
         
         if (!reservaForm.espacio) return Swal.fire('Aviso', 'Selecciona un puesto en el mapa', 'info');
 
+        // Texto dinámico para la confirmación
+        const duracionTexto = isGuest ? "3 horas" : "8 horas";
+
         const res = await Swal.fire({ 
             title: '¿Confirmar reserva?', 
-            text: `Puesto #${reservaForm.espacio} - ${reservaForm.fecha} a las ${reservaForm.hora}`, 
+            html: `Puesto <b>#${reservaForm.espacio}</b><br>Fecha: ${reservaForm.fecha}<br>Hora: ${reservaForm.hora}<br>Duración: <b>${duracionTexto}</b>`, 
             icon: 'question', 
             showCancelButton: true 
         });
         
         if (res.isConfirmed) {
             try {
+                // Validación de duplicados
                 const q = query(collection(db, "reservas"), where("usuario", "==", userData.email), where("fecha", "==", reservaForm.fecha));
                 const snap = await getDocs(q);
                 if (!snap.empty) return Swal.fire('Límite', 'Ya tienes una reserva para este día.', 'warning');
                 
+                // CAMBIO: Guardamos el rol correcto (invitado o estudiante)
                 await addDoc(collection(db, "reservas"), { 
                     ...reservaForm, 
-                    usuario: userData.email, 
-                    rol: 'estudiante',
+                    usuario: userData.email, // Será el email real o el ID temporal del guest
+                    rol: isGuest ? 'invitado' : 'estudiante', // IMPORTANTE PARA LA LÓGICA DE TIEMPO
                     nombre: userData.nombre,
                     placa: userData.placa
                 });
                 
                 Swal.fire({ 
                     title: '¡Reserva Exitosa!', 
-                    text: 'Reserva activa por 8 horas.', 
+                    text: `Reserva activa por ${duracionTexto}.`, 
                     icon: 'success', 
                     showCancelButton: true, 
                     confirmButtonText: 'Descargar Ticket',
                     cancelButtonText: 'Cerrar'
                 }).then((r) => { 
-                    if(r.isConfirmed) generarTicketPro(reservaForm); 
+                    // Pasamos datos simulados al generador si es necesario
+                    const datosReserva = {
+                        ...reservaForm,
+                        nombre: userData.nombre,
+                        placa: userData.placa,
+                        rol: isGuest ? 'invitado' : 'estudiante'
+                    };
+                    if(r.isConfirmed) generarTicketPro(datosReserva); 
                 });
                 
                 setReservaForm({ ...reservaForm, espacio: null });
-                // Ocultar el mapa después de reservar
                 setMapVisible(false);
                 
             } catch (e) { 
@@ -191,6 +252,10 @@ const DashboardUser = () => {
     };
 
     const handleLogout = async () => { 
+        if (isGuest) {
+            navigate('/');
+            return;
+        }
         if ((await Swal.fire({ title: '¿Cerrar sesión?', showCancelButton: true })).isConfirmed) { 
             await signOut(auth); 
             navigate('/login'); 
@@ -206,11 +271,9 @@ const DashboardUser = () => {
         
         setReservaForm({...reservaForm, espacio: num});
         
-        // Ocultar el mapa en móviles después de seleccionar
         if (isMobile) {
             setTimeout(() => {
                 setMapVisible(false);
-                // Desplazarse de vuelta al formulario
                 document.querySelector('.reserva-section')?.scrollIntoView({ 
                     behavior: 'smooth', 
                     block: 'start' 
@@ -219,7 +282,7 @@ const DashboardUser = () => {
             
             Swal.fire({
                 title: '¡Espacio Seleccionado!',
-                text: `Has seleccionado el espacio #${num}. Ahora puedes proceder con la reserva.`,
+                text: `Has seleccionado el espacio #${num}.`,
                 icon: 'success',
                 timer: 2000,
                 showConfirmButton: false
@@ -263,17 +326,20 @@ const DashboardUser = () => {
                     {!isMobile && (
                         <div style={{textAlign:'right', lineHeight:'1.4'}}>
                             <div style={{fontWeight:'bold', color:'#0a3d62', fontSize:'1rem'}}>
+                                {/* Si es invitado mostramos "Invitado" */}
                                 ¡Bienvenido/a, {userData.nombre?.split(' ')[0] || 'Usuario'}!
                             </div>
                             <div style={{fontSize:'0.85rem', color:'#666', fontWeight:'500'}}>
-                                Tu Placa: <span style={{color:'#ffc107', fontWeight:'bold'}}>{userData.placa || 'N/A'}</span>
+                                Rol: <span style={{color: isGuest ? '#e30613' : '#ffc107', fontWeight:'bold'}}>
+                                    {isGuest ? 'INVITADO (3h Max)' : 'ESTUDIANTE'}
+                                </span>
                             </div>
                         </div>
                     )}
                     <div style={avatarStyle}>
                         {userData.nombre ? userData.nombre.charAt(0).toUpperCase() : 'U'}
                     </div>
-                    <button onClick={handleLogout} style={logoutBtn} title="Cerrar sesión">
+                    <button onClick={handleLogout} style={logoutBtn} title={isGuest ? "Salir" : "Cerrar sesión"}>
                         <FaSignOutAlt/>
                     </button>
                 </div>
@@ -295,6 +361,22 @@ const DashboardUser = () => {
                             <FaParking style={{marginRight: '8px', color: '#ffc107'}}/>
                             Nueva Reserva
                         </h3>
+                        
+                        {/* AVISO PARA INVITADOS */}
+                        {isGuest && (
+                            <div style={{
+                                background: '#fff3cd', 
+                                color: '#856404', 
+                                padding: '10px', 
+                                borderRadius: '8px',
+                                marginBottom: '15px',
+                                fontSize: '0.85rem',
+                                border: '1px solid #ffeeba'
+                            }}>
+                                ⚠️ <strong>Modo Invitado:</strong> Solo puedes reservar para <strong>HOY</strong> con una duración máxima de <strong>3 horas</strong>.
+                            </div>
+                        )}
+
                         <form onSubmit={handleReserva}>
                             <div style={styles.formGroup}>
                                 <label style={styles.labelStyle}>
@@ -333,12 +415,13 @@ const DashboardUser = () => {
                                     type="date" 
                                     style={styles.inputStyle} 
                                     value={reservaForm.fecha} 
-                                    min={fechaHoy} 
-                                    max={fechaMax} 
+                                    // CAMBIO: Si es invitado, min y max son HOY
+                                    min={isGuest ? fechaHoy : fechaHoy} 
+                                    max={isGuest ? fechaHoy : fechaMax} 
                                     onKeyDown={e => e.preventDefault()} 
                                     onChange={e => {
                                         setReservaForm({...reservaForm, fecha: e.target.value, espacio: null});
-                                        setMapVisible(false); // Ocultar mapa si cambia la fecha
+                                        setMapVisible(false);
                                     }} 
                                 />
                             </div>
@@ -394,7 +477,7 @@ const DashboardUser = () => {
                         </form>
                     </section>
 
-                    {/* MAPA EN MÓVILES (se muestra después de Nueva Reserva cuando está visible) */}
+                    {/* MAPA EN MÓVILES */}
                     {isMobile && mapVisible && (
                         <section 
                             className="map-section-mobile"
@@ -462,12 +545,12 @@ const DashboardUser = () => {
                         </section>
                     )}
 
-                    {/* CAJA MIS RESERVAS ACTIVAS */}
+                    {/* CAJA MIS RESERVAS ACTIVAS (Visible para todos ahora) */}
                     <section style={styles.cardStyle}>
                         <div style={styles.sectionHeader}>
                             <h4 style={styles.titleStyle}>
                                 <FaCheckCircle style={{marginRight: '8px', color: '#22c55e'}}/>
-                                Mis Reservas Activas
+                                Mis Reservas {isGuest ? '(Invitado)' : ''}
                             </h4>
                             {misReservas.length > 0 && (
                                 <span style={styles.badge}>
@@ -490,6 +573,10 @@ const DashboardUser = () => {
                                             <div style={{display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px'}}>
                                                 <div style={styles.spaceNumber}>#{res.espacio}</div>
                                                 <div style={styles.locationBadge}>{res.lugar}</div>
+                                                {/* Badge de Rol en la reserva */}
+                                                {res.rol === 'invitado' && (
+                                                    <div style={{fontSize:'0.65rem', background:'#ffeeba', color:'#856404', padding:'2px 6px', borderRadius:'4px'}}>3H</div>
+                                                )}
                                             </div>
                                             <div style={{fontSize:'0.75rem', color:'#888', display: 'flex', alignItems: 'center', gap: '5px'}}>
                                                 <span>📅 {res.fecha}</span>
@@ -520,9 +607,9 @@ const DashboardUser = () => {
                                                         icon:'warning', 
                                                         showCancelButton:true
                                                     })).isConfirmed) {
-                                                        deleteDoc(doc(db,"reservas",res.id));
-                                                        Swal.fire('Reserva Cancelada', '', 'success');
-                                                    }
+                                                            deleteDoc(doc(db,"reservas",res.id));
+                                                            Swal.fire('Reserva Cancelada', '', 'success');
+                                                        }
                                                 }} 
                                                 style={{...styles.iconBtn, color:'#e30613', background:'#fee2e2'}}
                                                 title="Eliminar reserva"
@@ -537,7 +624,7 @@ const DashboardUser = () => {
                     </section>
                 </div>
 
-                {/* MAPA EN DESKTOP (lado derecho) */}
+                {/* MAPA EN DESKTOP */}
                 {!isMobile && (
                     <section style={styles.mapSectionDesktop}>
                         <div style={styles.mapCardStyle}>
@@ -598,7 +685,7 @@ const DashboardUser = () => {
     );
 };
 
-// ESTILOS
+// ESTILOS (IGUAL QUE ANTES)
 const styles = {
     mainContainer: {
         display: 'flex',
@@ -912,7 +999,6 @@ const styles = {
     }
 };
 
-// Estilos base (manteniendo tus estilos originales)
 const bgStyle = { 
     minHeight: '100vh', 
     background: '#f4f7f6', 
@@ -966,7 +1052,6 @@ const logoutBtn = {
     }
 };
 
-// Añadir estilos CSS para animaciones
 const addGlobalStyles = () => {
     const style = document.createElement('style');
     style.innerHTML = `
@@ -998,7 +1083,6 @@ const addGlobalStyles = () => {
     document.head.appendChild(style);
 };
 
-// Llamar a la función para agregar estilos globales
 addGlobalStyles();
 
 export default DashboardUser;

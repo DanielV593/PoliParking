@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { auth, db } from '../firebase/config';
 import { signOut } from 'firebase/auth';
 import { 
-    collection, getDocs, deleteDoc, doc, updateDoc, addDoc, query, orderBy, writeBatch, onSnapshot 
+    collection, deleteDoc, doc, updateDoc, addDoc, query, orderBy, writeBatch, onSnapshot 
 } from 'firebase/firestore';
 import Swal from 'sweetalert2';
 import { FaChartBar, FaUsers, FaEnvelope, FaCar, FaSignOutAlt, FaTrashAlt, FaCheckSquare, FaSquare, FaFilter, FaCheckCircle, FaBan, FaHistory, FaUserCircle, FaSearch, FaExclamationTriangle, FaDownload, FaListUl, FaChartPie, FaDatabase, FaClock, FaBars, FaTimes } from 'react-icons/fa';
@@ -180,15 +180,29 @@ const DashboardAdmin = () => {
         i.nombre.toLowerCase().includes(filtroInvitados.toLowerCase()) || (i.placa || '').toLowerCase().includes(filtroInvitados.toLowerCase())
     );
 
-    const historialFiltrado = reservas.filter(h => {
+    // --- NUEVA LÓGICA: HISTORIAL UNIFICADO (Reservas + Invitados) ---
+    const historialUnificado = [
+        ...reservas.map(r => ({ ...r, tipo: 'reserva', identificador: r.usuario, detalle_lugar: r.lugar, detalle_espacio: `#${r.espacio}` })),
+        ...invitados.map(i => ({ ...i, tipo: 'invitado', identificador: `${i.nombre} (${i.placa})`, detalle_lugar: 'Entrada Invitados', detalle_espacio: 'N/A' }))
+    ];
+
+    const historialFiltrado = historialUnificado.filter(h => {
         const texto = filtroHistorial.texto.toLowerCase();
-        return (h.usuario.toLowerCase().includes(texto) || (h.nombre_invitado || '').toLowerCase().includes(texto) || h.hora.includes(texto) || h.fecha.includes(texto)) && (filtroHistorial.lugar === 'todos' || h.lugar === filtroHistorial.lugar);
+        return (
+            (h.identificador.toLowerCase().includes(texto)) || 
+            (h.hora.includes(texto) || h.fecha.includes(texto))
+        ) && (filtroHistorial.lugar === 'todos' || (h.detalle_lugar && h.detalle_lugar.includes(filtroHistorial.lugar)) || (filtroHistorial.lugar === 'todos' && h.tipo === 'invitado'));
+    }).sort((a, b) => {
+        // Ordenar por fecha y hora descendente
+        const dateA = new Date(`${a.fecha}T${a.hora}`);
+        const dateB = new Date(`${b.fecha}T${b.hora}`);
+        return dateB - dateA;
     });
 
     const exportarCSV = () => {
-        let contenido = "Fecha,Hora,Usuario/Placa,Lugar,Puesto\n";
+        let contenido = "Fecha,Hora,Usuario/Placa,Lugar,Puesto,Tipo\n";
         historialFiltrado.forEach(h => {
-            contenido += `${h.fecha},${h.hora},${h.usuario},${h.lugar},#${h.espacio}\n`;
+            contenido += `${h.fecha},${h.hora},${h.identificador},${h.detalle_lugar},${h.detalle_espacio},${h.tipo}\n`;
         });
         const blob = new Blob([contenido], { type: 'text/csv;charset=utf-8;' });
         const url = URL.createObjectURL(blob);
@@ -332,7 +346,7 @@ const DashboardAdmin = () => {
     const renderHistorial = () => (
         <div style={tableContainer}>
             <div style={{display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:'15px', flexWrap: 'wrap', gap: '10px'}}>
-                <h3 style={{margin:0, color:'#0a3d62'}}>Historial Global</h3>
+                <h3 style={{margin:0, color:'#0a3d62'}}>Historial Global (Reservas e Invitados)</h3>
                 <button onClick={exportarCSV} style={{...btnEdit, background:'#27ae60'}}><FaDownload/> Exportar CSV</button>
             </div>
             <div style={{ background: '#f0f4f8', padding: '15px', borderRadius: '10px', marginBottom: '20px', display: 'flex', gap: '10px', alignItems: 'center', flexWrap: 'wrap' }}>
@@ -346,8 +360,18 @@ const DashboardAdmin = () => {
                 <table style={{width:'100%', borderCollapse:'collapse', minWidth: '600px'}}>
                     <thead><tr style={{background:'#f8f9fa', textAlign:'left'}}><th style={thStyle}>Fecha / Hora</th><th style={thStyle}>Usuario/Placa</th><th style={thStyle}>Lugar</th><th style={thStyle}>Puesto</th></tr></thead>
                     <tbody>
-                        {historialFiltrado.map(h => (
-                            <tr key={h.id} style={{borderBottom:'1px solid #eee'}}><td style={tdStyle}><strong>{h.fecha}</strong> <br/> <small>{h.hora}</small></td><td style={tdStyle}>{h.usuario}</td><td style={tdStyle}>{h.lugar}</td><td style={tdStyle}>#{h.espacio}</td></tr>
+                        {historialFiltrado.map((h, index) => (
+                            <tr key={`${h.id}-${index}`} style={{borderBottom:'1px solid #eee'}}>
+                                <td style={tdStyle}>
+                                    <strong>{h.fecha}</strong> <br/> <small>{h.hora}</small>
+                                </td>
+                                <td style={tdStyle}>
+                                    {h.identificador}
+                                    {h.tipo === 'invitado' && <span style={{fontSize:'0.7rem', background:'#ffc107', padding:'2px 6px', borderRadius:'4px', marginLeft:'5px'}}>Invitado</span>}
+                                </td>
+                                <td style={tdStyle}>{h.detalle_lugar}</td>
+                                <td style={tdStyle}>{h.detalle_espacio}</td>
+                            </tr>
                         ))}
                     </tbody>
                 </table>
@@ -381,30 +405,44 @@ const DashboardAdmin = () => {
 
     const renderInvitados = () => (
         <div style={tableContainer}>
-            <h3 style={{ color: '#0a3d62', margin: 0, marginBottom:'15px' }}>Invitados Registrados</h3>
-            <input placeholder="Buscar placa..." style={inputStyle} value={filtroInvitados} onChange={e=>setFiltroInvitados(e.target.value)} />
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems:'center', marginBottom: '15px', flexWrap: 'wrap', gap: '10px' }}>
+                <h3 style={{ color: '#0a3d62', margin: 0 }}>Invitados Registrados</h3>
+                <button onClick={() => { setModoMasivo(!modoMasivo); setSeleccionados([]); }} style={{ ...btnEdit, background: modoMasivo ? '#7f8c8d' : '#0a3d62' }}>{modoMasivo ? 'Cancelar' : 'Gestión Masiva'}</button>
+            </div>
             
-            {/* SOLUCIÓN RESPONSIVE PARA TABLA DE INVITADOS */}
+            <div style={{ background: '#f8f9fa', padding: '15px', borderRadius: '8px', marginBottom: '15px', display: 'flex', gap: '10px', flexWrap: 'wrap', alignItems: 'center' }}>
+                <input placeholder="Buscar placa o nombre..." style={{...inputStyle, width: '200px', margin: 0, flex: '1 1 200px'}} value={filtroInvitados} onChange={e=>setFiltroInvitados(e.target.value)} />
+                {modoMasivo && seleccionados.length > 0 && (
+                    <div style={{ marginLeft: 'auto', display: 'flex', gap: '8px' }}>
+                        <button onClick={() => ejecutarBorradoMasivo('ingresos_invitados')} style={{...btnDel, padding:'8px 15px', fontSize:'0.9rem'}}><FaTrashAlt/> Eliminar Seleccionados</button>
+                    </div>
+                )}
+            </div>
+            
             <div style={{overflowX: 'auto', marginTop:'15px', borderRadius: '8px', border: '1px solid #eee'}}>
                 <table style={{width:'100%', borderCollapse:'collapse', minWidth: '450px'}}>
                     <thead>
                         <tr style={{background:'#f8f9fa', textAlign:'left'}}>
+                            {modoMasivo && <th style={{ width: '40px' }}><div onClick={() => seleccionarTodo(invitadosFiltrados)} style={{cursor:'pointer'}}>{seleccionados.length === invitadosFiltrados.length && invitadosFiltrados.length > 0 ? <FaCheckSquare color="#0a3d62"/> : <FaSquare color="#ddd"/>}</div></th>}
                             <th style={thStyle}>Nombre</th>
                             <th style={thStyle}>Placa</th>
-                            <th style={thStyle}>Acciones</th>
+                            {!modoMasivo && <th style={thStyle}>Acciones</th>}
                         </tr>
                     </thead>
                     <tbody>
                         {invitadosFiltrados.length > 0 ? invitadosFiltrados.map(i => (
-                            <tr key={i.id} style={{borderBottom: '1px solid #eee'}}>
+                            <tr key={i.id} style={{borderBottom: '1px solid #eee', background: seleccionados.includes(i.id) ? '#f0f7ff' : 'transparent'}}>
+                                {modoMasivo && <td><div onClick={() => toggleSeleccion(i.id)} style={{cursor:'pointer'}}>{seleccionados.includes(i.id) ? <FaCheckSquare color="#0a3d62"/> : <FaSquare color="#ddd"/>}</div></td>}
                                 <td style={tdStyle}>{i.nombre}</td>
                                 <td style={tdStyle}><strong>{i.placa}</strong></td>
-                                <td style={tdStyle}>
-                                    <button onClick={() => eliminarRegistro("ingresos_invitados",i.id)} style={btnDel}>X</button>
-                                </td>
+                                {!modoMasivo && (
+                                    <td style={tdStyle}>
+                                        <button onClick={() => eliminarRegistro("ingresos_invitados",i.id)} style={btnDel}>X</button>
+                                    </td>
+                                )}
                             </tr>
                         )) : (
-                            <tr><td colSpan="3" style={{padding:'20px', textAlign:'center', color:'#999'}}>No se encontraron invitados.</td></tr>
+                            <tr><td colSpan={modoMasivo ? 4 : 3} style={{padding:'20px', textAlign:'center', color:'#999'}}>No se encontraron invitados.</td></tr>
                         )}
                     </tbody>
                 </table>
@@ -464,7 +502,7 @@ const DashboardAdmin = () => {
                         {id:'mensajes', icon:<FaEnvelope/>, l:'Mensajes'}, 
                         {id:'historial', icon:<FaHistory/>, l:'Historial'}
                     ].map(item => (
-                        <button key={item.id} onClick={() => { setModuloActivo(item.id); if(isMobile) setIsMenuOpen(false); }} style={{...menuBtnStyle, background: moduloActivo === item.id ? '#0a3d62' : 'transparent', color: moduloActivo === item.id ? 'white' : '#0a3d62'}}>{item.icon} {item.l}</button>
+                        <button key={item.id} onClick={() => { setModuloActivo(item.id); if(isMobile) setIsMenuOpen(false); setModoMasivo(false); setSeleccionados([]); }} style={{...menuBtnStyle, background: moduloActivo === item.id ? '#0a3d62' : 'transparent', color: moduloActivo === item.id ? 'white' : '#0a3d62'}}>{item.icon} {item.l}</button>
                     ))}
                     <div style={{marginTop: 'auto', padding: '15px', borderTop: '1px solid #eee'}}>
                         <div style={{display:'flex', alignItems:'center', gap:'10px', marginBottom:'15px', color: '#27ae60', fontSize:'0.85rem'}}><FaDatabase/> <span>Firebase: Online</span></div>

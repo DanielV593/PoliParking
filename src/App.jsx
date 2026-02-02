@@ -1,9 +1,11 @@
 import React, { useEffect } from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+// BrowserRouter se suele poner en main.jsx, pero si te da error de router, 
+// asegúrate de que tu app esté envuelta en <BrowserRouter> en algún lado.
+import { Routes, Route } from 'react-router-dom'; 
+
 import Landing from './pages/Landing';
 import Login from './pages/Login';
 import Register from './pages/Register';
-// 1. Importamos DashboardUser (que es el que tiene el mapa y las reservas)
 import DashboardUser from './pages/DashboardUser'; 
 import DashboardAdmin from './pages/DashboardAdmin'; 
 
@@ -29,11 +31,14 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         
-        {/* 2. Corregimos la ruta para que coincida con el nombre de tu componente y lo que pusimos en el Login */}
+        {/* Rutas de usuarios registrados */}
         <Route path="/dashboard-user" element={<DashboardUser />} /> 
-        
         <Route path="/dashboard-admin" element={<DashboardAdmin />} />
+      
+        {/* Redirigimos al invitado al mismo DashboardUser para que vea el mapa */}
+       <Route path="/guest" element={<DashboardUser isGuest={true} />} />
         
+        {/* Ruta 404 */}
         <Route path="*" element={<h1 style={{textAlign:'center', marginTop:'100px'}}>404 - No encontrado</h1>} />
       </Routes>
   );
