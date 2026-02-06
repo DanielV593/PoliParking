@@ -1,8 +1,4 @@
-/* =========================================
-   FIND US - AJUSTADO PARA UNA VENTANA
-   ========================================= */
 .find-us {
-    /* Mantenemos el padding bajo para que no empuje el contenido */
     padding: 2rem 0;
     background-color: var(--colorFondoSeccion);
     scroll-margin-top: 80px;
@@ -10,7 +6,7 @@
 
 .find-us__title {
     text-align: center;
-    font-size: 2.2rem; /* Consistente con las otras secciones */
+    font-size: 2.2rem;
     margin-bottom: 0.4rem;
     color: var(--colorPrincipal);
     font-weight: 800;
@@ -19,21 +15,19 @@
 .find-us__text {
     text-align: center;
     margin-bottom: 2rem;
-    font-size: 1.05rem; /* Un poco más pequeño y elegante */
+    font-size: 1.05rem;
     color: var(--colorTextoClaro);
 }
 
-/* Grid */
 .find-us__container {
     width: 90%;
-    max-width: 1200px; /* Reducido para que las tarjetas no sean tan anchas */
+    max-width: 1200px;
     margin: 0 auto;
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 2rem; /* Reducido de 3.5rem para ahorrar espacio */
+    gap: 2rem;
 }
 
-/* CARD COMPACTA */
 .location-card {
     background: #ffffff;
     border-radius: 18px;
@@ -49,9 +43,8 @@
     box-shadow: 0 20px 45px rgba(0,0,0,0.12);
 }
 
-/* HEADER MÁS BAJO */
 .card__header {
-    padding: 1.2rem 1.5rem; /* Reducido de 2rem */
+    padding: 1.2rem 1.5rem;
     border-left: 5px solid var(--colorDorado);
     border-bottom: 1px solid var(--bordeSuave);
 }
@@ -63,9 +56,8 @@
     color: var(--colorPrincipal);
 }
 
-/* BODY OPTIMIZADO */
 .card__body {
-    padding: 1.5rem 2rem; /* Reducido drásticamente de 3rem */
+    padding: 1.5rem 2rem;
     flex: 1;
     display: flex;
     flex-direction: column;
@@ -75,19 +67,19 @@
 }
 
 .main-logo-esfot {
-    width: 140px; /* Reducido de 200px para ganar espacio vertical */
+    width: 140px;
     height: auto;
     margin-bottom: 1.2rem;
 }
 
 .main-logo-epns {
-    width: 110px; /* Reducido de 150px */
+    width: 110px;
     height: auto;
     margin-bottom: 1.2rem;
 }
 
 .address-item {
-    font-size: 1rem; /* Reducido de 1.15rem */
+    font-size: 1rem;
     color: var(--colorTextoClaro);
     margin-bottom: 0.5rem;
     display: flex;
@@ -95,15 +87,13 @@
     gap: 0.5rem;
 }
 
-/* FOOTER COMPACTO */
 .card__footer {
-    padding: 1rem; /* Reducido de 2rem */
+    padding: 1rem;
     background-color: #fbfbfb;
     border-top: 1px solid var(--bordeSuave);
     text-align: center;
 }
 
-/* SOCIAL ICONS MÁS PEQUEÑOS */
 .social-icons {
     display: flex;
     justify-content: center;
@@ -111,7 +101,7 @@
 }
 
 .social-icons i {
-    font-size: 1.8rem; /* Reducido de 2.4rem para no ser invasivo */
+    font-size: 1.8rem;
     color: var(--colorPrincipal);
     cursor: pointer;
     transition: all 0.25s ease;
@@ -122,7 +112,6 @@
     transform: scale(1.1);
 }
 
-/* RESPONSIVE */
 @media (max-width: 992px) {
     .find-us__container {
         gap: 1.5rem;

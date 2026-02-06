@@ -1,0 +1,156 @@
+/* Estilos para Login */
+
+.auth-page {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    display: flex;
+    flex-direction: column;
+}
+
+.auth-container {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.auth-card {
+    display: flex;
+    background: white;
+    border-radius: 24px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+    overflow: hidden;
+    width: 100%;
+    max-width: 850px; /* Un poco más compacto que el registro */
+    min-height: 500px;
+}
+
+/* Lado Azul (Mascota) */
+.auth-register__left {
+    flex: 1;
+    background: #0a3d62; /* Fondo Azul */
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    color: white;
+}
+
+/* Títulos y textos en el lado azul */
+.auth-title {
+    color: #ffc107;
+    font-weight: 800;
+    font-size: 2rem;
+    margin-bottom: 10px;
+}
+
+.auth-footer {
+    color: rgba(255,255,255,0.8);
+    margin-top: 15px;
+}
+
+.auth-register__link {
+    color: white;
+    font-weight: bold;
+    text-decoration: underline;
+}
+
+/* Lado Blanco (Formulario) */
+.auth-register__right {
+    flex: 1;
+    padding: 40px 60px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.auth-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px; /* Espacio entre inputs */
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.auth-register__label {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #4a5568;
+    margin-left: 4px;
+}
+
+.auth-register__input {
+    padding: 14px 16px;
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    outline: none;
+    transition: all 0.3s ease;
+    font-size: 1rem;
+    background: #f8fafc;
+}
+
+.auth-register__input:focus {
+    border-color: #0a3d62;
+    background: white;
+    box-shadow: 0 0 0 4px rgba(10, 61, 98, 0.1);
+}
+
+.auth-register__submit {
+    background: #0a3d62;
+    color: white;
+    border: none;
+    padding: 16px;
+    border-radius: 12px;
+    font-weight: 800;
+    cursor: pointer;
+    font-size: 1.1rem;
+    margin-top: 10px;
+    transition: transform 0.2s, background 0.2s;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.auth-register__submit:hover {
+    background: #082d49;
+    transform: translateY(-2px);
+}
+
+.auth-register__password {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.auth-register__toggle {
+    position: absolute;
+    right: 15px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #718096;
+    display: flex;
+    align-items: center;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .auth-card {
+        flex-direction: column;
+        max-width: 400px;
+    }
+    .auth-register__left {
+        padding: 30px;
+        border-bottom-right-radius: 30px;
+        border-bottom-left-radius: 30px;
+    }
+    .auth-register__right {
+        padding: 30px 20px;
+    }
+}

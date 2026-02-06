@@ -1,16 +1,10 @@
-/* =========================================
-    8. CONTACTO - CENTRADO EN VENTANA
-   ========================================= */
 .contact {
-    /* --- LO QUE AÑADIMOS PARA CENTRAR --- */
-    min-height: 100vh;      /* Ocupa toda la ventana */
-    display: flex;          /* Activa el modo flexible */
-    flex-direction: column; /* Alinea título y fila uno sobre otro */
-    justify-content: center;/* Centra verticalmente */
-    align-items: center;    /* Centra horizontalmente */
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
     box-sizing: border-box; 
-    /* ------------------------------------ */
-
     width: 95%;
     max-width: 1400px; 
     margin: 0 auto;
@@ -26,15 +20,13 @@
     font-weight: 800;
 }
 
-/* Layout */
 .contact__row {
     display: flex;
     gap: 2.5rem; 
     align-items: stretch;
-    width: 100%; /* Asegura que la fila ocupe el ancho del contenedor */
+    width: 100%;
 }
 
-/* FORMULARIO COMPACTO */
 .contact__form {
     flex: 1;
     background: #ffffff;
@@ -49,7 +41,6 @@
     flex-direction: column;
 }
 
-/* Inputs más estilizados y menos altos */
 .contact__form input:not([type="checkbox"]),
 .contact__form textarea {
     width: 100%;
@@ -67,7 +58,6 @@
     min-height: 80px; 
 }
 
-/* CHECKBOX */
 .checkbox__label {
     display: flex;
     align-items: center;
@@ -78,7 +68,6 @@
     color: var(--colorTextoClaro);
 }
 
-/* BOTÓN */
 .contact__form button {
     width: 100%;
     padding: 1rem;
@@ -98,7 +87,6 @@
     box-shadow: 0 5px 15px rgba(10, 61, 98, 0.2);
 }
 
-/* MAPA AJUSTADO */
 .contact__map {
     flex: 1.1;
     border-radius: 18px;
@@ -115,14 +103,12 @@
     display: block;
 }
 
-/* RESPONSIVE */
 @media (max-width: 1024px) {
     .contact__row { gap: 1.5rem; }
     .contact__form { padding: 1.5rem; }
 }
 
 @media (max-width: 900px) {
-    /* En móvil quitamos el centrado vertical para que no se corte el contenido */
     .contact { min-height: auto; padding: 4rem 1.5rem; } 
     .contact__row { flex-direction: column; }
     .contact__map iframe { min-height: 300px; }

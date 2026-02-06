@@ -1,15 +1,17 @@
 import React, { useEffect } from 'react';
-// BrowserRouter se suele poner en main.jsx, pero si te da error de router, 
-// asegúrate de que tu app esté envuelta en <BrowserRouter> en algún lado.
-import { Routes, Route } from 'react-router-dom'; 
+import { Routes, Route, Navigate } from 'react-router-dom'; 
 
-import Landing from './pages/Landing';
-import Login from './pages/Login';
-import Register from './pages/Register';
-import DashboardUser from './pages/DashboardUser'; 
-import DashboardAdmin from './pages/DashboardAdmin'; 
+// --- IMPORTAMOS LAS PÁGINAS (Rutas actualizadas a la nueva estructura) ---
+import Landing from './pages/Landing/Landing';
+import Login from './pages/Login/Login';
+import Register from './pages/Register/Register';
 
-// --- IMPORTAMOS ANIMACIONES ---
+// Importamos los 3 Dashboards independientes
+import DashboardUser from './pages/DashboardUser/DashboardUser'; 
+import DashboardAdmin from './pages/DashboardAdmin/DashboardAdmin';
+import DashboardGuest from './pages/DashboardGuest/DashboardGuest';
+
+// --- ANIMACIONES Y ESTILOS GLOBALES ---
 import AOS from 'aos';
 import 'aos/dist/aos.css'; 
 import './css/styles.css'; 
@@ -27,19 +29,22 @@ function App() {
 
   return (
       <Routes>
+        {/* Rutas Públicas */}
         <Route path="/" element={<Landing />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         
-        {/* Rutas de usuarios registrados */}
-        <Route path="/dashboard-user" element={<DashboardUser />} /> 
-        <Route path="/dashboard-admin" element={<DashboardAdmin />} />
-      
-        {/* Redirigimos al invitado al mismo DashboardUser para que vea el mapa */}
-       <Route path="/guest" element={<DashboardUser isGuest={true} />} />
+        {/* Ruta: Estudiantes y Docentes */}
+        <Route path="/dashboard" element={<DashboardUser />} /> 
         
-        {/* Ruta 404 */}
-        <Route path="*" element={<h1 style={{textAlign:'center', marginTop:'100px'}}>404 - No encontrado</h1>} />
+        {/* Ruta: Administrador */}
+        <Route path="/admin" element={<DashboardAdmin />} />
+      
+        {/* Ruta: Invitados */}
+        <Route path="/guest" element={<DashboardGuest />} />
+        
+        {/* Ruta 404: Si se pierden, los mandamos al inicio o mostramos error */}
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
   );
 }

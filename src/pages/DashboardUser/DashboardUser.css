@@ -1,0 +1,247 @@
+/**
+ * ARCHIVO: DashboardUser.css
+ * PROPÓSITO: Contiene todos los estilos visuales específicos de esta página.
+ * POR QUÉ ESTÁ AQUÍ: Mantiene el JSX limpio ("Separation of Concerns") y organizado.
+ */
+
+.dashboard-bg {
+  min-height: 100vh;
+  background: #f1f5f9;
+  padding: 15px;
+}
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 5%;
+  background: #fff;
+  border-radius: 16px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+}
+
+.brand {
+  font-size: 1.4rem;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  color: #0a3d62;
+}
+
+.logout-btn {
+  background: #fee2e2;
+  border: none;
+  color: #e30613;
+  cursor: pointer;
+  padding: 10px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.main-container {
+  display: flex;
+  gap: 20px;
+}
+
+.main-container.mobile {
+  flex-direction: column;
+}
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  flex-shrink: 0;
+}
+
+.card {
+  background: #fff;
+  padding: 20px;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+  margin-bottom: 15px;
+}
+
+.user-card {
+  padding: 15px;
+  background: #0a3d62;
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.avatar {
+  width: 35px;
+  height: 35px;
+  background: #ffc107;
+  color: #0a3d62;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+}
+
+.card-title {
+  margin-top: 0;
+  color: #0a3d62;
+  font-size: 1rem;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+}
+
+.input-label {
+  font-size: 0.75rem;
+  color: #666;
+  font-weight: 600;
+  margin-bottom: 4px;
+  display: block;
+}
+
+.input-field {
+  width: 100%;
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid #e2e8f0;
+  outline: none;
+  font-size: 1rem;
+  box-sizing: border-box;
+  margin-bottom: 10px;
+}
+
+.input-field:disabled {
+  background: #f0f0f0;
+  cursor: not-allowed;
+}
+
+.main-btn {
+  width: 100%;
+  padding: 14px;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-weight: bold;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background 0.3s;
+}
+
+.main-btn:disabled {
+  background: #94a3b8;
+  cursor: not-allowed;
+}
+
+/* ReservationCard Styles */
+.reserva-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px;
+  background: #f8fafc;
+  border-radius: 12px;
+  border-left: 5px solid #ffc107;
+  margin-top: 10px;
+}
+
+.btn-action-primary {
+  border: none;
+  background: #e3f2fd;
+  color: #1976d2;
+  padding: 8px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.btn-action-danger {
+  border: none;
+  background: #fee2e2;
+  color: #e30613;
+  padding: 8px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+/* ParkingMap Styles */
+.map-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.legend {
+  display: flex;
+  gap: 10px;
+  font-size: 0.75rem;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.legend-box {
+  width: 12px;
+  height: 12px;
+}
+
+.legend-box.free { background: #fff; border: 1px solid #ddd; }
+.legend-box.occupied { background: #dfe6e9; }
+.legend-box.selected { background: #0a3d62; }
+
+.map-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(45px, 1fr));
+  gap: 10px;
+}
+
+.map-grid.mobile {
+  grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
+  gap: 5px;
+  max-height: 300px;
+  overflow-y: auto;
+  padding: 5px;
+}
+
+/* Botones del Mapa (Spots) */
+.spot {
+  height: 45px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.2s;
+  background: #fff;
+  color: #333;
+  border: 1px solid #ddd;
+}
+
+.spot.mobile {
+  height: 40px;
+  border-radius: 6px;
+  font-size: 0.8rem;
+}
+
+.spot:disabled {
+  background: #dfe6e9;
+  color: #b2bec3;
+  border: 1px solid #dfe6e9;
+  cursor: default;
+}
+
+.spot.selected {
+  background: #0a3d62;
+  color: #fff;
+  border: 2px solid #ffc107;
+}

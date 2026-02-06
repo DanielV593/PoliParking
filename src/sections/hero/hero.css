@@ -1,19 +1,17 @@
+/* src/sections/hero/hero.css */
+
 /* ==========================
-   HERO SECTION BASE
+   1. ESTRUCTURA Y FONDO
 ========================== */
 .hero-background {
-  /* Ajuste: Cambiamos 85px por un padding más equilibrado. 
-     Si tu header es pegajoso (fixed), asegúrate de que este valor sea suficiente */
-  padding-top: 100px; 
+  background-color: var(--colorFondoSuave); /* El color hielo */
+  /* ... resto de tu código hero ... */
+  padding-top: 130px; 
   padding-bottom: 5rem;
-  
-  /* Ajuste: 100vh asegura que la sección ocupe toda la pantalla y no deje huecos abajo */
   min-height: 100vh; 
-  
   display: flex;
   align-items: center;
   width: 100%;
-  background-color: var(--colorFondoSeccion);
   overflow-x: hidden;
 }
 
@@ -21,32 +19,45 @@
   width: 100%;
   max-width: 1650px;
   margin: 0 auto;
-  padding: 0 2.5rem; /* Aumentado un poco para mejor respiro lateral */
+  padding: 0 3rem; /* Más aire a los costados */
+  
   display: flex;
   align-items: center;
-  gap: 4rem; /* Ajustado de 5rem a 4rem para compactar el centro */
-}
-
-.main-content {
-  flex: 1;
+  justify-content: space-between; /* Separa texto e imagen */
+  gap: 5rem; /* AUMENTADO: Para que no se vea apretado al centro */
 }
 
 /* ==========================
-   HERO TITLE EFFECT
+   2. COLUMNA DE TEXTO (ANIMADA)
 ========================== */
-.block-effect {
-  font-size: clamp(2.8rem, 5vw, 4rem);
-  line-height: 1.1;
+.main-content {
+  flex: 1;
+  /* IMPORTANTE: Esto evita que el texto se aplaste cuando la pantalla se achica */
+  min-width: 550px; 
   display: flex;
-  flex-wrap: wrap;
-  gap: 0.4rem;
-  margin-bottom: 0.8rem;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
 }
 
+/* Contenedor del Título Animado */
+.block-effect {
+  /* Hacemos el texto grande y legible */
+  font-size: clamp(3rem, 5vw, 4.5rem); 
+  line-height: 1.1;
+  display: flex;
+  flex-wrap: wrap; /* Si no cabe, baja la palabra */
+  gap: 15px;       /* Espacio entre Poli y Parking */
+  margin-bottom: 1.5rem;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 900;
+}
+
+/* --- LOGICA DE ANIMACIÓN (INTACTA) --- */
 .block-reveal {
   --t: calc(var(--td) + var(--d));
   color: transparent;
-  padding: 4px 6px;
+  padding: 4px 10px; /* Un poco más de padding para el efecto */
   position: relative;
   overflow: hidden;
   display: inline-block;
@@ -64,54 +75,52 @@
              revealingOut var(--td) var(--t) forwards;
 }
 
-.block-reveal.blue {
-  animation: revealBlue 0s var(--t) forwards;
-}
+.block-reveal.blue { animation: revealBlue 0s var(--t) forwards; }
+.block-reveal.gold { animation: revealGold 0s var(--t) forwards; }
 
-.block-reveal.gold {
-  animation: revealGold 0s var(--t) forwards;
-}
-
-/* ==========================
-   SUBTITLE ANIMATION
-========================== */
+/* Subtítulo */
 .hero-subtitle {
-  font-size: clamp(1.4rem, 2.5vw, 2rem);
-  margin-bottom: 1.2rem;
+  font-size: clamp(1.2rem, 2vw, 1.6rem);
+  margin-bottom: 1.5rem;
   font-weight: 700;
+  color: var(--colorPrincipal);
+  opacity: 0.9;
+  letter-spacing: 1px;
 }
 
-/* ==========================
-   HERO DESCRIPTION
-========================== */
+/* Descripción */
 .main-description {
-  font-size: 1.08rem;
+  font-size: 1.15rem;
   color: var(--colorTextoClaro);
-  margin-bottom: 2.5rem; /* Aumentado ligeramente para separar de los tags */
-  max-width: 95%; /* Ajustado del 85% para llenar más el espacio visual */
+  margin-bottom: 3rem;
+  line-height: 1.6;
+  max-width: 90%; /* Deja que el texto respire a la derecha */
 }
 
 /* ==========================
-   HERO FEATURES
+   3. FEATURES Y BOTONES
 ========================== */
 .hero-features {
   display: flex;
-  gap: 1.5rem; /* Ajustado para que no se vea tan disperso */
+  gap: 1.5rem;
   flex-wrap: wrap;
-  margin-bottom: 3rem;
+  margin-bottom: 3.5rem;
 }
 
 .hero-features span {
-  background: rgba(10, 61, 98, 0.06);
+  background: white; /* Fondo blanco limpio */
   color: var(--colorPrincipal);
-  padding: 0.6rem 1.4rem;
-  border-radius: 30px;
+  padding: 0.8rem 1.5rem;
+  border-radius: 12px; /* Más moderno */
   font-weight: 700;
-  font-size: 0.95rem;
+  font-size: 1rem;
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
-  box-shadow: 0 4px 12px rgba(10,61,98,0.05);
+  gap: 0.6rem;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.05); /* Sombra sutil */
+  border: 1px solid rgba(0,0,0,0.05);
+  
+  /* Animación de entrada */
   animation: fadeUp 0.8s ease forwards;
   opacity: 0;
 }
@@ -121,136 +130,140 @@
 .hero-features span:nth-child(3) { animation-delay: 1s; }
 
 .hero-features span:hover {
-  background: var(--colorPrincipal);
-  color: white;
   transform: translateY(-4px);
+  border-color: var(--colorDorado);
   transition: all 0.3s ease;
 }
 
-/* ==========================
-   CTA BUTTON
-========================== */
+/* Botón de Reserva */
 .btn-reserva {
   display: inline-block;
   background-color: var(--colorPrincipal);
   color: white;
-  padding: 1.1rem 3.5rem;
-  font-weight: 700;
-  font-size: 1.15rem;
-  border-radius: 12px;
-  box-shadow: 0 10px 25px rgba(10, 61, 98, 0.2);
+  padding: 1.2rem 3.5rem; /* Botón grande y cómodo */
+  font-weight: 800;
+  font-size: 1.1rem;
+  border-radius: 50px; /* Redondeado moderno */
+  box-shadow: 0 10px 25px rgba(10, 61, 98, 0.3);
   transition: all 0.3s ease;
+  border: none;
+  cursor: pointer;
+  letter-spacing: 0.5px;
 }
 
 .btn-reserva:hover {
   transform: translateY(-4px);
   background-color: #082a45;
-  box-shadow: 0 15px 30px rgba(10, 61, 98, 0.3);
+  box-shadow: 0 15px 35px rgba(10, 61, 98, 0.4);
 }
 
 /* ==========================
-   HERO IMAGE
+   4. IMAGEN HERO
 ========================== */
 .main-image {
   flex: 1;
   display: flex;
-  justify-content: center; /* Centrado para mejor equilibrio */
+  justify-content: flex-end; /* Alineada a la derecha */
+  align-items: center;
 }
 
 .main-image img {
-  max-width: 100%;
+  width: 100%;
+  max-width: 750px; /* Tamaño controlado para que no invada */
   height: auto;
-  border-radius: 25px;
-  /* Cambio: Sombra con "blur" (difuminado) para que no parezca un bloque sólido */
-  box-shadow: 0 20px 40px rgba(0,0,0,0.12); 
+  border-radius: 30px; /* Bordes suaves */
+  
+  /* Sombra sólida moderna (estilo tendencia 2024) */
+  box-shadow: 20px 20px 0px rgba(10, 61, 98, 0.1); 
+  
   transition: transform 0.5s ease;
+  /* Animación de entrada de la imagen */
+  animation: fadeUp 1s ease-out both; 
+  animation-delay: 0.4s;
 }
 
 .main-image img:hover {
-    transform: scale(1.02);
+  transform: scale(1.02);
 }
 
 /* ==========================
-   ANIMATIONS (Iguales)
+   5. KEYFRAMES (ANIMACIONES)
 ========================== */
 @keyframes revealBlue { 100% { color: var(--colorPrincipal); } }
 @keyframes revealGold { 100% { color: var(--colorDorado); } }
 @keyframes revealingIn { from { width: 0; } to { width: 100%; } }
 @keyframes revealingOut { from { transform: translateX(0); } to { transform: translateX(100%); } }
+
 @keyframes fadeUp {
-  from { opacity: 0; transform: translateY(20px); }
+  from { opacity: 0; transform: translateY(30px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
 /* ==========================
-   RESPONSIVE HERO 
+   6. RESPONSIVE (CELULAR)
 ========================== */
+@media (max-width: 1100px) {
+  /* Cuando la pantalla es mediana, bajamos el tamaño del título */
+  .block-effect { font-size: 3.5rem; }
+  .main-container { gap: 3rem; padding: 0 2rem; }
+}
+
 @media (max-width: 900px) {
   .hero-background {
-    padding-top: 110px; /* Espacio para el header */
-    padding-bottom: 3rem;
-    min-height: auto; /* Permite que el contenido fluya hacia abajo */
-    display: block;   /* Cambiamos a block para un flujo más natural */
+    padding-top: 120px; 
+    padding-bottom: 4rem;
+    min-height: auto; /* Dejamos que crezca según contenido */
+    display: block;
   }
 
   .main-container {
-    flex-direction: column; 
+    flex-direction: column-reverse; /* Imagen arriba en móvil se ve mejor a veces, o column normal */
+    flex-direction: column; /* Dejamos normal: Texto arriba, imagen abajo */
     text-align: center;
-    gap: 2.5rem;
+    gap: 3rem;
   }
 
-  /* --- ELIMINAMOS LOS 'ORDER' PARA QUE SIGA EL FLUJO DEL HTML --- */
   .main-content {
     width: 100%;
+    min-width: auto; /* Quitamos restricción */
+    align-items: center; /* Centramos todo */
   }
 
   .main-image {
     width: 100%;
-    max-width: 450px;
+    justify-content: center;
     margin: 0 auto;
   }
-
-  /* Ajustes de texto para móvil */
-  .block-effect {
-    justify-content: center;
-    font-size: 2.4rem; /* Un poco más grande como en tu captura */
-    margin-bottom: 1rem;
+  
+  .main-image img {
+    max-width: 500px;
+    box-shadow: 10px 10px 0px rgba(10, 61, 98, 0.1);
   }
 
-  .hero-subtitle {
-    font-size: 1.3rem;
-    margin-bottom: 1.5rem;
+  .block-effect {
+    justify-content: center;
+    font-size: 2.8rem;
+    gap: 10px;
   }
 
   .main-description {
-    max-width: 100%;
-    margin-bottom: 2rem;
     font-size: 1rem;
-    padding: 0 10px;
+    padding: 0 1rem;
+    max-width: 100%;
   }
 
-  /* Centrado de botones y etiquetas */
   .hero-features {
     justify-content: center;
-    gap: 0.8rem;
-    margin-bottom: 2.5rem;
   }
 
-.btn-reserva {
+  .btn-reserva {
     width: 100%; 
-    max-width: 280px; /* Un poco más estrecho para que no se vea gigante */
-    
-    /* REDUCIMOS EL GROSOR AQUÍ */
-    padding: 0.8rem 1.5rem; /* Bajamos de 1.1rem a 0.8rem para que sea más fino */
-    
-    font-size: 1.05rem; /* Ajustamos ligeramente el tamaño de la letra */
-    border-radius: 10px; /* Bordes un poco menos redondeados para que se vea más limpio */
-    margin: 0 auto 2rem; /* Lo centramos y damos espacio antes de la imagen */
-    display: inline-block;
+    max-width: 300px;
+    padding: 1rem;
   }
+}
 
-/* Ajuste fino para pantallas muy pequeñas */
 @media (max-width: 480px) {
-  .block-effect { font-size: 2rem; }
+  .block-effect { font-size: 2.2rem; }
   .main-container { padding: 0 1.2rem; }
-}}
+}

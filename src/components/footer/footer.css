@@ -1,5 +1,8 @@
+/* src/components/footer/footer.css */
+
 /* =========================================
-   VARIABLES INSTITUCIONALES
+   VARIABLES INSTITUCIONALES LOCALES
+   (Por si acaso las globales fallan)
    ========================================= */
 :root {
     --colorPrincipal: #0a3d62; /* Azul EPN */
@@ -9,11 +12,16 @@
 /* =========================================
    ESTILOS GENERALES DEL FOOTER
    ========================================= */
-.footer {
-    background-color: var(--colorPrincipal);
-    color: #fff;
-    padding: 4rem 0 2rem; /* Más aire arriba */
+/* Usamos selectores específicos y !important para asegurar el estilo */
+footer.footer, .footer {
+    background-color: #0a3d62 !important; /* Azul EPN OBLIGATORIO */
+    color: #ffffff !important;            /* Texto Blanco OBLIGATORIO */
+    padding: 4rem 0 2rem;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin-top: auto;
+    position: relative;
+    z-index: 100;
+    width: 100%;
 }
 
 /* CONTENEDOR PRINCIPAL (GRID) */
@@ -24,7 +32,6 @@
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
     gap: 4rem;
-    /* CAMBIO CLAVE: Alinea todas las columnas al tope */
     align-items: start; 
 }
 
@@ -32,13 +39,12 @@
 .footer__col {
     display: flex;
     flex-direction: column;
-    /* Eliminamos el justifyContent: 'center' que podrías tener en el inline style */
     gap: 1.2rem; 
 }
 
 /* TÍTULOS */
 .footer__title {
-    color: var(--colorDorado);
+    color: var(--colorDorado) !important; /* Dorado OBLIGATORIO */
     font-size: 1.3rem; 
     font-weight: 700;
     margin-bottom: 1.5rem; 
@@ -67,13 +73,14 @@
 }
 
 .footer__list li {
-    margin-bottom: 1rem; /* Más espacio entre filas */
+    margin-bottom: 1rem;
     display: flex;
     align-items: center;
+    color: #ffffff !important; /* Asegura que el texto de lista sea blanco */
 }
 
 .footer__list a {
-    color: rgba(255, 255, 255, 0.8);
+    color: rgba(255, 255, 255, 0.8) !important; /* Blanco con transparencia */
     font-size: 1rem; 
     text-decoration: none;
     transition: all 0.3s ease;
@@ -83,14 +90,14 @@
 }
 
 .footer__list a:hover {
-    color: var(--colorDorado);
-    transform: translateX(5px); /* Efecto sutil al pasar el mouse */
+    color: var(--colorDorado) !important; /* Dorado al pasar el mouse */
+    transform: translateX(5px);
 }
 
-/* --- SECCIÓN DE HORARIOS (MEJORADA) --- */
+/* --- SECCIÓN DE HORARIOS --- */
 .footer__list--hours li {
     display: flex;
-    flex-direction: column; /* Apilados por defecto */
+    flex-direction: column;
     align-items: flex-start;
     gap: 5px;
     border-bottom: 1px solid rgba(255,255,255,0.1);
@@ -101,28 +108,29 @@
 .hour-label {
     font-size: 0.85rem;
     font-weight: 800;
-    color: var(--colorDorado);
+    color: var(--colorDorado) !important; /* Dorado */
     text-transform: uppercase;
 }
 
 .hour-value {
     font-size: 1.1rem;
-    color: #fff;
+    color: #ffffff !important; /* Blanco */
 }
 
 .hour-value--special {
     font-style: italic;
     opacity: 0.8;
     font-size: 0.95rem;
+    color: #ffffff !important;
 }
 
 /* --- BOTÓN DE RESERVA EN EL FOOTER --- */
 .footer-btn-reserva {
-    display: flex; /* Cambiado de block a flex para mejor control */
+    display: flex;
     align-items: center;
     justify-content: center;
     gap: 10px;
-    background: var(--colorDorado); 
+    background: var(--colorDorado) !important; 
     color: var(--colorPrincipal) !important; 
     padding: 14px 20px !important; 
     border-radius: 8px; 
@@ -131,7 +139,6 @@
     font-size: 1rem;
     box-shadow: 0 4px 0 #b38600;
     transition: all 0.2s ease;
-    /* Asegura que no se estire demasiado */
     width: 100%;
     max-width: 300px; 
     margin-top: 5px;
@@ -140,7 +147,7 @@
 .footer-btn-reserva:hover {
     transform: translateY(-2px);
     box-shadow: 0 6px 0 #b38600;
-    background-color: #ffffff;
+    background-color: #ffffff !important;
 }
 
 /* --- FOOTER BOTTOM --- */
@@ -148,16 +155,18 @@
     text-align: center;
     border-top: 1px solid rgba(255,255,255,0.1);
     padding: 2rem 1rem; 
-    color: rgba(255,255,255,0.5);
+    color: rgba(255,255,255,0.5) !important;
     font-size: 0.9rem; 
 }
 
 .footer__col p {
-    margin-bottom: 5px; /* Menos espacio para que el botón suba */
+    margin-bottom: 5px;
+    color: #ffffff !important; /* Párrafos en blanco */
 }
 
 /* =========================================
    MODALES (FAQ, TÉRMINOS, ETC.)
+   Estilos específicos para que se vean bien sobre cualquier fondo
    ========================================= */
 .modal-overlay {
     position: fixed;
@@ -180,7 +189,7 @@
     box-shadow: 0 20px 40px rgba(0,0,0,0.4);
     max-height: 85vh; 
     overflow-y: auto; 
-    color: #333;
+    color: #333; /* Texto oscuro dentro del modal */
     animation: slideUp 0.3s ease-out;
 }
 
@@ -239,7 +248,7 @@
    ========================================= */
 @media (max-width: 992px) {
     .footer-row {
-        grid-template-columns: 1fr; /* Una columna en móvil */
+        grid-template-columns: 1fr;
         gap: 3rem;
         text-align: center;
     }

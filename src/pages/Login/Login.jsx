@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import Header from '../components/header/Header';
 import { signInWithEmailAndPassword, signOut } from 'firebase/auth'; 
 import { collection, query, where, getDocs, addDoc } from 'firebase/firestore'; 
-import { auth, db } from '../firebase/config';
-import MascotaLogin from '../components/MascotaLogin';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import { ToastContainer, toast } from 'react-toastify';
+
+// Imports locales
+import { auth, db } from '../../firebase/config';
+import Header from '../../components/header/Header'; // Ajusta la ruta si es necesario
+import MascotaLogin from '../../components/MascotaLogin'; // Ajusta la ruta
+import './Login.css';
 
 const Login = () => {
   const [rol, setRol] = useState('estudiante');
@@ -29,7 +32,7 @@ const Login = () => {
     if (rol === 'administrador') {
       if (email === 'admin@epn.edu.ec' && password === 'admin1234') {
         localStorage.setItem('userRole', 'administrador');
-        window.location.href = '/dashboard-admin';
+        window.location.href = '/admin'; // <-- CAMBIO PEQUEÑO: Apuntamos a la ruta nueva /admin
         return;
       } else {
         toast.error('Credenciales de administrador incorrectas.');
@@ -57,7 +60,7 @@ const Login = () => {
         if (data.rol !== rol) { await signOut(auth); toast.warning(`Tu cuenta es de ${data.rol}, no de ${rol}.`); return; }
         if (data.estado === 'bloqueado') { await signOut(auth); toast.error('Cuenta bloqueada.'); return; }
         localStorage.setItem('userRole', data.rol);
-        navigate('/dashboard-user'); 
+        navigate('/dashboard'); // <-- CAMBIO PEQUEÑO: Apuntamos a la ruta nueva /dashboard
       } else { await signOut(auth); toast.error('Usuario no encontrado.'); }
     } catch (err) { toast.error('Credenciales incorrectas.'); }
   };
@@ -65,33 +68,33 @@ const Login = () => {
   return (
     <div className='auth-page'>
       <Header />
-      <div className="auth-container auth-container--register">
-        <div className="auth-card auth-card--register"> 
+      <div className="auth-container">
+        <div className="auth-card"> 
           
-          <div className='auth-register__left' style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
+          <div className='auth-register__left'>
               <div style={{ marginBottom: '30px', width: '100%', display: 'flex', justifyContent: 'center' }}>
-                {/* LÓGICA: Ojos cerrados solo si está enfocado Y oculto */}
                 <MascotaLogin isPasswordFocused={isPasswordFocused && !showPassword} showPassword={showPassword} />
               </div>
               <div style={{ textAlign: 'center' }}>
-                <h2 className="auth-title auth-register__title" style={{ margin: '10px 0' }}>Iniciar Sesión</h2>
-                <p className="auth-footer auth-register__footer">
-                  ¿No tienes cuenta? <br/><Link to="/register" className='auth-register__link'>Regístrate aquí</Link>
+                <h2 className="auth-title" style={{ margin: '10px 0' }}>Iniciar Sesión</h2>
+                <p className="auth-footer">
+                  ¿No tienes cuenta? <br/><Link to="/register" style={{color:'#0a3d62', fontWeight:'bold'}}>Regístrate aquí</Link>
                 </p>
               </div>
           </div>
 
           <div className='auth-register__right'>
-            <form onSubmit={handleLogin} className="auth-form auth-form--register">
+            <form onSubmit={handleLogin} className="auth-form">
               <div className="form-group" style={{ gridColumn: '1 / -1' }}>
                 <label className='auth-register__label'>Tipo Usuario</label>
-                <select value={rol} onChange={(e) => setRol(e.target.value)} className="auth-select auth-register__input">
+                <select value={rol} onChange={(e) => setRol(e.target.value)} className="auth-register__input">
                   <option value="estudiante">Estudiante</option>
                   <option value="docente">Docente</option>
                   <option value="invitado">Invitado</option>
                   <option value="administrador">Administrador</option>
                 </select>
               </div>
+              
               {rol === 'invitado' ? (
                 <>
                   <div className="form-group">
@@ -122,7 +125,8 @@ const Login = () => {
                         onChange={e=>setPassword(e.target.value)} 
                         onFocus={() => setIsPasswordFocused(true)} 
                         onBlur={() => setIsPasswordFocused(false)} 
-                        className='auth-register__input auth-register__input--password' 
+                        className='auth-register__input' 
+                        style={{width:'100%'}}
                         required
                       />
                       <button type="button" onClick={() => setShowPassword(!showPassword)} className='auth-register__toggle'>
@@ -132,7 +136,7 @@ const Login = () => {
                   </div>
                 </>
               )}
-              <button type="submit" className="btn-auth auth-register__submit">Ingresar</button>
+              <button type="submit" className="auth-register__submit">Ingresar</button>
             </form>
           </div>
         </div>

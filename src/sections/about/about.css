@@ -1,55 +1,57 @@
-/* =========================================
-   ABOUT - EFECTO PANTALLA COMPLETA (100vh)
-   ========================================= */
+/* src/sections/about/about.css */
+
+/* El fondo principal (Azul Institucional) */
 .about {
     width: 100%; 
-    min-height: 100vh; /* Se ajusta al tamaño de la ventana */
+    min-height: 100vh;
     display: flex;
-    align-items: center; /* Centra el contenido verticalmente */
+    align-items: center;
     justify-content: center;
-    padding: 2rem 1.25rem; 
-    box-sizing: border-box; 
-    background-color: #fcfcfc; 
+    padding: 4rem 1.25rem; 
+    background-color: var(--colorPrincipal); /* Fondo Azul */
     position: relative;
     overflow: hidden;
-    scroll-margin-top: 0;
 }
 
+/* El Wrapper MÁGICO que pone las cosas lado a lado */
 .about__wrapper {
     width: 92%; 
     max-width: 1400px; 
     margin: 0 auto; 
-    display: flex;
+    display: flex; /* Esto es lo que faltaba */
     align-items: center; 
-    gap: 4rem; 
+    justify-content: center;
+    gap: 4rem; /* Espacio entre tarjeta e imagen */
     position: relative;
     z-index: 2;
 }
 
-/* ---------- TARJETA ---------- */
+/* --- TARJETA DE TEXTO (IZQUIERDA) --- */
 .about__card {
-    flex: 1; 
+    flex: 1; /* Ocupa mitad del espacio */
     background-color: #ffffff; 
-    padding: 3rem; 
+    padding: 3.5rem; 
     border-radius: 24px;
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.05); 
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.3); /* Sombra elegante */
     position: relative;
-    border: 1px solid rgba(0,0,0,0.03);
+    
+    /* Tu animación de entrada */
+    animation: slideUpFade 1s ease-out forwards;
+    opacity: 0;
+    transform: translateY(40px);
 }
 
-/* Línea decorativa izquierda */
+/* Decoración dorada lateral */
 .about__card::before {
     content: "";
     position: absolute;
-    top: 10%;
-    left: 0;
-    width: 5px;
-    height: 80%;
+    top: 15%; left: 0;
+    width: 6px; height: 70%;
     background-color: var(--colorDorado);
     border-radius: 0 10px 10px 0;
 }
 
-/* ---------- TEXTO ---------- */
+/* Títulos y textos */
 .about__title {
     font-size: 2.5rem; 
     margin-bottom: 1.2rem;
@@ -61,32 +63,28 @@
     font-size: 1.1rem;
     color: var(--colorTextoClaro);
     margin-bottom: 1.5rem;
-    line-height: 1.6;
+    line-height: 1.7;
 }
 
-/* ---------- STATS ---------- */
+/* Estadísticas dentro de la tarjeta */
 .about__stats {
-    margin-top: 2rem;
+    margin-top: 2.5rem;
     background-color: #f8fafc;
-    border-radius: 20px;
+    border-radius: 16px;
     padding: 1.5rem;
+    border: 1px solid #e2e8f0;
     display: flex;
     justify-content: space-around;
+    align-items: center;
     gap: 1rem;
-}
-
-.stat {
-    text-align: center;
-    flex: 1;
 }
 
 .stat span {
     display: block;
-    font-size: 2.2rem; 
+    font-size: 2.5rem; 
     font-weight: 900;
     color: var(--colorPrincipal);
     line-height: 1;
-    margin-bottom: 0.3rem;
 }
 
 .stat small {
@@ -94,98 +92,59 @@
     color: #64748b;
     text-transform: uppercase;
     font-weight: 700;
-    letter-spacing: 0.5px;
+    letter-spacing: 1px;
 }
 
-/* ---------- IMAGEN ---------- */
+/* --- IMAGEN (DERECHA) - ¡AQUÍ ESTÁ! --- */
 .about__image {
-    flex: 1.1;
+    flex: 1.1; /* Un poquito más ancha que el texto para impacto */
     display: flex;
     justify-content: center;
+    align-items: center;
+    
+    /* Animación de entrada (llega un poco después del texto) */
+    animation: slideUpFade 1s ease-out forwards;
+    animation-delay: 0.3s;
+    opacity: 0;
+    transform: translateY(40px);
 }
 
 .about__image img {
     width: 100%;
-    max-height: 75vh; 
-    max-width: 650px;
+    max-height: 600px; /* Control de altura */
+    max-width: 100%;
     height: auto;
     border-radius: 30px;
-    box-shadow: 0 25px 55px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4);
     object-fit: cover;
-    transition: transform 0.5s ease;
-}
-
-.about__image img:hover {
-    transform: scale(1.02);
-}
-
-/* =========================================
-   ABOUT - RESPONSIVE EXPANDIDO (FULL WIDTH)
-   ========================================= */
-@media (max-width: 900px) {
-    .about { 
-        min-height: 100vh; 
-        /* Reducimos el padding lateral del contenedor padre al mínimo */
-        padding: 100px 0.5rem 3rem; 
-        display: flex;
-        align-items: center;
-    }
-
-    .about__wrapper { 
-        /* Hacemos que el wrapper use casi todo el ancho disponible */
-        width: 100%; 
-        flex-direction: column; 
-        gap: 2rem;
-        padding: 0; /* Eliminamos paddings que empujen hacia adentro */
-    }
-
-    .about__card { 
-        order: 1; 
-        width: 100%; /* La tarjeta ahora ocupa todo el ancho */
-        /* Ajustamos el padding interno para que el texto no toque los bordes */
-        padding: 2.5rem 1.2rem; 
-        box-sizing: border-box;
-        border-radius: 0; /* Opcional: quita el redondeado si quieres que pegue total a los bordes */
-        box-shadow: none; /* Opcional: un look más plano estilo captura */
-        text-align: left;
-    }
-
-    .about__title { 
-        font-size: 2rem; 
-        margin-bottom: 1.5rem;
-        text-align: left; 
-    }
-
-    .about__text {
-        font-size: 1.05rem;
-        text-align: justify;
-        /* Evita que el texto se pegue demasiado a los bordes laterales */
-        padding: 0 0.2rem; 
-    }
-
-    .about__stats {
-        /* Expandimos la tarjeta de estadísticas también */
-        width: 95%; 
-        margin: 2rem auto 0;
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 1.5rem;
-        padding: 2rem 1rem;
-    }
-
-    .stat:last-child {
-        grid-column: span 2;
-    }
-
-    .about__image { 
-        display: none; /* Mantenemos oculta la imagen según tu diseño móvil */
-    }
-}
-
-@media (max-width: 480px) {
-    .about__title { font-size: 1.8rem; }
     
-    .about__card {
-        padding: 2rem 1rem; /* Aún más espacio para pantallas muy pequeñas */
+    /* Tu efecto flotante */
+    animation: floating 6s ease-in-out infinite;
+}
+
+/* Animaciones */
+@keyframes slideUpFade {
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes floating {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-15px); }
+    100% { transform: translateY(0px); }
+}
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+    .about__wrapper { 
+        flex-direction: column; /* En móvil, uno abajo del otro */
+        gap: 3rem;
     }
+    
+    .about__image {
+        width: 100%;
+        max-width: 500px;
+        order: -1; /* Opcional: Si quieres la foto arriba del texto */
+    }
+    
+    .about__card { width: 100%; padding: 2rem; }
 }

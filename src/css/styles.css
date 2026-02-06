@@ -1,328 +1,45 @@
-@import url('https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Roboto:wght@500;700;900&display=swap');
+/* src/css/styles.css */
+@import url('https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=Roboto:wght@400;700;900&display=swap');
 
-/* =========================================
-   1. VARIABLES & RESET
-   ========================================= */
 :root {
-    --colorPrincipal: #0a3d62;   
-    --colorSecundario: #e30613;   
-    --colorDorado: #feca57;      
-    --colorTexto: #2c3e50;        
-    --colorTextoClaro: #555555;
-    --colorFondo: #ffffff;
-    --colorFondoSeccion: #f4f6f8; 
-    --bordeSuave: #e1e1e1;
+    --colorPrincipal: #0a3d62;    /* Azul EPN */
+    --colorSecundario: #e30613;   /* Rojo */
+    --colorDorado: #ffc107;       /* Amarillo */
+    
+    --colorTexto: #2c3e50;        /* Texto oscuro para fondos claros */
+    --colorTextoClaro: #555555;   /* Gris para párrafos */
+    
+    /* EL NUEVO COLOR "NO CANSA VISTA" */
+    --colorFondoSuave: #f0f4f8;   /* Gris Hielo (Alice Blue moderno) */
+    --colorBlanco: #ffffff;
 }
 
-* { box-sizing: border-box; margin: 0; padding: 0; text-decoration: none; list-style: none; }
-html, body {
-    max-width: 100%;
-    overflow-x: hidden;
-}
-
-/* --- TRUCO PARA EL MENÚ FIJO (GLOBAL) --- */
-html {
-  scroll-behavior: smooth;
-}
-
-section {
-  /* Esto empuja el contenido hacia abajo cuando haces click en el menú para que no lo tape el header */
-  scroll-margin-top: 100px;
-}
-
-/* --- SOLO EN MÓVIL (Pantallas menores a 768px) --- */
-/* Esto hace que en el celular las secciones se centren y ocupen todo el alto (efecto App) */
-@media (max-width: 768px) {
-  section {
-    min-height: 100vh; 
-    display: flex;
-    flex-direction: column;
-    justify-content: center; 
-  }
+* { 
+    box-sizing: border-box; 
+    margin: 0; 
+    padding: 0; 
+    transition: all 0.3s ease;
 }
 
 body {
     font-family: 'Lato', sans-serif;
-    background-color: var(--colorFondo);
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+    background-color: var(--colorFondoSuave); /* Fondo base por defecto */
     color: var(--colorTexto);
-    line-height: 1.6;
-    font-size: 17px;
 }
 
+/* Títulos generales */
 h1, h2, h3, h4 {
     font-family: 'Roboto', sans-serif;
     font-weight: 900;
-    color: var(--colorPrincipal);
-    line-height: 1.2;
+    color: var(--colorPrincipal); /* Por defecto azules */
 }
 
-img { display: block; max-width: 100%; }
-
-
-/* =========================================
-   ESTILOS DE AUTENTICACIÓN (LOGIN / REGISTRO)
-   ========================================= */
-.auth-container {
-    min-height: calc(100vh- 90px);
-    padding-top: 90px; /* Espacio del header */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: var(--colorFondoSeccion);
-}
-
-.auth-card {
-    background: white;
-    padding: 3rem;
-    border-radius: 15px;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.1);
-    width: 100%;
-    max-width: 450px;
-    text-align: center;
-}
-
-.auth-title { font-size: 2rem; margin-bottom: 0.5rem; color: var(--colorPrincipal); }
-.auth-subtitle { color: var(--colorTextoClaro); margin-bottom: 2rem; }
-
-.auth-form { display: flex; flex-direction: column; gap: 1.5rem; text-align: left; }
-.form-group label { display: block; margin-bottom: 0.5rem; font-weight: 700; color: var(--colorPrincipal); }
-.form-group input {
-    width: 100%; padding: 0.9rem; border: 1px solid #ddd;
-    border-radius: 8px; font-size: 1rem; background: #fcfcfc;
-}
-.form-group input:focus { border-color: var(--colorPrincipal); outline: none; }
-
-.btn-auth {
-    background-color: var(--colorPrincipal); color: white; padding: 1rem;
-    border: none; border-radius: 8px; font-size: 1.1rem; font-weight: 700;
-    cursor: pointer; transition: background 0.3s; margin-top: 1rem;
-}
-.btn-auth:hover { background-color: #082a45; }
-
-.auth-footer { margin-top: 1.5rem; font-size: 0.95rem; }
-.auth-footer a { color: var(--colorPrincipal); font-weight: 700; }
-.auth-footer a:hover { text-decoration: underline; }
-
-.auth-select {
-    width: 100%;
-    padding: 12px 15px;
-    border: 1px solid #ddd;
-    border-radius: 8px; /* Redondeado igual que tus inputs */
-    background-color: white;
-    font-size: 1rem;
-    color: #333;
-    cursor: pointer;
-    outline: none;
-    transition: border-color 0.3s ease;
-    
-    /* Esto quita la flecha fea por defecto */
-    appearance: none; 
-    -webkit-appearance: none;
-    -moz-appearance: none;
-
-    /* Esto agrega una flecha moderna personalizada */
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%230a3d62' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 15px center;
-    background-size: 18px;
-}
-
-.auth-select:focus {
-    border-color: #0a3d62; /* El color azul de tu login */
-    box-shadow: 0 0 0 2px rgba(10, 61, 98, 0.1);
-}
-
-.auth-page {
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    overflow-x: hidden;
-}
-
-.auth-container--register {
-    flex: 1;
-    padding-bottom: 20px;
-}
-
-.auth-card--register {
-    padding: 0;
-    overflow: hidden;
-    width: 100%;
-    max-width: 750px;
-    display: flex;
-    flex-direction: row;
-    min-height: 480px;
-}
-
-.auth-register__left {
-    width: 40%;
-    background: #f8fafc;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    border-right: 1px solid #eee;
-}
-
-.auth-register__right {
-    width: 60%;
-    padding: 30px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-}
-
-.auth-register__title {
-    margin-top: -20px;
-    font-size: 1.5rem;
-}
-
-.auth-register__footer {
-    margin-top: 20px;
-}
-
-.auth-register__link {
-    font-weight: bold;
-}
-
-.auth-form--register {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-}
-
-.auth-register__label {
-    font-size: 0.75rem;
-    font-weight: bold;
-}
-
-.auth-register__input {
-    padding: 8px;
-    font-size: 0.9rem;
-}
-
-.auth-register__password {
-    position: relative;
-    display: flex;
-    align-items: center;
-}
-
-.auth-register__input--password {
-    width: 100%;
-    padding-right: 35px;
-}
-
-.auth-register__toggle {
-    position: absolute;
-    right: 10px;
-    background: none;
-    border: none;
-    cursor: pointer;
-}
-
-.auth-register__submit {
-    grid-column: 1 / -1;
-    padding: 10px;
-    margin-top: 5px;
-}
-
-/* Fuerza a que los elementos estén en la misma línea */
-.header__content {
-    display: flex !important; 
-    flex-direction: row !important; 
-    justify-content: space-between !important; 
-    align-items: center;
-    width: 100%;
-    padding: 10px 20px;
-    background-color: white;
-    position: relative; 
-}
-
-.header-left {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.header__hamburger {
-    display: none; 
-    font-size: 2rem;
-    cursor: pointer;
-    color: #b71c1c; 
-}
-
-@media (max-width: 768px) {
-    .auth-page {
-        height: auto;
-    }
-    .auth-container{
-        min-height: auto;
-    }
-    body, html{
-        overflow-x: hidden;
-    }
-    .auth-container--register {
-        padding: 90px 16px 24px;
-    }
-
-    .auth-card--register {
-        flex-direction: column;
-        max-width: 100%;
-        min-height: auto;
-    }
-
-    .auth-register__left,
-    .auth-register__right {
-        width: 100%;
-    }
-
-    .auth-register__left {
-        border-right: none;
-        border-bottom: 1px solid #eee;
-        padding: 20px 16px;
-    }
-
-    .auth-register__right {
-        padding: 24px 16px;
-    }
-
-    .auth-form--register {
-        grid-template-columns: 1fr;
-    }
-
-    .header__hamburger {
-        display: block !important; 
-    }
-    .navbar__container {
-        display: none;
-    }
-
-    /* Cuando se activa el menú */
-    .navbar__container.active {
-        display: block;
-        position: absolute;
-        top: 100%; 
-        left: 0;
-        width: 100%;
-        background-color: #f4f4f4; 
-        z-index: 9999;
-        padding: 20px 10px; /* Añadimos un poco de padding lateral */
-    }
-
-    .navbar__container.active ul {
-        display: flex; /* Aseguramos que sea flex */
-        flex-direction: row; /* Alineación horizontal */
-        flex-wrap: wrap; /* Si no caben, bajan a la siguiente línea (importante para móviles pequeños) */
-        justify-content: center; /* Centra los elementos horizontalmente */
-        align-items: center;
-        gap: 15px; /* Espacio entre links y botones */
-        list-style: none;
-        padding: 0;
-        margin: 0;
-    }
-
-    /* Achicamos el texto para que no empuje la hamburguesa fuera de la pantalla */
-    .header-title {
-        font-size: 0.85rem;
-    }
+/* Utilidades */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
 }
