@@ -1,6 +1,7 @@
+// src/pages/DashboardAdmin/DashboardAdmin.jsx
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { auth, db } from '../../firebase/config';
+import { auth, db } from "../../firebase/config";
 import { signOut } from 'firebase/auth';
 import { 
     collection, deleteDoc, doc, updateDoc, addDoc, query, orderBy, writeBatch, onSnapshot 
@@ -19,6 +20,8 @@ import './DashboardAdmin.css';
 
 const DashboardAdmin = () => {
     const navigate = useNavigate();
+    
+    // --- ESTADOS PRINCIPALES ---
     const [moduloActivo, setModuloActivo] = useState('resumen');
     const [usuarios, setUsuarios] = useState([]);
     const [invitados, setInvitados] = useState([]);
@@ -27,22 +30,25 @@ const DashboardAdmin = () => {
     const [loading, setLoading] = useState(true);
     const [currentTime, setCurrentTime] = useState(new Date());
     
+    // --- ESTADOS DE FILTROS Y ACCIONES MASIVAS ---
     const [modoMasivo, setModoMasivo] = useState(false);
     const [seleccionados, setSeleccionados] = useState([]);
     const [filtro, setFiltro] = useState({ texto: '', rol: 'todos', estado: 'activo' });
     const [filtroInvitados, setFiltroInvitados] = useState('');
     const [filtroHistorial, setFiltroHistorial] = useState({ texto: '', lugar: 'todos' });
 
-    // ESTADOS PARA RESPONSIVE
+    // --- ESTADOS PARA RESPONSIVE ---
     const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
     const CAPACIDAD = { "Edificio CEC": 100, "Facultad de Sistemas": 35, "Canchas Deportivas": 50 };
 
+    // --- EFECTOS (CARGA DE DATOS Y RELOJ) ---
     useEffect(() => {
         const handleResize = () => setIsMobile(window.innerWidth < 768);
         window.addEventListener('resize', handleResize);
 
+        // Suscripciones a Firestore en tiempo real
         const unsubU = onSnapshot(collection(db, "usuarios"), (s) => setUsuarios(s.docs.map(d => ({...d.data(), id: d.id}))));
         const unsubR = onSnapshot(collection(db, "reservas"), (s) => setReservas(s.docs.map(d => ({...d.data(), id: d.id}))));
         const unsubM = onSnapshot(query(collection(db, "mensajes_contacto"), orderBy("fecha", "desc")), (s) => setMensajes(s.docs.map(d => ({...d.data(), id: d.id}))));
@@ -57,6 +63,8 @@ const DashboardAdmin = () => {
             window.removeEventListener('resize', handleResize);
         };
     }, []);
+
+    // --- LÓGICA DE NEGOCIO (Tus funciones originales) ---
 
     const handleCambioFiltroEstado = async (e) => {
         const nuevoEstado = e.target.value;
@@ -172,6 +180,7 @@ const DashboardAdmin = () => {
         return '#2ecc71';
     };
 
+    // --- FILTRADO DE DATOS ---
     const usuariosFiltrados = usuarios.filter(u => 
         (u.nombre.toLowerCase().includes(filtro.texto.toLowerCase()) || (u.placa || '').toLowerCase().includes(filtro.texto.toLowerCase())) &&
         (filtro.rol === 'todos' || u.rol === filtro.rol) && (u.estado || 'activo') === filtro.estado
@@ -224,7 +233,7 @@ const DashboardAdmin = () => {
         }
     };
 
-    // --- RENDERIZADO PRINCIPAL (Aquí llamamos a los componentes hijos) ---
+    // --- RENDERIZADO PRINCIPAL ---
     return (
         <div className="admin-bg">
             {isMobile && isMenuOpen && (
