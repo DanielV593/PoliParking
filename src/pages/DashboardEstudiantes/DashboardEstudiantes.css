@@ -1,0 +1,434 @@
+/* ============================================================
+   TEMA PREMIUM ESTUDIANTE (Compacto & Vertical - Textos Blancos)
+   ============================================================ */
+
+/* 1. REGLA DE ORO GLOBAL */
+* {
+    box-sizing: border-box;
+}
+
+/* 2. FONDO Y CONTENEDOR PRINCIPAL */
+.dashboard-estudiante-container {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #0a3d62 0%, #162a3a 100%);
+    padding: 20px;
+    font-family: 'Lato', sans-serif;
+    display: flex;
+    flex-direction: column;
+}
+
+/* HEADER ESTILIZADO */
+.estudiante-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 30px;
+    background: rgba(255, 255, 255, 0.98);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    margin-bottom: 25px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.logo-text { font-size: 1.5rem; font-weight: 900; color: #0a3d62; }
+.logo-text span { color: #f1c40f; }
+
+/* LAYOUT PRINCIPAL: Aprovechamos todo el ancho */
+.main-container { 
+    display: flex; 
+    gap: 30px; 
+    max-width: 1600px; /* Expandimos el contenedor */
+    width: 100%;
+    margin: 0 auto;
+    flex: 1;
+}
+
+/* SIDEBAR: Más ancho y limpio */
+.sidebar { 
+    width: 400px; /* Un poco más ancho para que los inputs no se amontonen */
+    display: flex; 
+    flex-direction: column; 
+    gap: 20px;
+}
+
+/* FORMULARIO DE RESERVA: Diseño Limpio */
+.sidebar .card {
+    background: white;
+    padding: 25px;
+    border-radius: 24px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+}
+
+.sidebar .form-group {
+    margin-bottom: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.sidebar input, .sidebar select {
+    padding: 14px;
+    border-radius: 12px;
+    border: 2px solid #edf2f7;
+    font-size: 1rem;
+    transition: 0.3s;
+}
+
+.sidebar input:focus {
+    border-color: #0a3d62;
+    background: #f8fafc;
+}
+
+/* BOTÓN DE RESERVA: Grande y llamativo */
+.btn-reservar {
+    width: 100%;
+    padding: 18px;
+    border: none;
+    border-radius: 15px;
+    font-weight: 800;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: 0.3s;
+    text-transform: uppercase;
+}
+
+.btn-reservar.disabled {
+    background: #f1f5f9;
+    color: #94a3b8 !important;
+    border: 2px solid #e2e8f0;
+}
+
+.btn-reservar:not(.disabled) {
+    background: #0a3d62;
+    color: white !important;
+    box-shadow: 0 10px 20px rgba(10, 61, 98, 0.3);
+}
+
+/* MAPA: Ocupa todo el espacio restante */
+.map-container-wrapper {
+    flex: 1;
+    background: white;
+    border-radius: 24px;
+    padding: 30px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+}
+
+.map-grid { 
+    display: grid; 
+    grid-template-columns: repeat(auto-fill, minmax(60px, 1fr)); /* Cuadros más grandes */
+    gap: 15px; 
+    padding: 20px;
+    overflow-y: auto;
+}
+
+.spot {
+    height: 60px;
+    border-radius: 12px;
+    border: 2px solid #e2e8f0;
+    background: #fff;
+    font-weight: 700;
+    transition: 0.2s;
+}
+
+.spot.selected {
+    background: #0a3d62 !important;
+    color: #f1c40f !important;
+    border-color: #f1c40f !important;
+    transform: scale(1.1);
+}
+
+/* Ticket de reserva activo */
+.ticket-wrapper {
+    background: white;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+    border: 1px solid #eee;
+}
+
+.ticket-header-visual {
+    background: #0a3d62;
+    padding: 20px;
+    color: white;
+    text-align: center;
+}
+/* 🔥 SOLUCIÓN: Usamos ".ticket-header-visual .clase" para mayor fuerza */
+
+/* 1. Ícono (BLANCO) */
+.ticket-header-visual .ticket-icon { 
+    font-size: 2rem; 
+    color: #ffffff !important; /* Blanco Puro */
+} 
+
+/* 2. Título "Reserva Activa" (BLANCO) */
+.ticket-header-visual .ticket-title { 
+    margin: 0; 
+    color: #ffffff !important; /* Blanco Puro */
+    font-size: 1.3rem; 
+    font-weight: 900; 
+    letter-spacing: 0.5px;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.3); /* Sombra suave para leer mejor */
+} 
+
+/* 3. Estado "Espacio asegurado" (BLANCO HUESO) */
+.ticket-header-visual .ticket-status { 
+    margin: 0; 
+    color: #e2e8f0 !important; /* Casi blanco */
+    font-size: 0.85rem; 
+    font-weight: 700; 
+    text-transform: uppercase; 
+    letter-spacing: 1px; 
+} 
+
+/* --- CUERPO DEL TICKET (Fondo Blanco - Letras Oscuras) --- */
+.ticket-body { 
+    padding: 15px 20px; 
+    background: #ffffff !important; 
+}
+
+/* IMPORTANTE: Forzamos el texto de ADENTRO del ticket a ser AZUL OSCURO */
+.ticket-body p, 
+.ticket-body h3, 
+.ticket-body span, 
+.ticket-body strong { 
+    font-size: 1rem !important; 
+    margin-bottom: 10px !important; 
+    color: #0a3d62 !important; /* Azul para que se lea en fondo blanco */
+    font-weight: 700 !important; 
+    display: flex; 
+    align-items: center; 
+    gap: 8px; 
+}
+
+/* Botones */
+.ticket-body button {
+    width: 100%; 
+    padding: 12px; 
+    border-radius: 10px; 
+    font-weight: 800; 
+    font-size: 0.9rem;
+    cursor: pointer; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    gap: 8px;
+    border: none; 
+    margin-top: 10px;
+}
+
+/* Botón Descargar (Verde) */
+.ticket-body button:first-of-type { 
+    background: linear-gradient(135deg, #2ecc71 0%, #219653 100%); 
+    color: #ffffff !important; 
+}
+
+/* Botón Liberar (Rojo) */
+.ticket-body button:last-of-type { 
+    background: #fff0f0; 
+    color: #e30613 !important; 
+    border: 1px solid #e30613; 
+}
+
+.ticket-footer { 
+    padding: 10px; 
+    font-size: 0.8rem; 
+    text-align: center; 
+    color: #64748b !important; 
+    background: #f8fafc;
+}
+
+.main-container > div:last-child {
+    flex: 1;
+    height: 100%; 
+    display: flex;
+    flex-direction: column;
+    overflow: hidden; 
+}
+/* 8. MAPA & LEYENDA */
+.main-container > div:last-child .card {
+    height: 100% !important; 
+    display: flex !important;
+    flex-direction: column !important;
+    padding: 20px !important;
+    background: #fff;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+    overflow: hidden; /* Mantiene todo adentro */
+}
+
+.map-header { margin-bottom: 10px; text-align: center; }
+.card-title { margin-top: 0; font-size: 1.1rem; color: #0a3d62; font-weight: 800; display: flex; align-items: center; justify-content: center; gap: 8px; }
+
+.legend { 
+    display: flex; justify-content: center; gap: 15px; margin-top: 8px; 
+    padding: 8px; background: #f8fafc; border-radius: 8px; 
+}
+.legend-item { display: flex; align-items: center; gap: 6px; font-size: 0.8rem; font-weight: 700; color: #0a3d62; }
+.legend-box { width: 14px; height: 14px; border-radius: 4px; border: 2px solid; }
+
+.legend-box.free { background: #fff; border-color: #e2e8f0; }
+.legend-box.occupied { background: #e2e8f0; border-color: #cbd5e1; background-image: repeating-linear-gradient(45deg, transparent, transparent 3px, rgba(0,0,0,0.05) 3px, rgba(0,0,0,0.05) 6px); }
+.legend-box.selected { background: #0a3d62; border-color: #f1c40f; }
+
+
+/* GRID DEL MAPA */
+.map-grid { 
+    display: grid !important; 
+    grid-template-columns: repeat(auto-fill, minmax(48px, 1fr)) !important; 
+    gap: 12px !important; 
+    padding: 10px !important;
+    flex: 1 !important; 
+    overflow-y: auto !important; /* 🔥 Scroll interno activado */
+    max-height: 100%;
+    scrollbar-width: thin; /* Scroll más fino para navegadores modernos */
+    scrollbar-color: #0a3d62 #f1f5f9;
+}
+
+.spot {
+    width: 100% !important;
+    aspect-ratio: 1 / 1 !important; 
+    height: auto !important;
+    border-radius: 10px; 
+    background: #fff; 
+    border: 2px solid #e2e8f0;
+    font-weight: 800; 
+    color: #64748b; 
+    font-size: 0.95rem;
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); 
+    cursor: pointer;
+}
+.spot:hover:not(:disabled) { 
+    border-color: #0a3d62 !important; 
+    color: #0a3d62 !important; 
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(10, 61, 98, 0.1);
+}
+.spot.selected { 
+    background: #0a3d62 !important; 
+    color: #f1c40f !important; 
+    border-color: #f1c40f !important; 
+    transform: scale(1.05);
+}
+.spot:disabled {
+    background: #f1f5f9 !important; 
+    color: #cbd5e1 !important; 
+    border-color: #e2e8f0 !important; 
+    cursor: not-allowed;
+    background-image: repeating-linear-gradient(45deg, transparent, transparent 5px, rgba(0,0,0,0.03) 5px, rgba(0,0,0,0.03) 10px);
+}
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+    .main-container { flex-direction: column; height: auto; display: block; }
+    .sidebar { width: 100%; margin-bottom: 20px; }
+    .map-grid { grid-template-columns: repeat(auto-fill, minmax(32px, 1fr)); gap: 4px; }
+    .spot { height: 32px; font-size: 0.8rem; }
+}
+
+.sidebar .user-info .user-avatar,
+.sidebar div[class*="avatar"],
+.sidebar .avatar-circle {
+    background: linear-gradient(135deg, #f1c40f 0%, #d4ac0d 100%) !important;
+    
+    color: #0a3d62 !important;
+    
+    border: 4px solid #ffffff !important;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3) !important;
+    border-radius: 50% !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    font-weight: 900 !important;
+    
+    width: 65px !important;
+    height: 65px !important;
+    font-size: 2rem !important;
+}
+
+.sidebar .user-info h3 {
+    color: #ffffff !important;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+    font-size: 1.2rem !important;
+}
+
+.sidebar .user-info p {
+    color: #e2e8f0 !important; 
+}
+
+
+.sidebar .user-info p span {
+    color: #f1c40f !important; 
+    background: rgba(255,255,255,0.1);
+    padding: 2px 10px;
+    border-radius: 12px;
+    font-weight: 700;
+}
+
+/* =========================================================
+   FIX DEFINITIVO: VISIBILIDAD DEL NOMBRE Y DATOS 
+   ========================================================= */
+
+/* Forzamos que el nombre y rol sean legibles dentro de la tarjeta blanca */
+.sidebar .user-info h3, 
+.sidebar .user-info p,
+.sidebar [class*="user-details"] h3,
+.sidebar [class*="user-details"] p {
+    color: #0a3d62 !important; /* Azul EPN */
+    text-shadow: none !important; /* Quitamos la sombra blanca */
+    font-weight: 800 !important;
+}
+
+/* Si el nombre está dentro de un contenedor específico de UserInfo */
+.user-info-container h3, 
+.user-info-container p {
+    color: #0a3d62 !important;
+}
+
+/* Ajuste adicional para el texto de la placa si aparece ahí */
+.sidebar .user-info span {
+    color: #0a3d62 !important;
+    opacity: 0.8;
+}
+
+/* =================================================================
+   🔥 FIX DEFINITIVO BOTÓN RESERVA ESTUDIANTES
+   ================================================================= */
+
+/* ESTADO 1: ESPERANDO (Fondo Blanco - Letras Azules) */
+.sidebar .btn-reservar.disabled,
+.sidebar .btn-reservar:disabled {
+    background: #ffffff !important;
+    color: #0a3d62 !important; /* Azul EPN */
+    border: 2px solid #0a3d62 !important;
+    opacity: 1 !important;
+    font-weight: 800 !important;
+}
+
+/* ESTADO 2: LISTO (Fondo Azul - Letras Blancas) */
+.sidebar .btn-reservar:not(.disabled):not(:disabled) {
+    background: #0a3d62 !important;
+    color: #ffffff !important; /* Blanco puro */
+    border: 2px solid #0a3d62 !important;
+    cursor: pointer !important;
+    font-weight: 800 !important;
+    box-shadow: 0 4px 12px rgba(10, 61, 98, 0.3) !important;
+}
+
+/* Forzar que las etiquetas (Ubicación, Fecha, Hora) sean legibles */
+.sidebar label, .sidebar .input-label {
+    color: #0a3d62 !important;
+    font-weight: 700 !important;
+    text-shadow: none !important;
+}
+
+.spot {
+    width: 100% !important;
+    aspect-ratio: 1 / 1 !important; 
+    height: auto !important;
+}
+

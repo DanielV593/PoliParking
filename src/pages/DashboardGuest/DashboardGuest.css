@@ -1,354 +1,233 @@
 /* src/pages/DashboardGuest/DashboardGuest.css */
 
-.dashboard-guest-bg {
-    min-height: 100vh;
-    background: linear-gradient(135deg, #0a3d62 0%, #162a3a 100%); /* Fondo institucional profundo */
-    padding: 20px;
-    font-family: 'Lato', sans-serif;
-    color: #333;
+/* --- 1. EL TELÓN DE FONDO (Fix Definitivo) --- */
+.fixed-background {
+    position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+    background: linear-gradient(135deg, #0a3d62 0%, #162a3a 100%);
+    z-index: -1;
 }
 
-/* =========================================
-   NUEVO HEADER PREMIUM (Reemplaza al Navbar)
-   ========================================= */
+/* --- 2. CONTENEDOR PRINCIPAL --- */
+.dashboard-guest-container {
+    min-height: 100vh; padding: 20px;
+    font-family: 'Lato', sans-serif; color: #333;
+    position: relative; box-sizing: border-box;
+}
 
+* { box-sizing: border-box; }
+
+/* --- HEADER --- */
 .guest-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 15px 30px;
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(12px);
-    border-radius: 20px;
-    margin-bottom: 30px;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
-    border: 1px solid rgba(255, 255, 255, 0.5);
-    position: relative;
-    overflow: hidden;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 15px 30px; background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(12px); border-radius: 20px; margin-bottom: 30px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2); border: 1px solid rgba(255, 255, 255, 0.5);
+    position: relative; overflow: hidden;
 }
-
 .guest-header::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 4px;
+    content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 4px;
     background: linear-gradient(90deg, #0a3d62 0%, #e30613 100%);
 }
-
-.header-left {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-}
-
-.logo-container {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.logo-icon {
-    font-size: 2rem;
-    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
-}
-
-.logo-text {
-    font-size: 1.5rem;
-    font-weight: 900;
-    color: #0a3d62; 
-    margin: 0;
-    letter-spacing: -0.5px;
-    line-height: 1;
-}
-
-.logo-text span {
-    color: #f1c40f; /* Dorado */
-}
-
-.header-divider {
-    width: 2px;
-    height: 25px;
-    background-color: #e2e8f0;
-    border-radius: 2px;
-}
-
-.header-subtitle {
-    font-size: 0.95rem;
-    color: #64748b;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-}
-
-/* Sección Central (Fecha) */
-.header-center {
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-}
-
+.header-left { display: flex; align-items: center; gap: 20px; }
+.logo-container { display: flex; align-items: center; gap: 10px; }
+.logo-icon { font-size: 2rem; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2)); }
+.logo-text { font-size: 1.5rem; font-weight: 900; color: #0a3d62; margin: 0; letter-spacing: -0.5px; line-height: 1; }
+.logo-text span { color: #f1c40f; }
+.header-divider { width: 2px; height: 25px; background-color: #e2e8f0; border-radius: 2px; }
+.header-subtitle { font-size: 0.95rem; color: #64748b; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
+.header-center { position: absolute; left: 50%; transform: translateX(-50%); }
 .date-badge {
-    background: #f1f5f9;
-    padding: 8px 20px;
-    border-radius: 50px;
-    color: #0a3d62;
-    font-weight: 700;
-    font-size: 0.9rem;
-    text-transform: capitalize;
-    border: 1px solid #e2e8f0;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+    background: #f1f5f9; padding: 8px 20px; border-radius: 50px;
+    color: #0a3d62; font-weight: 700; font-size: 0.9rem;
+    border: 1px solid #e2e8f0; display: flex; align-items: center; gap: 8px;
 }
-
-/* Sección Derecha (Botón) */
 .logout-btn-custom {
-    background: #fee2e2;
-    color: #dc2626;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 12px;
-    font-weight: 700;
-    font-size: 0.9rem;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    transition: all 0.3s ease;
+    background: #fee2e2; color: #dc2626; border: none; padding: 10px 20px;
+    border-radius: 12px; font-weight: 700; font-size: 0.9rem; cursor: pointer;
+    display: flex; align-items: center; gap: 10px; transition: all 0.3s ease;
+}
+.logout-btn-custom:hover { background: #fecaca; transform: translateY(-2px); }
+
+/* --- LAYOUT --- */
+.main-container { display: flex; gap: 25px; max-width: 1500px; margin: 0 auto; align-items: flex-start; }
+.main-container.mobile { flex-direction: column; }
+
+/* --- ALERTA --- */
+.alert-guest {
+    background: rgba(255, 255, 255, 0.2); border: 1px solid rgba(255, 255, 255, 0.4);
+    color: #ffffff !important; padding: 15px; border-radius: 12px; margin-bottom: 20px;
+    font-weight: 700; display: flex; align-items: center; gap: 10px;
+    backdrop-filter: blur(10px); text-shadow: 0 2px 4px rgba(0,0,0,0.2);
 }
 
-.logout-btn-custom:hover {
-    background: #fecaca;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(220, 38, 38, 0.2);
-}
-
-/* --- LAYOUT PRINCIPAL --- */
-.main-container {
-    display: flex;
-    gap: 25px;
-    max-width: 1500px;
-    margin: 0 auto;
-}
-
-.main-container.mobile {
-    flex-direction: column;
-}
-
-/* --- TARJETAS GLASSMORPHISM --- */
+/* --- TARJETAS --- */
 .card {
-    background: rgba(255, 255, 255, 0.98);
-    padding: 25px;
-    border-radius: 24px;
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.98); padding: 25px; border-radius: 24px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1); border: 1px solid rgba(255, 255, 255, 0.3);
 }
+.card-title { font-size: 1.2rem; font-weight: 800; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
 
-.card-title {
-    font-size: 1.2rem;
-    font-weight: 800;
-    color: #0a3d62;
-    margin-bottom: 20px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-/* --- MAPA DE PARQUEO --- */
-.map-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(55px, 1fr));
-    gap: 12px;
-    padding: 10px;
-}
-
+/* --- MAPA --- */
+.map-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(55px, 1fr)); gap: 12px; padding: 10px; }
 .spot {
-    height: 60px; 
-    border-radius: 12px;
-    background: #fff;
-    border: 2px solid #e2e8f0;
-    font-weight: 700;
-    transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    position: relative;
-    cursor: pointer;
-    color: #64748b;
+    height: 60px; border-radius: 12px; background: #fff; border: 2px solid #e2e8f0;
+    font-weight: 700; transition: all 0.2s; display: flex; justify-content: center; align-items: center;
+    position: relative; cursor: pointer; color: #64748b;
 }
+.spot::after { display: none !important; }
+.spot:hover:not(:disabled) { border-color: #0a3d62; transform: translateY(-5px); box-shadow: 0 10px 15px rgba(0,0,0,0.1); color: #0a3d62; }
+.spot.selected { background: #0a3d62 !important; color: #fff !important; border-color: #f1c40f; }
+.spot:disabled { background: #f1f5f9; border-color: #f1f5f9; color: #cbd5e1; cursor: not-allowed; }
 
-.spot::after {
-    content: '';
-    position: absolute;
-    bottom: 5px;
-    width: 60%;
-    height: 3px;
-    background: #e2e8f0;
-    border-radius: 10px;
-}
-
-.spot:hover:not(:disabled) {
-    border-color: #0a3d62;
-    transform: translateY(-5px);
-    box-shadow: 0 10px 15px rgba(0,0,0,0.1);
-    color: #0a3d62;
-}
-
-.spot.selected {
-    background: #0a3d62 !important;
-    color: #fff !important;
-    border-color: #ffc107;
-}
-
-.spot:disabled {
-    background: #f1f5f9;
-    border-color: #f1f5f9;
-    color: #cbd5e1;
-    cursor: not-allowed;
-}
-
-/* --- INPUTS & BOTONES FORM --- */
-.input-label {
-    font-size: 0.85rem;
-    color: #64748b;
-    font-weight: 700;
-    margin-bottom: 8px;
-    display: block;
-}
-
-.input-field {
-    width: 100%;
-    background: #f8fafc;
-    border: 2px solid #e2e8f0;
-    padding: 15px;
-    border-radius: 14px;
-    font-size: 1rem;
-    color: #333;
-    outline: none;
-    transition: border-color 0.3s ease;
-}
-
-.input-field:focus {
-    border-color: #0a3d62;
-    background: #fff;
-}
-
-.input-field:disabled {
-    color: #64748b;
-    cursor: not-allowed;
-}
-
-.main-btn {
-    background: linear-gradient(135deg, #0a3d62 0%, #162a3a 100%);
-    padding: 18px;
-    border-radius: 16px;
-    font-weight: 800;
-    letter-spacing: 1px;
-    box-shadow: 0 10px 20px rgba(10, 61, 98, 0.2);
-    color: white;
-    width: 100%;
-    border: none;
-    cursor: pointer;
-    margin-top: 15px;
-    font-size: 1rem;
-    transition: transform 0.2s ease;
-}
-
-.main-btn:hover {
-    background: #162a3a;
-    transform: translateY(-2px);
-}
-
-.main-btn:disabled {
-    background: #94a3b8;
-    cursor: not-allowed;
-    transform: none;
-    box-shadow: none;
-}
+/* --- INPUTS --- */
+.input-field, select, input { color: #333 !important; }
 
 /* =========================================================
-   FIX NUCLEAR DE VISIBILIDAD (Importante mantener)
+   VISIBILIDAD SIDEBAR (GUEST)
    ========================================================= */
-.sidebar, 
-.sidebar div, 
-.sidebar h3, 
-.sidebar h4, 
-.sidebar p, 
-.sidebar span, 
-.sidebar label {
+
+/* 1. REGLA GENERAL: Texto blanco sobre el fondo azul */
+.sidebar h3, .sidebar p, .sidebar label, .sidebar span {
+    color: #ffffff; /* Sin !important aquí para poder sobrescribirlo */
+    text-shadow: 0 1px 3px rgba(0,0,0,0.3);
+}
+
+/* 2. REGLA ESPECÍFICA: Todo texto dentro de una tarjeta (.card) es AZUL */
+.sidebar .card h3, 
+.sidebar .card p, 
+.sidebar .card span, 
+.sidebar .card label {
     color: #0a3d62 !important;
     text-shadow: none !important;
 }
 
-.alert-guest {
-    color: #856404 !important;
-}
-
-.sidebar button.main-btn {
-    color: #ffffff !important;
-}
-
-.sidebar .spot.selected {
-    color: #ffffff !important;
-}
-
-.sidebar .spot {
+/* 3. REGLA DE ORO: El nombre del usuario y su rol (UserInfo) SIEMPRE AZULES */
+/* Usamos selectores muy específicos para ganar la batalla */
+.sidebar .user-info h3,
+.sidebar .user-info p,
+.sidebar div[class*="user"] h3,
+.sidebar div[class*="user"] p {
     color: #0a3d62 !important;
+    text-shadow: none !important;
+    font-weight: 800 !important;
 }
 
-.sidebar .spot:disabled {
-    color: #cbd5e1 !important;
+/* 4. AVATAR DORADO */
+.sidebar .user-info .user-avatar,
+.sidebar div[class*="avatar"],
+.sidebar .avatar-circle {
+    background: linear-gradient(135deg, #f1c40f 0%, #d4ac0d 100%) !important;
+    color: #0a3d62 !important;
+    border: 4px solid #ffffff !important;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3) !important;
+    border-radius: 50% !important; display: flex !important; justify-content: center !important; align-items: center !important;
+    font-weight: 900 !important; width: 65px !important; height: 65px !important; font-size: 2rem !important;
 }
 
-
-/* =========================================
-   RESPONSIVE FIX (MÓVIL)
-   ========================================= */
-
+/* RESPONSIVE */
 @media (max-width: 768px) {
-    .dashboard-guest-bg { padding: 10px; }
-    
-    /* Header Móvil Ajustado */
-    .header-subtitle, 
-    .header-divider,
-    .header-center {
-        display: none; 
-    }
-    
-    .guest-header {
-        padding: 15px;
-        flex-direction: row; /* Mantiene logo y salir alineados */
-    }
-    
-    .logo-text { font-size: 1.2rem; }
-    .logo-icon { font-size: 1.5rem; }
-    
-    .btn-text { display: none; } /* Solo icono de salir */
+    .dashboard-guest-container { padding: 10px; }
+    .header-subtitle, .header-divider, .header-center { display: none; }
+    .guest-header { padding: 15px; flex-direction: row; }
+    .btn-text { display: none; }
+    .map-grid { grid-template-columns: repeat(auto-fill, minmax(38px, 1fr)); gap: 8px; }
+    .spot { height: 40px; font-size: 0.8rem; }
+}
 
-    /* Mapa Móvil */
-    .map-grid {
-        grid-template-columns: repeat(auto-fill, minmax(38px, 1fr)); 
-        gap: 8px; 
-        padding: 5px;
-    }
+/* ============================================================
+   ESTILOS PARA LA TARJETA DE RESERVA ACTIVA (Estilo Estudiante)
+   ============================================================ */
 
-    .spot {
-        height: 40px; 
-        font-size: 0.8rem; 
-        border-radius: 8px;
-    }
+/* 1. Título de la tarjeta "Reserva Activa" / "Tu Pase Activo" */
+.sidebar .card .card-title {
+    color: #0a3d62 !important; /* Azul oscuro EPN */
+    font-size: 1.3rem;
+    font-weight: 800;
+    text-align: center;
+    margin-bottom: 15px;
+}
 
-    .input-field {
-        padding: 12px;
-        font-size: 0.95rem;
-    }
+/* 2. Texto con los detalles de la reserva (Lugar, fecha, hora) */
+/* Asegura que el texto dentro de ReservationCard sea azul */
+.sidebar .card p, 
+.sidebar .card h3, 
+.sidebar .card h4,
+.sidebar .card span {
+    color: #0a3d62 !important;
+    font-size: 1rem;
+    font-weight: 600;
+    text-shadow: none !important;
+}
 
-    .main-btn {
-        padding: 15px;
-        font-size: 0.95rem;
-    }
+/* 3. Estilos generales para los botones dentro de la tarjeta */
+.sidebar .card button {
+    width: 100%;
+    padding: 12px;
+    border-radius: 10px;
+    font-weight: 800;
+    font-size: 0.9rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    border: none;
+    margin-top: 10px;
+    transition: all 0.3s ease;
+}
+
+/* 4. Botón de Descargar (el primero) - Estilo VERDE */
+.sidebar .card button:first-of-type {
+    background: linear-gradient(135deg, #2ecc71 0%, #219653 100%); /* Degradado verde */
+    color: #ffffff !important;
+}
+.sidebar .card button:first-of-type:hover {
+    filter: brightness(1.1);
+}
+
+/* 5. Botón de Eliminar (el segundo) - Estilo ROJO */
+.sidebar .card button:last-of-type {
+    background: #fff0f0; /* Fondo rojo muy claro */
+    color: #e30613 !important; /* Texto rojo */
+    border: 1px solid #e30613;
+}
+.sidebar .card button:last-of-type:hover {
+    background: #ffe0e0;
+}
+
+/* 6. Ajuste para los íconos dentro de los botones */
+.sidebar .card button svg, 
+.sidebar .card button i {
+    font-size: 1.1rem;
+}
+
+/* =================================================================
+   🔥 SOLUCIÓN DEFINITIVA BOTÓN RESERVA (INVITADOS)
+   ================================================================= */
+
+/* ESTADO 1: ESPERANDO (Fondo Blanco - Letras Azules) */
+.sidebar button.btn-reservar.disabled,
+.sidebar button.btn-reservar:disabled {
+    background: #ffffff !important;
+    color: #0a3d62 !important; /* Azul EPN */
+    border: 2px solid #0a3d62 !important;
+    opacity: 1 !important;
+    font-weight: 800 !important;
+}
+
+/* ESTADO 2: LISTO (Fondo Azul - Letras Blancas) */
+.sidebar button.btn-reservar:not(.disabled):not(:disabled) {
+    background: #0a3d62 !important;
+    color: #ffffff !important; /* Blanco puro */
+    border: 2px solid #0a3d62 !important;
+    cursor: pointer !important;
+    font-weight: 800 !important;
+    box-shadow: 0 4px 15px rgba(10, 61, 98, 0.3) !important;
+}
+
+/* Asegurar visibilidad de labels en el sidebar de invitados */
+.sidebar label, .sidebar .input-label {
+    color: #ffffff !important; /* Blanco sobre el fondo oscuro del sidebar */
+    font-weight: 700 !important;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.5) !important;
 }

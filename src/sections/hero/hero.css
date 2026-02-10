@@ -1,269 +1,165 @@
-/* src/sections/hero/hero.css */
+/* hero.css */
 
-/* ==========================
-   1. ESTRUCTURA Y FONDO
-========================== */
 .hero-background {
-  background-color: var(--colorFondoSuave); /* El color hielo */
-  /* ... resto de tu código hero ... */
-  padding-top: 130px; 
-  padding-bottom: 5rem;
-  min-height: 100vh; 
-  display: flex;
-  align-items: center;
-  width: 100%;
-  overflow-x: hidden;
+    background-color: #f8fafc;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-top: 80px;
+    overflow: hidden;
 }
 
-.main-container {
-  width: 100%;
-  max-width: 1650px;
-  margin: 0 auto;
-  padding: 0 3rem; /* Más aire a los costados */
-  
-  display: flex;
-  align-items: center;
-  justify-content: space-between; /* Separa texto e imagen */
-  gap: 5rem; /* AUMENTADO: Para que no se vea apretado al centro */
+.hero-wrapper {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr; /* El texto toma más espacio que la imagen */
+    gap: 40px;
+    width: 95%; /* Ocupamos casi todo el ancho */
+    max-width: 1500px;
+    align-items: center;
 }
 
-/* ==========================
-   2. COLUMNA DE TEXTO (ANIMADA)
-========================== */
-.main-content {
-  flex: 1;
-  /* IMPORTANTE: Esto evita que el texto se aplaste cuando la pantalla se achica */
-  min-width: 550px; 
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: flex-start;
+/* TEXTO */
+.hero-text-container {
+    display: flex;
+    flex-direction: column;
 }
 
-/* Contenedor del Título Animado */
-.block-effect {
-  /* Hacemos el texto grande y legible */
-  font-size: clamp(3rem, 5vw, 4.5rem); 
-  line-height: 1.1;
-  display: flex;
-  flex-wrap: wrap; /* Si no cabe, baja la palabra */
-  gap: 15px;       /* Espacio entre Poli y Parking */
-  margin-bottom: 1.5rem;
-  font-family: 'Roboto', sans-serif;
-  font-weight: 900;
+.hero-title {
+    font-size: clamp(3.5rem, 8vw, 6rem);
+    font-weight: 900;
+    line-height: 1;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-bottom: 20px;
 }
 
-/* --- LOGICA DE ANIMACIÓN (INTACTA) --- */
-.block-reveal {
-  --t: calc(var(--td) + var(--d));
-  color: transparent;
-  padding: 4px 10px; /* Un poco más de padding para el efecto */
-  position: relative;
-  overflow: hidden;
-  display: inline-block;
+.reveal {
+    position: relative;
+    color: transparent;
+    overflow: hidden;
+    padding: 5px 10px;
 }
 
-.block-reveal::after {
-  content: '';
-  width: 0%;
-  height: 100%;
-  position: absolute;
-  top: 0;
-  left: 0;
-  background: var(--bc);
-  animation: revealingIn var(--td) var(--d) forwards,
-             revealingOut var(--td) var(--t) forwards;
+.reveal::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 0%;
+    height: 100%;
+    z-index: 2;
+    animation: blockAnim 1.1s cubic-bezier(0.19, 1, 0.22, 1) forwards;
 }
 
-.block-reveal.blue { animation: revealBlue 0s var(--t) forwards; }
-.block-reveal.gold { animation: revealGold 0s var(--t) forwards; }
+.b-blue::after { background: #0a3d62; }
+.b-gold::after { background: #ffc107; animation-delay: 0.3s; }
 
-/* Subtítulo */
+.b-blue { animation: textBlue 0s 0.6s forwards; }
+.b-gold { animation: textGold 0s 0.9s forwards; }
+
+@keyframes blockAnim {
+    0% { width: 0; left: 0; }
+    50% { width: 100%; left: 0; }
+    100% { width: 0; left: 100%; }
+}
+
+@keyframes textBlue { to { color: #0a3d62; } }
+@keyframes textGold { to { color: #ffc107; } }
+
 .hero-subtitle {
-  font-size: clamp(1.2rem, 2vw, 1.6rem);
-  margin-bottom: 1.5rem;
-  font-weight: 700;
-  color: var(--colorPrincipal);
-  opacity: 0.9;
-  letter-spacing: 1px;
+    font-size: clamp(1.5rem, 3vw, 2.2rem);
+    color: #0a3d62;
+    border-left: 8px solid #ffc107;
+    padding-left: 20px;
+    margin-bottom: 25px;
+    font-weight: 800;
 }
 
-/* Descripción */
-.main-description {
-  font-size: 1.15rem;
-  color: var(--colorTextoClaro);
-  margin-bottom: 3rem;
-  line-height: 1.6;
-  max-width: 90%; /* Deja que el texto respire a la derecha */
+.hero-description {
+    font-size: 1.2rem;
+    color: #444;
+    line-height: 1.7;
+    max-width: 600px; /* Evita que el texto se rompa pero llena el espacio */
+    margin-bottom: 30px;
 }
 
-/* ==========================
-   3. FEATURES Y BOTONES
-========================== */
-.hero-features {
-  display: flex;
-  gap: 1.5rem;
-  flex-wrap: wrap;
-  margin-bottom: 3.5rem;
+.hero-badges {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+    margin-bottom: 40px;
 }
 
-.hero-features span {
-  background: white; /* Fondo blanco limpio */
-  color: var(--colorPrincipal);
-  padding: 0.8rem 1.5rem;
-  border-radius: 12px; /* Más moderno */
-  font-weight: 700;
-  font-size: 1rem;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.6rem;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.05); /* Sombra sutil */
-  border: 1px solid rgba(0,0,0,0.05);
-  
-  /* Animación de entrada */
-  animation: fadeUp 0.8s ease forwards;
-  opacity: 0;
+.hero-badges span {
+    background: white;
+    padding: 10px 20px;
+    border-radius: 12px;
+    font-weight: 700;
+    color: #0a3d62;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
 }
 
-.hero-features span:nth-child(1) { animation-delay: .6s; }
-.hero-features span:nth-child(2) { animation-delay: .8s; }
-.hero-features span:nth-child(3) { animation-delay: 1s; }
-
-.hero-features span:hover {
-  transform: translateY(-4px);
-  border-color: var(--colorDorado);
-  transition: all 0.3s ease;
+.btn-reserva-final {
+    background: #0a3d62;
+    color: white !important;
+    padding: 20px 40px;
+    border-radius: 15px;
+    font-weight: 800;
+    font-size: 1.2rem;
+    text-decoration: none;
+    display: inline-block;
+    position: relative; /* Necesario para el brillo */
+    overflow: hidden;    /* Para que el brillo no se salga del botón */
+    transition: all 0.3s ease;
+    box-shadow: 0 10px 20px rgba(10, 61, 98, 0.2);
+    z-index: 1;
 }
 
-/* Botón de Reserva */
-.btn-reserva {
-  display: inline-block;
-  background-color: var(--colorPrincipal);
-  color: white;
-  padding: 1.2rem 3.5rem; /* Botón grande y cómodo */
-  font-weight: 800;
-  font-size: 1.1rem;
-  border-radius: 50px; /* Redondeado moderno */
-  box-shadow: 0 10px 25px rgba(10, 61, 98, 0.3);
-  transition: all 0.3s ease;
-  border: none;
-  cursor: pointer;
-  letter-spacing: 0.5px;
-}
-
-.btn-reserva:hover {
-  transform: translateY(-4px);
-  background-color: #082a45;
-  box-shadow: 0 15px 35px rgba(10, 61, 98, 0.4);
-}
-
-/* ==========================
-   4. IMAGEN HERO
-========================== */
-.main-image {
-  flex: 1;
-  display: flex;
-  justify-content: flex-end; /* Alineada a la derecha */
-  align-items: center;
-}
-
-.main-image img {
-  width: 100%;
-  max-width: 750px; /* Tamaño controlado para que no invada */
-  height: auto;
-  border-radius: 30px; /* Bordes suaves */
-  
-  /* Sombra sólida moderna (estilo tendencia 2024) */
-  box-shadow: 20px 20px 0px rgba(10, 61, 98, 0.1); 
-  
-  transition: transform 0.5s ease;
-  /* Animación de entrada de la imagen */
-  animation: fadeUp 1s ease-out both; 
-  animation-delay: 0.4s;
-}
-
-.main-image img:hover {
-  transform: scale(1.02);
-}
-
-/* ==========================
-   5. KEYFRAMES (ANIMACIONES)
-========================== */
-@keyframes revealBlue { 100% { color: var(--colorPrincipal); } }
-@keyframes revealGold { 100% { color: var(--colorDorado); } }
-@keyframes revealingIn { from { width: 0; } to { width: 100%; } }
-@keyframes revealingOut { from { transform: translateX(0); } to { transform: translateX(100%); } }
-
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(30px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-/* ==========================
-   6. RESPONSIVE (CELULAR)
-========================== */
-@media (max-width: 1100px) {
-  /* Cuando la pantalla es mediana, bajamos el tamaño del título */
-  .block-effect { font-size: 3.5rem; }
-  .main-container { gap: 3rem; padding: 0 2rem; }
-}
-
-@media (max-width: 900px) {
-  .hero-background {
-    padding-top: 120px; 
-    padding-bottom: 4rem;
-    min-height: auto; /* Dejamos que crezca según contenido */
-    display: block;
-  }
-
-  .main-container {
-    flex-direction: column-reverse; /* Imagen arriba en móvil se ve mejor a veces, o column normal */
-    flex-direction: column; /* Dejamos normal: Texto arriba, imagen abajo */
-    text-align: center;
-    gap: 3rem;
-  }
-
-  .main-content {
+.btn-reserva-final::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
     width: 100%;
-    min-width: auto; /* Quitamos restricción */
-    align-items: center; /* Centramos todo */
-  }
-
-  .main-image {
-    width: 100%;
-    justify-content: center;
-    margin: 0 auto;
-  }
-  
-  .main-image img {
-    max-width: 500px;
-    box-shadow: 10px 10px 0px rgba(10, 61, 98, 0.1);
-  }
-
-  .block-effect {
-    justify-content: center;
-    font-size: 2.8rem;
-    gap: 10px;
-  }
-
-  .main-description {
-    font-size: 1rem;
-    padding: 0 1rem;
-    max-width: 100%;
-  }
-
-  .hero-features {
-    justify-content: center;
-  }
-
-  .btn-reserva {
-    width: 100%; 
-    max-width: 300px;
-    padding: 1rem;
-  }
+    height: 100%;
+    background: linear-gradient(
+        120deg,
+        transparent,
+        rgba(255, 255, 255, 0.3),
+        transparent
+    );
+    transition: all 0.6s;
 }
 
-@media (max-width: 480px) {
-  .block-effect { font-size: 2.2rem; }
-  .main-container { padding: 0 1.2rem; }
+.btn-reserva-final:hover {
+    background: #0d4b79; /* Un azul un poquito más claro */
+    transform: translateY(-5px); /* Se eleva */
+    box-shadow: 0 15px 30px rgba(10, 61, 98, 0.4); /* Sombra más profunda */
+}
+
+.btn-reserva-final:hover::before {
+    left: 100%;
+}
+
+.btn-reserva-final:active {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 10px rgba(10, 61, 98, 0.2);
+}
+
+/* IMAGEN */
+.hero-image-container img {
+    width: 100%;
+    border-radius: 40px;
+    box-shadow: 25px 25px 0px rgba(10, 61, 98, 0.08);
+}
+
+/* RESPONSIVE */
+@media (max-width: 1024px) {
+    .hero-wrapper {
+        grid-template-columns: 1fr;
+        text-align: center;
+    }
+    .hero-text-container { align-items: center; }
+    .hero-subtitle { border: none; padding: 0; }
 }

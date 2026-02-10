@@ -1,171 +1,159 @@
-/* DashboardAdmin.css */
+/* ============================================================
+   DASHBOARD ADMIN (LAYOUT CORREGIDO: SIDEBAR + CONTENIDO)
+   ============================================================ */
 
-.admin-bg {
-    font-family: 'Lato', sans-serif;
-    background: #f4f7f9;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
+/* 1. RESET GLOBAL */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
 }
 
-/* Navbar */
+/* 2. CONTENEDOR PADRE (Toda la pantalla) */
+.admin-bg {
+    font-family: 'Lato', sans-serif;
+    background-color: #f4f7f9;
+    height: 100vh; /* Alto exacto de la pantalla */
+    width: 100vw;  /* Ancho exacto de la pantalla */
+    display: flex;
+    flex-direction: column; /* Elementos uno debajo de otro (Navbar arriba, resto abajo) */
+    overflow: hidden; /* Evita scroll en la página principal */
+}
+
+/* 3. NAVBAR (Fijo arriba) */
 .nav-admin {
-    background: #0a3d62;
-    padding: 1rem 2rem;
+    height: 70px;
+    flex-shrink: 0; /* No se encoge */
+    background-color: #0a3d62;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    padding: 0 2rem;
     color: white;
-    position: sticky;
-    top: 0;
-    z-index: 100;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    z-index: 50;
 }
 
 .btn-logout {
-    background: #e30613;
-    border: none;
+    background-color: #e30613;
     color: white;
+    border: none;
     padding: 0.6rem 1.2rem;
     border-radius: 8px;
     cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 5px;
     font-weight: bold;
+    display: flex; align-items: center; gap: 8px;
+    transition: 0.3s;
+}
+.btn-logout:hover { background-color: #c0392b; }
+
+/* 4. CONTENEDOR PRINCIPAL (EL QUE ARREGLA EL ESPACIO BLANCO) */
+.main-content {
+    display: flex;       /* ¡CRUCIAL! Pone los hijos en fila (Row) */
+    flex-direction: row; /* Asegura izquierda -> derecha */
+    flex: 1;             /* Ocupa toda la altura restante debajo del navbar */
+    height: calc(100vh - 70px); 
+    overflow: hidden;
+    width: 100%;
 }
 
-/* Sidebar */
+/* 5. SIDEBAR IZQUIERDO (Fijo) */
 .admin-sidebar {
+    width: 260px;
+    flex-shrink: 0; /* ¡CRUCIAL! Evita que se aplaste o desaparezca */
     background: white;
-    border-right: 1px solid #eee;
+    border-right: 1px solid #e2e8f0;
+    height: 100%;
     display: flex;
     flex-direction: column;
     padding: 20px 10px;
     gap: 5px;
-    height: 100vh;
-    z-index: 1000;
-    transition: left 0.3s ease;
-}
-
-.admin-sidebar.mobile {
-    position: fixed;
-    top: 0;
+    overflow-y: auto;
+    z-index: 10;
 }
 
 .menu-btn {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 12px 15px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    text-align: left;
-    font-weight: bold;
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px 20px;
     width: 100%;
-    transition: 0.3s;
+    border: none; border-radius: 8px;
+    background: transparent;
+    color: #555; font-weight: 600; font-size: 0.95rem;
+    cursor: pointer; text-align: left;
+    transition: all 0.2s;
 }
+.menu-btn:hover { background-color: #f0f4f8; color: #0a3d62; }
+.menu-btn.active { background-color: #0a3d62; color: white; font-weight: bold; }
 
-.menu-btn.active {
-    background: #0a3d62;
-    color: white;
-}
-
-.menu-btn:hover:not(.active) {
-    background: #f0f4f8;
-}
-
-/* General Layout */
-.main-content {
-    flex: 1;
-    display: flex;
-}
-
+/* 6. ÁREA DE CONTENIDO (Derecha - Se expande) */
 .content-area {
-    flex: 1;
-    overflow-y: auto;
+    flex: 1; /* ¡CRUCIAL! Crece para llenar TODO el espacio a la derecha */
+    background-color: #f4f7f9;
+    padding: 30px;
+    overflow-y: auto; /* Scroll interno solo aquí */
+    height: 100%;
+    width: 100%; /* Asegura que llene el ancho */
 }
 
-/* Cards & Containers */
-.table-container {
-    background: white;
-    padding: 2rem;
-    border-radius: 15px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.05);
-}
-
+/* 7. GRID DE TARJETAS (Se expande) */
 .stats-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1.5rem;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Responsive */
+    gap: 25px;
+    width: 100%;
+    margin-bottom: 30px;
 }
 
 .park-card {
     background: white;
-    padding: 1.5rem;
+    padding: 25px;
     border-radius: 15px;
     text-align: center;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+    border: 1px solid #edf2f7;
 }
 
-/* Inputs & Buttons */
-.input-admin {
+/* 8. TABLAS */
+.table-container {
+    background: white;
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.02);
     width: 100%;
-    padding: 12px;
-    margin: 8px 0;
-    border-radius: 8px;
-    border: 1px solid #ddd;
-    box-sizing: border-box;
-    outline: none;
+    overflow-x: auto;
 }
-
-.btn-edit {
-    color: white;
-    border: none;
-    padding: 6px 10px;
-    border-radius: 6px;
-    cursor: pointer;
-    margin-right: 5px;
-    font-weight: bold;
-    transition: 0.3s;
-}
-
-.btn-del {
-    background: #e30613;
-    color: white;
-    border: none;
-    padding: 6px 12px;
-    border-radius: 6px;
-    cursor: pointer;
-}
-
-/* Tables */
 .admin-table {
     width: 100%;
     border-collapse: collapse;
-    min-width: 600px;
+    min-width: 700px;
 }
-
 .th-style {
-    padding: 12px;
-    border-bottom: 2px solid #f1f2f6;
-    color: #0a3d62;
-    font-weight: bold;
+    padding: 15px; text-align: left; border-bottom: 2px solid #f1f2f6;
+    color: #0a3d62; font-weight: 800; font-size: 0.9rem; text-transform: uppercase;
 }
-
 .td-style {
-    padding: 12px;
-    border-bottom: 1px solid #f1f2f6;
-    font-size: 0.9rem;
-    vertical-align: middle;
+    padding: 12px 15px; border-bottom: 1px solid #f1f2f6; color: #333; font-size: 0.95rem; vertical-align: middle;
 }
 
-/* Messages */
-.message-card {
-    background: #fff;
-    border: 1px solid #edf2f7;
-    border-radius: 12px;
-    padding: 15px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
-    margin-bottom: 15px;
+/* 9. INPUTS */
+.input-admin {
+    width: 100%; padding: 12px; margin: 10px 0;
+    border: 1px solid #ddd; border-radius: 8px; outline: none;
+}
+.input-admin:focus { border-color: #0a3d62; }
+
+/* Botones de Acción */
+.btn-edit { background: #f39c12; color: white; border: none; padding: 6px 10px; border-radius: 6px; cursor: pointer; margin-right: 5px; }
+.btn-del { background: #e30613; color: white; border: none; padding: 6px 10px; border-radius: 6px; cursor: pointer; }
+
+/* 10. RESPONSIVE */
+@media (max-width: 900px) {
+    .main-content { position: relative; } /* Para que el sidebar flote sobre esto */
+    .admin-sidebar {
+        position: absolute; left: -100%; top: 0; height: 100%;
+        transition: left 0.3s ease; box-shadow: 5px 0 15px rgba(0,0,0,0.1);
+    }
+    .admin-sidebar.open { left: 0; }
+    .content-area { padding: 15px; width: 100%; }
+    .stats-grid { grid-template-columns: 1fr; }
 }

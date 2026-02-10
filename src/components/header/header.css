@@ -1,5 +1,5 @@
 /* =========================================
-    HEADER & NAV - VERSIÓN FINAL CORREGIDA
+    HEADER & NAV - VERSIÓN CON ANIMACIONES
    ========================================= */
 :root {
     --colorInstitucional: #0a3d62; 
@@ -40,6 +40,11 @@
 .logo-main {
     height: 65px;
     width: auto;
+    transition: transform 0.3s ease;
+}
+
+.logo-main:hover {
+    transform: scale(1.05); /* Pequeño zoom al logo */
 }
 
 .separator {
@@ -82,12 +87,9 @@
     width: auto;
 }
 
-/* SOLUCIÓN LOGO EPN: Forzamos transparencia y eliminamos fondos blancos */
 .logo-epn-fix {
     height: 42px;
-    /* Si el fondo es blanco/gris, 'multiply' lo volverá transparente contra el header blanco */
     mix-blend-mode: multiply !important; 
-    /* Brillo y contraste al máximo para limpiar los bordes grises */
     filter: contrast(1.2) brightness(1.1) !important;
     background-color: transparent !important;
 }
@@ -105,6 +107,11 @@
     cursor: pointer;
     font-size: 1.8rem;
     color: var(--colorAmarillo) !important;
+    transition: transform 0.3s ease;
+}
+
+.header__hamburger:active {
+    transform: scale(0.9);
 }
 
 /* 4. MENÚ DE NAVEGACIÓN (PC) */
@@ -121,18 +128,61 @@
     font-weight: 800;
     font-size: 1rem;
     text-decoration: none;
+    position: relative; /* Para el subrayado animado */
+    transition: color 0.3s ease;
 }
 
+/* 🔥 EFECTO HOVER EN LINKS (Dorado + Subrayado) */
+.navbar__container a:hover {
+    color: var(--colorAmarillo);
+}
+
+.navbar__container a::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: -5px;
+    left: 0;
+    background-color: var(--colorAmarillo);
+    transition: width 0.3s ease;
+}
+
+.navbar__container a:hover::after {
+    width: 100%;
+}
+
+/* 🔥 ANIMACIÓN BOTÓN REGISTRO 🔥 */
 .btn-register {
     background-color: var(--colorInstitucional);
     color: white !important;
     padding: 0.7rem 1.6rem;
     border-radius: 50px;
     font-weight: 800;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 0 4px 6px rgba(10, 61, 98, 0.1);
+}
+
+.btn-register:hover {
+    background-color: var(--colorAmarillo);
+    color: var(--colorInstitucional) !important;
+    transform: translateY(-3px); /* Se eleva */
+    box-shadow: 0 8px 15px rgba(255, 193, 7, 0.3); /* Brillo dorado */
+}
+
+.btn-register:active {
+    transform: translateY(-1px);
+}
+
+/* Estilo simple para el Login */
+.btn-login:hover {
+    color: var(--colorAmarillo) !important;
 }
 
 /* =========================================
-    RESPONSIVE MÓVIL (ALINEACIÓN CORREGIDA)
+    RESPONSIVE MÓVIL
    ========================================= */
 @media (max-width: 992px) {
     .header { height: 85px; }
@@ -156,7 +206,7 @@
         flex-direction: column;
         align-items: center;
         padding: 2rem 0;
-        transition: 0.4s ease;
+        transition: 0.5s cubic-bezier(0.77, 0, 0.175, 1);
         z-index: 1000;
     }
 
@@ -164,26 +214,23 @@
 
     .navbar__container ul {
         flex-direction: column !important;
-        gap: 1.5rem;
-        width: 100%; /* Asegura que la lista ocupe el ancho */
-        padding: 0;
+        gap: 2rem;
+        width: 100%;
     }
 
-    /* ALINEACIÓN DE BOTONES EN CELULAR */
-    .navbar__container li {
-        width: 100%;
-        display: flex;
-        justify-content: center; /* Centra cada item de la lista */
+    /* En móvil quitamos el subrayado animado para que no se vea raro */
+    .navbar__container a::after {
+        display: none;
     }
 
     .btn-login, .btn-register {
-        width: 80% !important; /* Ancho consistente */
+        width: 80% !important;
         max-width: 300px;
         text-align: center;
         display: flex !important;
         justify-content: center;
         align-items: center;
-        box-sizing: border-box; /* Evita que el padding desalinee el botón */
+        box-sizing: border-box;
     }
 
     .btn-register {

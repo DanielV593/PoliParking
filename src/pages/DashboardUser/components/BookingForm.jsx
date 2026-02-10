@@ -54,15 +54,6 @@ const BookingForm = ({ form, setForm, capacidades, esDocente, fechas, onSubmit, 
 
                 {/* 'children' permite inyectar el mapa aquí dentro si estamos en móvil */}
                 {children}
-
-                <button 
-                    type="submit" 
-                    disabled={!form.espacio} 
-                    className="main-btn"
-                    style={{background: form.espacio ? '#0a3d62' : '#94a3b8'}}
-                >
-                    {form.espacio ? `Reservar Puesto #${form.espacio}` : "Selecciona en el mapa"}
-                </button>
             </section>
         </form>
     );

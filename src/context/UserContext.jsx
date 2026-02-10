@@ -1,20 +1,21 @@
-// src/context/UserContext.jsx
-import { createContext, useState, useEffect, useContext } from "react";
+import React, { createContext, useState, useEffect, useContext } from "react";
 import { onAuthStateChanged } from "firebase/auth";
-import { auth } from "../firebase/firebase.config"; // Asegúrate que la ruta a tu config sea exacta
+import { auth } from "../firebase/config.js"; // ⚠️ OJO: Que coincida con tu archivo real
 
 const UserContext = createContext();
 
-export const useUser = () => useContext(UserContext);
+export const useUser = () => {
+  const context = useContext(UserContext);
+  if (!context) throw new Error("useUser debe usarse dentro de un UserProvider");
+  return context;
+};
 
 export const UserProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // Efecto para escuchar si el usuario se loguea o desloguea
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      console.log("Usuario actual (Context):", currentUser);
       setUser(currentUser);
       setLoading(false);
     });
@@ -27,3 +28,5 @@ export const UserProvider = ({ children }) => {
     </UserContext.Provider>
   );
 };
+
+export default UserProvider;

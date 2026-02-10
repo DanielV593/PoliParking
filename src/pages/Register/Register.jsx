@@ -1,124 +1,213 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { doc, setDoc } from 'firebase/firestore'; 
-import { FaEye, FaEyeSlash } from 'react-icons/fa';
+import { collection, addDoc } from 'firebase/firestore';
+import { auth, db } from '../../firebase/config.js';
+import { FaEye, FaEyeSlash } from 'react-icons/fa'; 
 import { ToastContainer, toast } from 'react-toastify';
-
-// Imports
-import { auth, db } from '../../firebase/config'; 
+import Swal from 'sweetalert2';
 import Header from '../../components/header/Header';
-import MascotaLogin from '../../components/MascotaLogin';
-import './Register.css'; // <--- Importamos los estilos locales
+import MascotaLogin from '../../components/MascotaLogin'; 
+import './Register.css';
 
 const Register = () => {
-  const [rol, setRol] = useState('estudiante');
-  const [nombre, setNombre] = useState('');
-  const [email, setEmail] = useState('');
-  const [placa, setPlaca] = useState('');
-  const [celular, setCelular] = useState('');
-  const [password, setPassword] = useState('');
-  
-  const [isPasswordFocused, setIsPasswordFocused] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
-  const navigate = useNavigate();
+    const [formData, setFormData] = useState({
+        nombre: '',
+        email: '',
+        password: '',
+        confirmPassword: '', 
+        placa: '',
+        rol: 'estudiante'
+    });
 
-  const handleRegister = async (e) => {
+    const [showPassword, setShowPassword] = useState(false);
+    const [isPasswordFocused, setIsPasswordFocused] = useState(false);
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, []);
+
+    const handlePlacaChange = (e) => {
+        let value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+        if (value.length > 3) {
+            value = value.slice(0, 3) + '-' + value.slice(3, 7);
+        }
+        setFormData({ ...formData, placa: value });
+    };
+
+    const handleRegister = async (e) => {
     e.preventDefault();
-    if (!email.endsWith('@epn.edu.ec')) {
-      toast.warning('Solo se permiten correos institucionales @epn.edu.ec');
-      return;
+    const { nombre, email, password, confirmPassword, placa, rol } = formData;
+
+    const partesNombre = nombre.trim().split(/\s+/); 
+    
+    const nombreValido = partesNombre.length >= 2 && partesNombre.every(parte => parte.length >= 3);
+
+    if (!nombreValido) {
+        Swal.fire({
+            title: 'Nombre incompleto',
+            text: 'Por favor, ingresa al menos un nombre y un apellido (mínimo 3 letras cada uno).',
+            icon: 'warning',
+            confirmButtonColor: '#0a3d62'
+        });
+        return;
     }
-    try {
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      const user = userCredential.user;
-      await setDoc(doc(db, "usuarios", user.uid), {
-        uid: user.uid, nombre, email, placa: placa.toUpperCase(), celular, rol: rol, estado: 'activo', fechaRegistro: new Date()
-      });
-      toast.success(`¡Registro de ${rol} exitoso!`);
-      navigate('/login');
-    } catch (error) { toast.error('Error al registrar usuario'); }
-  };
+    const regexPassword = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/;
 
-  return (
-    <div className='auth-page'>
-      <Header />
-      <div className="auth-container">
-        <div className="auth-card"> 
-          <div className='auth-register__left'>
-              <div style={{ marginBottom: '30px', width: '100%', display: 'flex', justifyContent: 'center' }}>
-                <MascotaLogin isPasswordFocused={isPasswordFocused && !showPassword} showPassword={showPassword} />
-              </div>
-              <div style={{ textAlign: 'center' }}>
-                <h2 className="auth-title" style={{ margin: '10px 0' }}>Crear Cuenta</h2>
-                <p className="auth-footer">
-                  ¿Ya tienes cuenta? <br/><Link to="/login" style={{color:'#0a3d62', fontWeight:'bold'}}>Inicia Sesión</Link>
-                </p>
-              </div>
-          </div>
-          <div className='auth-register__right'>
-            <form onSubmit={handleRegister} className="auth-form">
-              
-              {/* CAMBIO 1: FULL WIDTH PARA EL SELECT */}
-              <div className="form-group full-width">
-                <label className='auth-register__label'>Tipo Usuario</label>
-                <select value={rol} onChange={(e) => setRol(e.target.value)} className="auth-register__input">
-                  <option value="estudiante">Estudiante</option>
-                  <option value="docente">Docente</option>
-                </select>
-              </div>
-
-              {/* CAMBIO 2: NOMBRE Y PLACA COMPARTEN FILA (No llevan full-width) */}
-              <div className="form-group">
-                <label className='auth-register__label'>Nombre</label>
-                <input type="text" value={nombre} onChange={(e) => setNombre(e.target.value)} required className='auth-register__input' placeholder="Ej: Juan Pérez" />
-              </div>
-              
-              <div className="form-group">
-                <label className='auth-register__label'>Placa</label>
-                <input type="text" value={placa} onChange={(e) => setPlaca(e.target.value)} required className='auth-register__input' placeholder="Ej: PCQ-1234"/>
-              </div>
-
-              {/* CAMBIO 3: CELULAR NORMAL (Se acomoda solo) */}
-              <div className="form-group">
-                <label className='auth-register__label'>Celular</label>
-                <input type="tel" value={celular} onChange={(e) => setCelular(e.target.value)} required className='auth-register__input' placeholder="099..." />
-              </div>
-
-              {/* CAMBIO 4: EMAIL FULL WIDTH */}
-              <div className="form-group full-width">
-                <label className='auth-register__label'>Correo Institucional</label>
-                <input type="email" placeholder="usuario@epn.edu.ec" value={email} onChange={(e) => setEmail(e.target.value)} required className='auth-register__input'/>
-              </div>
-
-              {/* CAMBIO 5: PASSWORD FULL WIDTH */}
-              <div className="form-group full-width">
-                <label className='auth-register__label'>Contraseña</label>
-                <div className='auth-register__password'>
-                  <input 
-                    type={showPassword ? "text" : "password"} 
-                    value={password} 
-                    onChange={(e) => setPassword(e.target.value)} 
-                    onFocus={() => setIsPasswordFocused(true)} 
-                    onBlur={() => setIsPasswordFocused(false)} 
-                    className='auth-register__input' 
-                    style={{width:'100%'}}
-                    required
-                    placeholder="••••••••"
-                  />
-                  <button type="button" onClick={() => setShowPassword(!showPassword)} className='auth-register__toggle'>
-                    {showPassword ? <FaEye size={18} /> : <FaEyeSlash size={18} />}
-                  </button>
+    if (!regexPassword.test(password)) {
+        Swal.fire({
+            title: 'Contraseña muy débil',
+            html: `
+                <div style="text-align: left; font-size: 0.9rem;">
+                    Tu contraseña debe cumplir con: <br><br>
+                    • Mínimo <b>6 caracteres</b> <br>
+                    • Una letra <b>Mayúscula</b> <br>
+                    • Al menos un <b>Número</b> <br>
+                    • Un <b>carácter especial</b> (@$!%*?&)
                 </div>
-              </div>
+            `,
+            icon: 'warning',
+            confirmButtonColor: '#0a3d62'
+        });
+        return;
+    }
 
-              <button type="submit" className="auth-register__submit">Registrarse</button>
-            </form>
-          </div>
+    // 3. Validación de correo institucional
+    if (!email.endsWith('@epn.edu.ec')) {
+        toast.error('Debes usar tu correo institucional @epn.edu.ec');
+        return;
+    }
+
+        const regexPlaca = /^[A-Z]{3}-\d{3,4}$/;
+        if (!regexPlaca.test(placa)) {
+            Swal.fire({
+                title: 'Formato de placa inválido',
+                text: 'Usa el formato oficial (ej: ABC-1234)',
+                icon: 'warning',
+                confirmButtonColor: '#0a3d62'
+            });
+            return;
+        }
+
+        try {
+            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+            const user = userCredential.user;
+
+            await addDoc(collection(db, "usuarios"), {
+                uid: user.uid,
+                nombre,
+                email,
+                placa,
+                rol,
+                estado: 'activo',
+                fechaRegistro: new Date().toLocaleString()
+            });
+
+            Swal.fire({ title: '¡Registro Exitoso!', icon: 'success', confirmButtonColor: '#0a3d62' });
+            navigate('/login');
+        } catch (error) {
+            toast.error('Hubo un error al registrarte.');
+        }
+    };
+
+    return (
+        <div className="auth-page">
+            <Header />
+            <div className="auth-container">
+                <div className="auth-card">
+                    
+                    <div className="auth-register__left">
+                        <MascotaLogin 
+                            isPasswordFocused={isPasswordFocused && !showPassword} 
+                            showPassword={showPassword} 
+                        />
+                        <h2 className="auth-title" style={{ marginTop: '20px', color: '#ffc107' }}>
+                            Crea tu cuenta
+                        </h2>
+                        <p className="auth-footer" style={{ marginTop: '10px' }}>
+                            Únete a la comunidad técnica más grande del país.
+                        </p>
+                    </div>
+
+                    <div className="auth-register__right">
+                        <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', marginBottom: '25px', gap: '10px' }}>
+                            <span style={{ color: '#4a5568', fontSize: '0.85rem', fontWeight: '600' }}>
+                                ¿YA TIENES CUENTA?
+                            </span>
+                            <Link to="/login" style={{ color: '#0a3d62', fontWeight: '800', fontSize: '0.9rem', textDecoration: 'underline' }}>
+                                Inicia sesión
+                            </Link>
+                        </div>
+
+                        <form onSubmit={handleRegister} className="auth-form">
+                            <div className="form-group">
+                                <label className="auth-register__label">Nombre Completo</label>
+                                <input type="text" required className="auth-register__input" onChange={(e) => setFormData({...formData, nombre: e.target.value})} />
+                            </div>
+
+                            <div className="form-group">
+                                <label className="auth-register__label">Correo Institucional</label>
+                                <input type="email" placeholder="usuario@epn.edu.ec" required className="auth-register__input" onChange={(e) => setFormData({...formData, email: e.target.value})} />
+                            </div>
+
+                            <div className="form-group">
+                                <label className="auth-register__label">Placa de Vehículo</label>
+                                <input type="text" placeholder="ABC-1234" value={formData.placa} maxLength="8" required className="auth-register__input" onChange={handlePlacaChange} />
+                            </div>
+
+                            <div className="form-group">
+                                <label className="auth-register__label">Tipo de Usuario</label>
+                                <select className="auth-register__input" onChange={(e) => setFormData({...formData, rol: e.target.value})}>
+                                    <option value="estudiante">Estudiante</option>
+                                    <option value="docente">Docente</option>
+                                </select>
+                            </div>
+
+                            {/* --- CONTRASEÑA --- */}
+                            <div className="form-group">
+                                <label className="auth-register__label">Contraseña</label>
+                                <div className="auth-register__password">
+                                    <input 
+                                        type={showPassword ? "text" : "password"} 
+                                        required 
+                                        className="auth-register__input" 
+                                        onFocus={() => setIsPasswordFocused(true)}
+                                        onBlur={() => setIsPasswordFocused(false)}
+                                        onChange={(e) => setFormData({...formData, password: e.target.value})} 
+                                    />
+                                    <button type="button" onClick={() => setShowPassword(!showPassword)} className="auth-register__toggle">
+                                        {showPassword ? <FaEye size={16} /> : <FaEyeSlash size={16} />}
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div className="form-group">
+                                <label className="auth-register__label">Repetir Contraseña</label>
+                                <div className="auth-register__password">
+                                    <input 
+                                        type={showPassword ? "text" : "password"} 
+                                        required 
+                                        className="auth-register__input" 
+                                        onFocus={() => setIsPasswordFocused(true)}
+                                        onBlur={() => setIsPasswordFocused(false)}
+                                        onChange={(e) => setFormData({...formData, confirmPassword: e.target.value})} 
+                                    />
+                                    {/* 🔥 Ahora este también tiene el botón de toggle */}
+                                    <button type="button" onClick={() => setShowPassword(!showPassword)} className="auth-register__toggle">
+                                        {showPassword ? <FaEye size={16} /> : <FaEyeSlash size={16} />}
+                                    </button>
+                                </div>
+                            </div>
+
+                            <button type="submit" className="auth-register__submit">Registrarse</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <ToastContainer />
         </div>
-      </div>
-      <ToastContainer position='top-right'/>
-    </div>
-  );
+    );
 };
+
 export default Register;
