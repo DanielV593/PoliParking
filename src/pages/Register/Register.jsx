@@ -37,59 +37,48 @@ const Register = () => {
     };
 
     const handleRegister = async (e) => {
-    e.preventDefault();
-    const { nombre, email, password, confirmPassword, placa, rol } = formData;
+        e.preventDefault();
+        const { nombre, email, password, confirmPassword, placa, rol } = formData;
 
-    const partesNombre = nombre.trim().split(/\s+/); 
-    
-    const nombreValido = partesNombre.length >= 2 && partesNombre.every(parte => parte.length >= 3);
+        // 1. Validar que las contraseñas coincidan
+        if (password !== confirmPassword) {
+            Swal.fire({ title: '¡Error!', text: 'Las contraseñas no coinciden.', icon: 'error', confirmButtonColor: '#0a3d62' });
+            return;
+        }
 
-    if (!nombreValido) {
-        Swal.fire({
-            title: 'Nombre incompleto',
-            text: 'Por favor, ingresa al menos un nombre y un apellido (mínimo 3 letras cada uno).',
-            icon: 'warning',
-            confirmButtonColor: '#0a3d62'
-        });
-        return;
-    }
-    const regexPassword = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/;
+        // 2. Validar nombre y apellido
+        const partesNombre = nombre.trim().split(/\s+/);
+        if (partesNombre.length < 2 || !partesNombre.every(p => p.length >= 3)) {
+            Swal.fire({ title: 'Nombre incompleto', text: 'Por favor, ingresa al menos un nombre y un apellido.', icon: 'warning', confirmButtonColor: '#0a3d62' });
+            return;
+        }
 
-    if (!regexPassword.test(password)) {
-        Swal.fire({
-            title: 'Contraseña muy débil',
-            html: `
-                <div style="text-align: left; font-size: 0.9rem;">
-                    Tu contraseña debe cumplir con: <br><br>
-                    • Mínimo <b>6 caracteres</b> <br>
-                    • Una letra <b>Mayúscula</b> <br>
-                    • Al menos un <b>Número</b> <br>
-                    • Un <b>carácter especial</b> (@$!%*?&)
-                </div>
-            `,
-            icon: 'warning',
-            confirmButtonColor: '#0a3d62'
-        });
-        return;
-    }
-
-    // 3. Validación de correo institucional
-    if (!email.endsWith('@epn.edu.ec')) {
-        toast.error('Debes usar tu correo institucional @epn.edu.ec');
-        return;
-    }
-
-        const regexPlaca = /^[A-Z]{3}-\d{3,4}$/;
-        if (!regexPlaca.test(placa)) {
+        // 3. Validar fortaleza de contraseña
+        const regexPassword = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/;
+        if (!regexPassword.test(password)) {
             Swal.fire({
-                title: 'Formato de placa inválido',
-                text: 'Usa el formato oficial (ej: ABC-1234)',
+                title: 'Contraseña muy débil',
+                html: `<div style="text-align: left; font-size: 0.9rem;">Debe tener: 6 caracteres, una mayúscula, un número y un carácter especial.</div>`,
                 icon: 'warning',
                 confirmButtonColor: '#0a3d62'
             });
             return;
         }
 
+        // 4. Validar correo institucional
+        if (!email.endsWith('@epn.edu.ec')) {
+            toast.error('Debes usar tu correo institucional @epn.edu.ec');
+            return;
+        }
+
+        // 5. Validar formato de placa
+        const regexPlaca = /^[A-Z]{3}-\d{3,4}$/;
+        if (!regexPlaca.test(placa)) {
+            Swal.fire({ title: 'Formato de placa inválido', text: 'Usa el formato oficial (ej: ABC-1234)', icon: 'warning', confirmButtonColor: '#0a3d62' });
+            return;
+        }
+
+        // --- PROCESO DE REGISTRO EN FIREBASE ---
         try {
             const userCredential = await createUserWithEmailAndPassword(auth, email, password);
             const user = userCredential.user;
@@ -101,16 +90,26 @@ const Register = () => {
                 placa,
                 rol,
                 estado: 'activo',
+                intentosFallidos: 0,
                 fechaRegistro: new Date().toLocaleString()
             });
 
-            Swal.fire({ title: '¡Registro Exitoso!', icon: 'success', confirmButtonColor: '#0a3d62' });
+            await Swal.fire({ 
+                title: '¡Registro Exitoso!', 
+                text: `Usuario ${nombre} creado correctamente. Ya puedes iniciar sesión.`, 
+                icon: 'success', 
+                confirmButtonColor: '#0a3d62' 
+            });
+
             navigate('/login');
         } catch (error) {
-            toast.error('Hubo un error al registrarte.');
+            if (error.code === 'auth/email-already-in-use') {
+                Swal.fire({ title: 'Correo ya registrado', text: 'Este correo ya tiene una cuenta activa.', icon: 'info', confirmButtonColor: '#0a3d62' });
+            } else {
+                toast.error('Hubo un error al registrarte: ' + error.message);
+            }
         }
     };
-
     return (
         <div className="auth-page">
             <Header />

@@ -1,0 +1,53 @@
+.card {
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 20px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.05);
+    width: 100%;
+    margin-bottom: 15px;
+    border: 1px solid rgba(226, 232, 240, 0.5);
+}
+
+.userContainer {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+
+/* Avatar circular con gradiente */
+.avatar {
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, #f1c40f 0%, #f39c12 100%);
+    color: #0a3d62;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.8rem;
+    font-weight: 900;
+    border: 3px solid #ffffff;
+    box-shadow: 0 4px 12px rgba(241, 196, 15, 0.3);
+    flex-shrink: 0;
+}
+
+.textContainer {
+    display: flex;
+    flex-direction: column;
+}
+
+.userName {
+    font-weight: 800;
+    color: #0a3d62;
+    font-size: 1.1rem;
+    line-height: 1.2;
+}
+
+.userRol {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-top: 2px;
+}

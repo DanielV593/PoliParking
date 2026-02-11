@@ -1,0 +1,71 @@
+.card {
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 16px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.cardTitle {
+    color: #0a3d62;
+    font-weight: 800;
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+.inputLabel {
+    color: #0a3d62;
+    font-weight: 700;
+    font-size: 0.9rem;
+    display: block;
+    margin-bottom: 5px;
+}
+
+.inputField {
+    width: 100%;
+    background: #f8fafc;
+    border: 2px solid #e2e8f0;
+    padding: 12px;
+    border-radius: 12px;
+    font-size: 0.95rem;
+    color: #333;
+    outline: none;
+    transition: all 0.3s ease;
+    font-family: inherit;
+}
+
+.inputField:focus {
+    border-color: #0a3d62;
+    background: #ffffff;
+    box-shadow: 0 0 0 3px rgba(10, 61, 98, 0.1);
+}
+
+.inputField:disabled {
+    background: #f1f5f9;
+    color: #64748b;
+    cursor: not-allowed;
+}
+
+/* 🔥 El contenedor de Fecha y Hora */
+.dateTimeRow {
+    display: flex;
+    flex-direction: column; /* Apilado vertical por defecto para evitar desbordes */
+    gap: 15px;
+    width: 100%;
+}
+
+.fieldWrapper {
+    flex: 1;
+    width: 100%;
+}
+
+/* Si quieres que en pantallas más anchas se vean a la par, 
+puedes activar esto, pero para el sidebar es mejor vertical */
+@media (min-width: 1200px) {
+    /* .dateTimeRow { flex-direction: row; } */
+}

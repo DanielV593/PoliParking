@@ -1,37 +1,41 @@
 /**
  * COMPONENTE: ReservationCard
- * PROPÓSITO: Muestra la reserva activa del usuario y botones de acción (Descargar/Cancelar).
- * POR QUÉ ESTÁ AQUÍ: Modulariza la vista de "estado actual" para que sea fácil de leer y mantener.
+ * PROPÓSITO: Muestra la reserva activa del usuario y botones de acción.
  */
 import React from 'react';
 import { FaDownload, FaTrashAlt } from 'react-icons/fa';
+import styles from './ReservationCard.module.css';
 
 const ReservationCard = ({ reserva, onDownload, onDelete }) => {
+    if (!reserva) return null;
+
     return (
-        <div className="reserva-item">
-            <div style={{flex: 1}}>
-                <div style={{fontWeight:'bold', color:'#0a3d62'}}>
+        <div className={styles.card}>
+            <div className={styles.info}>
+                <div className={styles.title}>
                     #{reserva.espacio} - {reserva.lugar}
                 </div>
-                <div style={{fontSize:'0.8rem', color:'#666'}}>
+                <div className={styles.dateTime}>
                     {reserva.fecha} • {reserva.hora}
                 </div>
             </div>
             
-            <div style={{display:'flex', gap:'5px'}}>
+            <div className={styles.actions}>
                 <button 
                     onClick={() => onDownload(reserva)} 
-                    className="btn-action-primary" 
+                    className={`${styles.btnAction} ${styles.download}`}
                     title="Descargar Ticket"
+                    type="button"
                 >
-                    <FaDownload/>
+                    <FaDownload />
                 </button>
                 <button 
                     onClick={() => onDelete(reserva.id)} 
-                    className="btn-action-danger" 
+                    className={`${styles.btnAction} ${styles.delete}`}
                     title="Cancelar Reserva"
+                    type="button"
                 >
-                    <FaTrashAlt/>
+                    <FaTrashAlt />
                 </button>
             </div>
         </div>

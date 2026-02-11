@@ -157,3 +157,211 @@
     .content-area { padding: 15px; width: 100%; }
     .stats-grid { grid-template-columns: 1fr; }
 }
+
+/* ============================================================
+   RESPONSIVE ADMIN
+   ============================================================ */
+@media (max-width: 1024px) {
+    .admin-sidebar {
+        width: 70px;
+        padding: 20px 5px;
+    }
+    .menu-btn span { display: none; } 
+    .menu-btn { justify-content: center; }
+}
+
+@media (max-width: 768px) {
+    .close-menu-container {
+        padding: 0 15px 20px 15px;
+        width: 100%;
+    }
+
+    .btn-close-sidebar {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        padding: 16px;
+        border-radius: 12px;
+        border: none;
+        background-color: #fee2e2; 
+        color: #dc2626; 
+        font-weight: 800;
+        font-size: 0.9rem;
+        letter-spacing: 1px;
+        cursor: pointer;
+        transition: 0.3s;
+        box-shadow: 0 4px 10px rgba(220, 38, 38, 0.1);
+        animation: bounceIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+        animation-delay: 0.2s;
+    }
+
+    @keyframes bounceIn {
+        0% {
+            transform: scale(0.3);
+            opacity: 0;
+        }
+        50% {
+            transform: scale(1.05);
+            opacity: 1;
+        }
+        70% {
+            transform: scale(0.9);
+        }
+        100% {
+            transform: scale(1);
+            opacity: 1;
+        }
+    }
+
+    .btn-close-sidebar:active {
+        background-color: #fecaca; 
+        transform: scale(0.98);
+    }
+
+    .btn-close-sidebar span {
+        color: #dc2626 !important;
+    }
+    .admin-sidebar {
+        position: fixed !important;
+        top: 0 !important;
+        left: -100% !important;
+        width: 280px !important;
+        height: 100vh !important;
+        background-color: #ffffff !important;
+        z-index: 9999 !important; 
+        transition: left 0.3s ease-in-out !important;
+        display: flex !important;
+        flex-direction: column !important;
+        padding-top: 80px !important; 
+        box-shadow: 10px 0 30px rgba(0,0,0,0.3) !important;
+    }
+
+    .admin-sidebar.open {
+        left: 0 !important;
+    }
+
+    .sidebar-menu {
+        display: flex !important;
+        flex-direction: column !important;
+        width: 100% !important;
+        padding: 0 15px !important;
+        gap: 8px !important;
+    }
+
+    .menu-btn {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: flex-start !important;
+        gap: 15px !important;
+        padding: 18px 25px !important;
+        overflow: visible !important; 
+    }
+
+    .menu-btn span, 
+    .menu-label {
+        display: inline-block !important; 
+        visibility: visible !important;
+        opacity: 1 !important;
+        color: inherit !important; 
+        font-size: 1.1rem !important;
+        font-weight: 700 !important;
+        white-space: nowrap !important; 
+    }
+
+    .menu-btn svg {
+        font-size: 1.4rem !important;
+        flex-shrink: 0 !important; 
+    }
+
+    .menu-btn.active {
+        background-color: #0a3d62 !important;
+        color: #ffffff !important;
+    }
+
+    .sidebar-overlay.active {
+        display: block !important;
+        position: fixed !important;
+        top: 0; left: 0;
+        width: 100vw; height: 100vh;
+        background: rgba(0, 0, 0, 0.6) !important;
+        z-index: 9998 !important;
+    }
+}
+
+/* MODULO AVISOS */
+.aviso-card {
+    background: white;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+    margin-top: 20px;
+}
+
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 15px;
+    border-radius: 50px;
+    font-size: 0.85rem;
+    font-weight: 800;
+    margin-bottom: 20px;
+}
+
+.status-badge.active { background: #dcfce7; color: #166534; }
+.status-badge.inactive { background: #fee2e2; color: #991b1b; }
+
+.aviso-form textarea {
+    width: 100%;
+    padding: 15px;
+    border: 2px solid #edf2f7;
+    border-radius: 10px;
+    font-family: inherit;
+    font-size: 1rem;
+    resize: none;
+    outline: none;
+    transition: border-color 0.3s;
+}
+
+.aviso-form textarea:focus { border-color: #0a3d62; }
+
+.aviso-actions {
+    display: flex;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.btn-publish {
+    background: #0a3d62;
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex; align-items: center; gap: 8px;
+}
+
+.btn-remove {
+    background: #e30613;
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex; align-items: center; gap: 8px;
+}
+
+.aviso-preview { margin-top: 40px; }
+.preview-banner {
+    background: #ffc107;
+    color: #0a3d62;
+    padding: 15px;
+    border-radius: 8px;
+    font-weight: 800;
+    display: flex; align-items: center; gap: 15px;
+    margin-top: 10px;
+}

@@ -1,0 +1,107 @@
+/* ============================================================
+    BANNER DE AVISOS - VERSIÓN FLOTANTE (ESTILO NOTIFICACIÓN)
+   ============================================================ */
+
+/* CONTENEDOR PRINCIPAL */
+.aviso-floating-container {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    /* 🔥 CLAVE: Permite que los clics pasen a través del contenedor vacío 
+       y puedas tocar la tabla de usuarios que está detrás */
+    pointer-events: none; 
+}
+
+/* BOTÓN FLOTANTE (FAB) */
+.aviso-fab {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: #0a3d62; /* Azul Poli */
+    color: white;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.5rem;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    position: relative;
+    /* 🔥 CLAVE: El botón sí debe reaccionar al clic */
+    pointer-events: auto; 
+}
+
+.aviso-fab:hover { transform: scale(1.1); background: #0c4d7c; }
+.aviso-fab.active { background: #e30613; transform: rotate(90deg); }
+
+/* Puntito rojo de notificación */
+.notification-dot {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    width: 12px;
+    height: 12px;
+    background: #e30613;
+    border: 2px solid white;
+    border-radius: 50%;
+}
+
+/* PANEL DE INFORMACIÓN */
+.aviso-panel {
+    position: absolute;
+    bottom: 80px;
+    right: 0;
+    width: 300px;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    overflow: hidden;
+    transform: scale(0);
+    transform-origin: bottom right;
+    transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    opacity: 0;
+    /* 🔥 CLAVE: El panel abierto sí debe reaccionar al clic */
+    pointer-events: auto; 
+}
+
+.aviso-panel.open { transform: scale(1); opacity: 1; }
+
+.panel-header {
+    background: #ffc107; /* Amarillo */
+    color: #0a3d62;
+    padding: 15px;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.9rem;
+}
+
+.panel-body { padding: 20px; color: #333; font-size: 0.95rem; line-height: 1.5; }
+.panel-footer { padding: 10px 20px; font-size: 0.75rem; color: #999; text-align: right; border-top: 1px solid #eee; }
+
+/* Animación de la campana */
+.bell-animation {
+    animation: ring 2s infinite;
+}
+
+@keyframes ring {
+    0% { transform: rotate(0); }
+    10% { transform: rotate(15deg); }
+    20% { transform: rotate(-15deg); }
+    30% { transform: rotate(10deg); }
+    40% { transform: rotate(-10deg); }
+    50% { transform: rotate(0); }
+    100% { transform: rotate(0); }
+}
+
+/* RESPONSIVE */
+@media (max-width: 500px) {
+    .aviso-panel { width: 260px; right: -10px; }
+    .aviso-floating-container { bottom: 20px; right: 20px; }
+}

@@ -186,7 +186,11 @@
    ========================================= */
 @media (max-width: 992px) {
     .header { height: 85px; }
-    .header__hamburger { display: block; }
+    .header__hamburger { 
+        display: block; 
+        z-index: 1001; 
+        position: relative;
+    }
     
     .credits-label { display: none; } 
     .inst-name { font-size: 0.9rem; }
@@ -197,46 +201,70 @@
 
     .navbar__container {
         position: fixed;
-        top: 85px; 
+        top: 75px; 
         left: -100%;
         width: 100%;
-        height: calc(100vh - 85px);
+        height: calc(100vh - 75px);
         background-color: #ffffff;
         display: flex;
         flex-direction: column;
         align-items: center;
-        padding: 2rem 0;
-        transition: 0.5s cubic-bezier(0.77, 0, 0.175, 1);
+        padding: 3rem 0; 
+        transition: 0.4s ease-in-out;
         z-index: 1000;
+        box-shadow: 0 10px 20px rgba(0,0,0,0.05);
     }
 
     .navbar__container.active { left: 0; }
 
     .navbar__container ul {
         flex-direction: column !important;
-        gap: 2rem;
+        gap: 2.2rem;
         width: 100%;
     }
 
     /* En móvil quitamos el subrayado animado para que no se vea raro */
-    .navbar__container a::after {
-        display: none;
+    .navbar__container a {
+        font-size: 1.15rem;
+        letter-spacing: 0.5px;
+    }
+    .auth-item {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        margin-top: 10px;
     }
 
     .btn-login, .btn-register {
-        width: 80% !important;
-        max-width: 300px;
-        text-align: center;
-        display: flex !important;
+        /* Reducimos el ancho para que se vea más fino */
+        width: 65% !important; 
+        max-width: 200px; /* Un tamaño más contenido y elegante */
+        
+        padding: 10px 0 !important;
+        font-size: 0.95rem !important;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        
+        /* Bordes más redondeados para suavizar el diseño */
+        border-radius: 30px !important; 
+        
+        display: flex;
         justify-content: center;
         align-items: center;
-        box-sizing: border-box;
+        transition: all 0.3s ease;
+    }
+
+    .btn-login {
+        border: 2px solid var(--colorInstitucional) !important;
+        color: var(--colorInstitucional) !important;
+        background-color: transparent !important;
     }
 
     .btn-register {
         background-color: var(--colorAmarillo) !important;
         color: var(--colorInstitucional) !important;
-        margin-top: 10px;
-        padding: 12px 0 !important;
+        margin-top: 12px;
+        box-shadow: 0 4px 12px rgba(255, 193, 7, 0.2); /* Sombra muy sutil */
     }
 }

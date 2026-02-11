@@ -15,6 +15,7 @@ import ModuleUsuarios from './components/ModuleUsuarios';
 import ModuleInvitados from './components/ModuleInvitados';
 import ModuleMensajes from './components/ModuleMensajes';
 import ModuleHistorial from './components/ModuleHistorial';
+import ModuleAvisos from './components/ModuleAvisos';
 
 import './DashboardAdmin.css';
 
@@ -103,17 +104,82 @@ const DashboardAdmin = () => {
     };
 
     const toggleBloqueo = async (u) => {
-        const nuevo = (u.estado || 'activo') === 'bloqueado' ? 'activo' : 'bloqueado';
-        if((await Swal.fire({title:`¿${nuevo === 'bloqueado'?'Bloquear':'Activar'}?`, showCancelButton:true})).isConfirmed) {
-            await updateDoc(doc(db, "usuarios", u.id), {estado: nuevo});
-        }
-    };
+    const nuevoEstado = (u.estado || 'activo') === 'bloqueado' ? 'activo' : 'bloqueado';
+    
+    const confirmacion = await Swal.fire({
+        title: `¿${nuevoEstado === 'bloqueado' ? 'Bloquear' : 'Activar'} usuario?`,
+        text: nuevoEstado === 'activo' 
+            ? `Se restablecerán los intentos de acceso para ${u.nombre}.` 
+            : `El usuario no podrá ingresar hasta ser activado nuevamente.`,
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: nuevoEstado === 'bloqueado' ? '#e30613' : '#0a3d62',
+        confirmButtonText: nuevoEstado === 'bloqueado' ? 'Sí, bloquear' : 'Sí, activar'
+    });
 
-    const eliminarRegistro = async (col, id) => {
-        if((await Swal.fire({title:'¿Borrar?', icon:'warning', showCancelButton:true, confirmButtonColor:'#e30613'})).isConfirmed) {
-            await deleteDoc(doc(db, col, id)); Swal.fire('Borrado','','success');
+    if (confirmacion.isConfirmed) {
+        try {
+            const userRef = doc(db, "usuarios", u.id);
+            
+            const datosActualizar = { 
+                estado: nuevoEstado,
+                intentosFallidos: nuevoEstado === 'activo' ? 0 : (u.intentosFallidos || 0) 
+            };
+
+            await updateDoc(userRef, datosActualizar);
+            
+            Swal.fire(
+                nuevoEstado === 'activo' ? 'Usuario Activado' : 'Usuario Bloqueado',
+                nuevoEstado === 'activo' ? 'El usuario ya puede ingresar normalmente.' : 'Acceso restringido.',
+                'success'
+            );
+        } catch (error) {
+            Swal.fire('Error', 'No se pudo actualizar el estado: ' + error.message, 'error');
         }
-    };
+    }
+};
+
+    const eliminarRegistro = async (id, userEmail, userName) => {
+    const confirmacion = await Swal.fire({
+        title: '¿Eliminar usuario?',
+        text: `Estás a punto de borrar a este usuario. Los datos del perfil se perderán.`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#0a3d62',
+        confirmButtonText: 'Sí, borrar de la tabla',
+        cancelButtonText: 'Cancelar'
+    });
+
+    if (confirmacion.isConfirmed) {
+        try {
+            // 1. Borrar el documento de Firestore
+            await deleteDoc(doc(db, "usuarios", id));
+
+            // 2. Mensaje informativo sobre Authentication
+            await Swal.fire({
+                title: '¡Paso 1 completado!',
+                html: `
+                    <div style="text-align: left; font-size: 0.95rem;">
+                        <p>Los datos de <b>${userName}</b> han sido borrados de la base de datos.</p>
+                        <hr>
+                        <p style="color: #e30613; font-weight: bold;">⚠️ PASO FINAL OBLIGATORIO:</p>
+                        <p>Para liberar el correo <b>${userEmail}</b>, debes borrarlo manualmente en la sección de Authentication.</p>
+                        <a href="https://console.firebase.google.com/project/${auth.app.options.projectId}/authentication/users" 
+                        target="_blank" 
+                        style="display: block; background: #0a3d62; color: white; text-align: center; padding: 10px; border-radius: 5px; text-decoration: none; margin-top: 10px;">
+                        Ir a la Consola de Firebase
+                        </a>
+                    </div>
+                `,
+                icon: 'info',
+                confirmButtonColor: '#0a3d62'
+            });
+        } catch (error) {
+            toast.error('Error al eliminar: ' + error.message);
+        }
+    }
+};
 
     const getColorSemaforo = (oc, tot) => (oc/tot > 0.85) ? '#e30613' : (oc/tot > 0.5) ? '#f39c12' : '#2ecc71';
 
@@ -139,8 +205,8 @@ const DashboardAdmin = () => {
     const historialFiltrado = historialUnificado.filter(h => {
         const texto = filtroHistorial.texto.toLowerCase();
         const coincideTexto = (h.identificador && h.identificador.toLowerCase().includes(texto)) || 
-                              (h.hora && h.hora.includes(texto)) || 
-                              (h.fecha && h.fecha.includes(texto));
+                            (h.hora && h.hora.includes(texto)) || 
+                            (h.fecha && h.fecha.includes(texto));
         
         const coincideLugar = filtroHistorial.lugar === 'todos' || (h.detalle_lugar && h.detalle_lugar === filtroHistorial.lugar);
 
@@ -201,16 +267,20 @@ const DashboardAdmin = () => {
             <AdminNavbar isMobile={isMobile} onToggleMenu={() => setIsMenuOpen(true)} onLogout={handleLogout} />
 
             <div className="main-content">
-                <div className={`admin-sidebar ${isMobile && isMenuOpen ? 'open' : ''}`} style={isMobile && !isMenuOpen ? {position:'absolute', left:'-100%'} : {}}>
-                    <AdminSidebar 
-                        moduloActivo={moduloActivo}
-                        setModuloActivo={(m) => { setModuloActivo(m); setIsMenuOpen(false); }}
-                        currentTime={currentTime}
-                        onCloseMenu={() => setIsMenuOpen(false)}
-                        isMobile={isMobile}
-                    />
-                </div>
-                
+                <AdminSidebar 
+                    moduloActivo={moduloActivo}
+                    setModuloActivo={(m) => { 
+                        setModuloActivo(m); 
+                        setIsMenuOpen(false); 
+                    }}
+                    currentTime={currentTime}
+                    onCloseMenu={() => setIsMenuOpen(false)}
+                    isMobile={isMobile}
+                    isMenuOpen={isMenuOpen} 
+                />
+                {isMobile && isMenuOpen && (
+                    <div className="sidebar-overlay active" onClick={() => setIsMenuOpen(false)}></div>
+                )}
                 <main className="content-area">
                     {moduloActivo === 'resumen' && (
     <ModuleResumen 
@@ -244,7 +314,7 @@ const DashboardAdmin = () => {
                     )}
 
                     {moduloActivo === 'mensajes' && <ModuleMensajes mensajes={mensajes} eliminarRegistro={(id) => eliminarRegistro('mensajes_contacto', id)} />}
-                    
+                    {moduloActivo === 'avisos' && <ModuleAvisos />}
                     {moduloActivo === 'historial' && (
                         <ModuleHistorial 
                             historialFiltrado={historialFiltrado} 

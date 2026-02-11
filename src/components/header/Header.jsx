@@ -55,7 +55,7 @@ const Header = () => {
 
                 {/* === DERECHA: MENÚ === */}
                 {/* Ícono Hamburguesa / Cerrar */}
-                <div className="header__hamburger" onClick={toggleMenu}>
+                <div className={`header__hamburger ${menuActive ? "is-active" : ""}`} onClick={toggleMenu}>
                     <i className={menuActive ? "fas fa-times" : "fas fa-bars"}></i>
                 </div>
 

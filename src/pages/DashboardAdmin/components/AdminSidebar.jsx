@@ -1,7 +1,7 @@
 // src/pages/DashboardAdmin/components/AdminSidebar.jsx
 import React from 'react';
 import { 
-    FaChartBar, FaUsers, FaCar, FaEnvelope, FaHistory, FaTimes, FaDatabase, FaClock 
+    FaChartBar, FaUsers, FaCar, FaEnvelope, FaHistory, FaTimes, FaDatabase, FaClock, FaBullhorn 
 } from 'react-icons/fa';
 
 const AdminSidebar = ({ 
@@ -14,35 +14,33 @@ const AdminSidebar = ({
 }) => {
     
     // Estilo dinámico para el sidebar móvil (slide-in)
-    const mobileStyle = isMobile 
-        ? { left: isMenuOpen ? '0' : '-100%', position: 'fixed', zIndex: 1000 } 
-        : { left: '0', position: 'relative' };
+        const mobileStyle = isMobile 
+            ? { left: isMenuOpen ? '0' : '-100%', position: 'fixed', zIndex: 1000, transition: '0.3s' } 
+            : { left: '0', position: 'relative' };      
 
     const menuItems = [
         {id: 'resumen', icon: <FaChartBar/>, label: 'Monitor'}, 
         {id: 'usuarios', icon: <FaUsers/>, label: 'Usuarios'}, 
         {id: 'invitados', icon: <FaCar/>, label: 'Invitados'}, 
         {id: 'mensajes', icon: <FaEnvelope/>, label: 'Mensajes'}, 
+        {id: 'avisos', icon: <FaBullhorn/>, label: 'Avisos'},
         {id: 'historial', icon: <FaHistory/>, label: 'Historial'}
     ];
 
     return (
         <aside 
-            className={`admin-sidebar ${isMobile ? 'mobile' : ''}`} 
-            style={{ ...mobileStyle, width: isMobile ? '280px' : '260px' }}
-        >
+        className={`admin-sidebar ${isMobile ? 'mobile' : ''} ${isMenuOpen ? 'open' : ''}`}
+        style={mobileStyle} 
+    >
             {/* Botón de cierre solo en móvil */}
             {isMobile && (
-                <div style={{ textAlign: 'right', paddingBottom: '10px' }}>
-                    <FaTimes 
-                        size={20} 
-                        color="#0a3d62" 
-                        onClick={onCloseMenu} 
-                        style={{ cursor: 'pointer' }}
-                    />
+                <div className="close-menu-container">
+                    <button className="btn-close-sidebar" onClick={onCloseMenu}>
+                        <FaTimes size={18} />
+                        <span>CERRAR MENÚ</span>
+                    </button>
                 </div>
             )}
-            
             {/* Menú de navegación */}
             <div className="sidebar-menu">
                 {menuItems.map(item => (
