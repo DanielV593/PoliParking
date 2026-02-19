@@ -1,0 +1,39 @@
+.chatLayout { display: grid; grid-template-columns: 300px 1fr; height: 100%; background: white; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); overflow: hidden; border: 1px solid #e1e8ed; }
+
+/* SIDEBAR */
+.sidebarList { background: #f8fafc; border-right: 1px solid #eee; display: flex; flex-direction: column; }
+.searchBox { padding: 15px; border-bottom: 1px solid #eee; background: white; }
+.searchBox input { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; outline: none; }
+.listContainer { overflow-y: auto; flex: 1; }
+.chatItem { padding: 15px; display: flex; align-items: center; gap: 10px; cursor: pointer; border-bottom: 1px solid #f1f1f1; transition: 0.2s; }
+.chatItem:hover { background: #eef2f5; }
+.chatItem.active { background: #e7f5ff; border-left: 4px solid #0a3d62; }
+.avatar { width: 40px; height: 40px; background: #cbd5e1; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; }
+.info strong { display: block; font-size: 0.9rem; color: #333; }
+.info p { margin: 0; font-size: 0.8rem; color: #888; }
+.dot { color: #e30613; font-size: 0.6rem; margin-left: auto; }
+
+/* CHAT AREA */
+.chatArea { display: flex; flex-direction: column; background: white; }
+.chatHeader { padding: 15px; border-bottom: 1px solid #eee; background: white; font-size: 1rem; color: #0a3d62; }
+.messagesBox { flex: 1; padding: 20px; overflow-y: auto; background-color: #f4f7f9; display: flex; flex-direction: column; gap: 10px; }
+.introChat { text-align: center; color: #999; margin-top: 20px; font-style: italic; }
+
+.bubble { max-width: 70%; padding: 10px 15px; border-radius: 15px; font-size: 0.9rem; position: relative; line-height: 1.4; }
+.me { align-self: flex-end; background: #0a3d62; color: white; border-bottom-right-radius: 2px; }
+.them { align-self: flex-start; background: white; border: 1px solid #e1e8ed; color: #333; border-bottom-left-radius: 2px; }
+.bubble span { display: block; font-size: 0.65rem; margin-top: 5px; text-align: right; opacity: 0.8; }
+
+/* FOOTER AREA (Chips + Input) */
+.footerArea { background: white; border-top: 1px solid #eee; padding: 10px; }
+.quickChips { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 10px; margin-bottom: 5px; }
+.quickChips button { 
+    white-space: nowrap; background: #f0f2f5; border: 1px solid #ddd; padding: 6px 12px; 
+    border-radius: 20px; font-size: 0.75rem; cursor: pointer; color: #555; transition: 0.2s; display: flex; align-items: center; gap: 5px;
+}
+.quickChips button:hover { background: #0a3d62; color: white; }
+
+.inputArea { display: flex; gap: 10px; }
+.inputArea input { flex: 1; padding: 12px; border: 1px solid #ddd; border-radius: 25px; outline: none; }
+.inputArea button { background: #0a3d62; color: white; border: none; width: 45px; height: 45px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+.noSelection { display: flex; align-items: center; justify-content: center; height: 100%; color: #999; }

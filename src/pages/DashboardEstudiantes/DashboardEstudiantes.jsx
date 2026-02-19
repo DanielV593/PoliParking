@@ -10,8 +10,9 @@ import UserInfo from '../../components/shared/UserInfo/UserInfo.jsx';
 import BookingForm from '../../components/shared/BookingForm/BookingForm.jsx';
 import ParkingMap from "../../components/shared/ParkingMap/ParkingMap.jsx";
 import ReservationCard from "../../components/shared/ReservationCard/ReservationCard.jsx";
+import ChatFlotante from "../../components/shared/ChatFlotante/ChatFlotante.jsx";
 import styles from "./DashboardEstudiantes.module.css";
-import { useUser } from '../../context/UserContext';
+
 
 // --- FUNCIONES DE APOYO (Lógica de Tiempo) ---
 
@@ -368,6 +369,7 @@ const generarTicket = (reserva) => {
                     />
                 </section>
             </main>
+            <ChatFlotante userEmail={user.email} />
         </div>
     );
 };

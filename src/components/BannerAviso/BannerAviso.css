@@ -1,5 +1,5 @@
 /* ============================================================
-    BANNER DE AVISOS - VERSIÓN FLOTANTE (ESTILO NOTIFICACIÓN)
+   BANNER DE AVISOS - VERSIÓN FINAL (3 TIPOS DE MENSAJES)
    ============================================================ */
 
 /* CONTENEDOR PRINCIPAL */
@@ -11,8 +11,7 @@
     display: flex;
     flex-direction: column;
     align-items: flex-end;
-    /* 🔥 CLAVE: Permite que los clics pasen a través del contenedor vacío 
-       y puedas tocar la tabla de usuarios que está detrás */
+    /* 🔥 CLAVE: Permite clic a través del contenedor vacío */
     pointer-events: none; 
 }
 
@@ -32,14 +31,14 @@
     font-size: 1.5rem;
     transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     position: relative;
-    /* 🔥 CLAVE: El botón sí debe reaccionar al clic */
+    /* 🔥 CLAVE: El botón sí recibe clic */
     pointer-events: auto; 
 }
 
 .aviso-fab:hover { transform: scale(1.1); background: #0c4d7c; }
 .aviso-fab.active { background: #e30613; transform: rotate(90deg); }
 
-/* Puntito rojo de notificación */
+/* Puntito rojo de notificación (con animación) */
 .notification-dot {
     position: absolute;
     top: 15px;
@@ -49,6 +48,13 @@
     background: #e30613;
     border: 2px solid white;
     border-radius: 50%;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(227, 6, 19, 0.7); }
+    70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(227, 6, 19, 0); }
+    100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(227, 6, 19, 0); }
 }
 
 /* PANEL DE INFORMACIÓN */
@@ -56,7 +62,7 @@
     position: absolute;
     bottom: 80px;
     right: 0;
-    width: 300px;
+    width: 320px; /* Un poquito más ancho para leer mejor */
     background: white;
     border-radius: 15px;
     box-shadow: 0 10px 25px rgba(0,0,0,0.2);
@@ -65,7 +71,7 @@
     transform-origin: bottom right;
     transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
     opacity: 0;
-    /* 🔥 CLAVE: El panel abierto sí debe reaccionar al clic */
+    /* 🔥 CLAVE: El panel abierto recibe clic */
     pointer-events: auto; 
 }
 
@@ -79,11 +85,102 @@
     display: flex;
     align-items: center;
     gap: 10px;
+    font-size: 0.95rem;
+    border-bottom: 3px solid #0a3d62;
+}
+
+.panel-body { 
+    padding: 20px; 
+    color: #333; 
+    font-size: 0.95rem; 
+    line-height: 1.5; 
+    max-height: 400px; /* Evita que sea eterno si hay muchos mensajes */
+    overflow-y: auto;
+}
+
+.panel-footer { 
+    padding: 10px 20px; 
+    font-size: 0.75rem; 
+    color: #999; 
+    text-align: right; 
+    border-top: 1px solid #eee;
+    background: #f9f9f9;
+}
+
+/* --- ESTILOS DE LOS MENSAJES (AQUÍ ESTÁ LA MAGIA) --- */
+
+/* 1. Mensaje del ADMIN (Cajita Amarilla) */
+.admin-msg {
+    background-color: #fff9db;
+    border-left: 5px solid #ffc107;
+    padding: 12px;
+    margin-bottom: 12px;
+    border-radius: 6px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+/* 2. Mensaje General del GUARDIA (Cajita Azul) */
+.guardia-msg {
+    background-color: #e7f5ff;
+    border-left: 5px solid #0a3d62; 
+    padding: 12px;
+    margin-bottom: 12px;
+    border-radius: 6px;
+    color: #082f4b;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+/* Estilos de texto para mensajes globales */
+.msg-global {
+    margin: 0;
     font-size: 0.9rem;
 }
 
-.panel-body { padding: 20px; color: #333; font-size: 0.95rem; line-height: 1.5; }
-.panel-footer { padding: 10px 20px; font-size: 0.75rem; color: #999; text-align: right; border-top: 1px solid #eee; }
+/* 3. Mensajes PRIVADOS (Cajita Roja) */
+.seccion-privada hr {
+    border: 0;
+    border-top: 1px solid #eee;
+    margin: 15px 0;
+}
+
+.privado-title {
+    font-size: 0.85rem;
+    color: #e30613; 
+    margin: 0 0 10px 0;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.notif-item-privada {
+    background: #fff5f5; /* Rojo muy suave */
+    padding: 12px;
+    border-radius: 8px;
+    border-left: 4px solid #e30613;
+    margin-bottom: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    transition: transform 0.2s;
+}
+
+.notif-item-privada:hover {
+    transform: translateX(3px);
+}
+
+.notif-item-privada p {
+    margin: 0;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.notif-item-privada small {
+    display: block;
+    margin-top: 6px;
+    color: #999;
+    font-size: 0.75rem;
+    text-align: right;
+}
 
 /* Animación de la campana */
 .bell-animation {
@@ -100,8 +197,53 @@
     100% { transform: rotate(0); }
 }
 
+
+.msg-card {
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 12px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    border-left: 5px solid transparent;
+}
+
+.msg-text { margin: 0; font-size: 0.9rem; line-height: 1.4; color: #333; }
+
+/* ADMIN */
+.admin-border { background: #fff9db; border-color: #fcc419; }
+
+/* CATEGORÍAS DEL GUARDIA */
+.cat-info { background: #e7f5ff; border-color: #339af0; }
+.cat-urgente { background: #fff5f5; border-color: #e30613; }
+.cat-dia { background: #e7f5ff; border-color: #0a3d62; }
+
+.msg-cat-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.75rem;
+    font-weight: bold;
+    margin-bottom: 5px;
+    text-transform: uppercase;
+    opacity: 0.8;
+}
+
+.cat-info .msg-cat-header { color: #1c7ed6; }
+.cat-urgente .msg-cat-header { color: #c92a2a; }
+.cat-dia .msg-cat-header { color: #0a3d62; }
+
+/* PRIVADAS */
+.notif-item-privada {
+    background: #f8f9fa;
+    padding: 10px;
+    border-radius: 6px;
+    border-left: 3px solid #0a3d62;
+    margin-bottom: 8px;
+}
+.notif-item-privada p { margin: 0; font-size: 0.85rem; }
+.notif-item-privada small { font-size: 0.7rem; color: #999; display: block; text-align: right; }
+
 /* RESPONSIVE */
 @media (max-width: 500px) {
-    .aviso-panel { width: 260px; right: -10px; }
+    .aviso-panel { width: 280px; right: -10px; }
     .aviso-floating-container { bottom: 20px; right: 20px; }
 }

@@ -14,6 +14,7 @@ import DashboardDocente from './pages/DashboardDocentes/DashboardDocentes';
 import DashboardAdmin from './pages/DashboardAdmin/DashboardAdmin';
 import DashboardGuest from './pages/DashboardGuest/DashboardGuest';
 import BannerAviso from "./components/BannerAviso/BannerAviso";
+import DashboardGuardia from './pages/DashboardGuardia/DashboardGuardia';
 
 import AOS from 'aos';
 import 'aos/dist/aos.css'; 
@@ -51,6 +52,13 @@ function AppContent() {
         } />
 
         <Route path="/docente" element={<DashboardDocente user={user} />} />
+
+        {/* --- RUTA PARA EL GUARDIA --- */}
+      <Route path="/guardia" element={
+        <ProtectedRoute user={user} roleRequired="guardia">
+          <DashboardGuardia user={user} />
+        </ProtectedRoute>
+      } />
 
         <Route path="/guest" element={<DashboardGuest />} />
         

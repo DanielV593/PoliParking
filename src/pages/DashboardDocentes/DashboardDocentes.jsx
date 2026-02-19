@@ -11,6 +11,7 @@ import UserInfo from '../../components/shared/UserInfo/UserInfo';
 import ParkingMap from '../../components/shared/ParkingMap/ParkingMap';
 import BookingForm from '../../components/shared/BookingForm/BookingForm';
 import ReservationCard from '../../components/shared/ReservationCard/ReservationCard';
+import ChatFlotante from '../../components/shared/ChatFlotante/ChatFlotante';
 import styles from "./DashboardDocentes.module.css";
 
 const DashboardDocente = ({ user }) => {
@@ -113,198 +114,99 @@ const DashboardDocente = ({ user }) => {
     };
 
     const generarTicketDocente = (data) => {
-
     // 1. Inicializar el documento
-
     const doc = new jsPDF({
-
         orientation: "portrait",
-
         unit: "mm",
-
         format: [80, 160]
-
     });
-
-
 
     // 2. Definir Colores (Esto evita el error de descarga)
-
     const azulEPN = "#0a3d62";
-
     const doradoDetalle = "#f1c40f";
-
     const grisTexto = "#334155";
 
-
-
     // --- DISEÑO DE MARCO Y BORDES ---
-
     doc.setDrawColor(azulEPN);
-
     doc.setLineWidth(2);
-
     doc.rect(2, 2, 76, 156); 
 
-
-
     // Encabezado
-
     doc.setFont("helvetica", "bold");
-
     doc.setFontSize(10);
-
     doc.setTextColor(azulEPN);
-
     doc.text("ESCUELA POLITÉCNICA NACIONAL", 40, 12, { align: "center" });
-
-    
-
     doc.setFontSize(8);
-
     doc.setFont("helvetica", "normal");
-
     doc.text("POLIPARKING - CONTROL DE ACCESO", 40, 17, { align: "center" });
 
-
-
     // Línea divisoria dorada
-
     doc.setDrawColor(doradoDetalle);
-
     doc.setLineWidth(0.8);
-
     doc.line(10, 22, 70, 22);
 
-
-
     // --- TÍTULO CENTRAL ---
-
     doc.setFontSize(14);
-
     doc.setFont("helvetica", "bold");
-
     doc.setTextColor(azulEPN);
-
     doc.text("TICKET DOCENTE", 40, 32, { align: "center" });
 
-
-
     // --- ICONO REPRESENTATIVO (DIBUJADO VECTORIAL) ---
-
     doc.setFillColor("#f8fafc");
-
     doc.roundedRect(25, 38, 30, 30, 5, 5, "F");
 
-
-
     // Birrete dibujado para evitar fallos de emoji
-
     doc.setFillColor(azulEPN);
-
     doc.triangle(40, 42, 52, 48, 40, 54, "F");
-
     doc.triangle(40, 42, 28, 48, 40, 54, "F");
-
     doc.rect(34, 52, 12, 4, "F");
-
     doc.setDrawColor(doradoDetalle);
-
     doc.setLineWidth(1);
-
     doc.line(50, 48, 52, 56); 
 
-
-
     // --- BLOQUE DE INFORMACIÓN ---
-
     doc.setFontSize(10);
-
     doc.setTextColor(grisTexto);
-
     let yPos = 80;
-
-
-
     const info = [
-
         { label: "Docente:", value: data.nombre },
-
         { label: "Placa:", value: data.placa },
-
         { label: "Fecha:", value: data.fecha },
-
         { label: "Hora Ingreso:", value: data.hora || "06:30 AM" },
-
         { label: "Tiempo:", value: "SIN LÍMITE" }
-
     ];
 
-
-
     info.forEach(item => {
-
         doc.setFont("helvetica", "bold");
-
         doc.text(item.label, 12, yPos);
-
         doc.setFont("helvetica", "normal");
-
         doc.text(String(item.value), 38, yPos);
-
         yPos += 8;
-
     });
-
-
 
 // --- CAJA UNIFICADA COMPACTA ---
 
     doc.setFillColor("#0a3d62");
-
     doc.rect(10, yPos + 2, 60, 15, "F"); 
-
     doc.setTextColor("#ffffff");
-
     doc.setFontSize(8);
-
     doc.setFont("helvetica", "bold");
-
     doc.text(data.lugar.toUpperCase(), 40, yPos + 7, { align: "center" });
-
     doc.setFontSize(13);
-
     doc.text(`PUESTO: #${data.espacio}`, 40, yPos + 13, { align: "center" });
 
-
-
     // --- PIE DE PÁGINA ---
-
     doc.setTextColor("#64748b");
-
     doc.setFontSize(8);
-
     doc.setFont("helvetica", "italic");
-
     doc.text("¡Gracias por su labor educativa!", 40, 145, { align: "center" });
-
-
-
     doc.setDrawColor("#cbd5e1");
-
     doc.setLineDash([1, 1], 0);
-
     doc.line(5, 150, 75, 150);
-
-    
-
     doc.setFont("helvetica", "bold");
-
     doc.setFontSize(7);
-
     doc.text("COMPROBANTE VÁLIDO DE ESTACIONAMIENTO", 40, 155, { align: "center" });
     doc.save(`Ticket_Docente_${data.placa}.pdf`);
-
 };
 
     // 🔥 4. PANTALLA DE CARGA (Vital para evitar pantalla blanca)
@@ -382,6 +284,7 @@ const DashboardDocente = ({ user }) => {
                     />
                 </section>
             </main>
+            <ChatFlotante userEmail={docenteData?.email} />
         </div>
     );
 };

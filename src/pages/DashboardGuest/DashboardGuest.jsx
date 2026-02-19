@@ -9,6 +9,7 @@ import UserInfo from '../../components/shared/UserInfo/UserInfo';
 import ParkingMap from '../../components/shared/ParkingMap/ParkingMap';
 import BookingForm from '../../components/shared/BookingForm/BookingForm';
 import ReservationCard from '../../components/shared/ReservationCard/ReservationCard';
+import ChatFlotante from '../../components/shared/ChatFlotante/ChatFlotante';
 import styles from './DashboardGuest.module.css';
 
 const generarTicketPDF = (data, tipoUsuario) => {
@@ -338,6 +339,7 @@ if (!userData) return null;
                     />
                 </section>
             </main>
+            <ChatFlotante userEmail={userData.email || ('guest_' + userData.placa)} />
         </div>
     );
 };

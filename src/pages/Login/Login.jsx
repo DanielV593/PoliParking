@@ -114,9 +114,6 @@ const Login = () => {
         try {
             await signInWithEmailAndPassword(auth, email, password);
             
-            // 🔥 VALIDACIÓN DINÁMICA: Ya no importa el correo, solo que el ROL coincida
-            // El rol del select debe ser igual al rol en Firestore (ej: "administrador" === "admin")
-            // Nota: Verifica si en tu select el value es "administrador" y en Firestore es "admin"
             const rolMatch = (rol === 'administrador' && userData.rol === 'admin') || (rol === userData.rol);
 
             if (!rolMatch) {
@@ -132,13 +129,14 @@ const Login = () => {
 
             localStorage.setItem('userRole', userData.rol);
             
-// 🔥 CORRECCIÓN AQUÍ:
 if (userData.rol === 'admin') {
     navigate('/admin');
 } else if (userData.rol === 'docente') {
-    navigate('/docente'); // <-- Antes decía '/dashboard', cámbialo a '/docente'
+    navigate('/docente'); 
+} else if (userData.rol === 'guardia') {
+    navigate('/guardia'); 
 } else {
-    navigate('/dashboard'); // Los estudiantes van aquí
+    navigate('/dashboard'); 
 }
 
         } catch (authError) {
@@ -173,6 +171,7 @@ if (userData.rol === 'admin') {
                                     <option value="docente">Docente</option>
                                     <option value="invitado">Invitado</option>
                                     <option value="administrador">Administrador</option>
+                                    <option value="guardia">Guardia</option>
                                 </select>
                             </div>
                             
