@@ -1,75 +1,171 @@
-.container { min-height: 100vh; background: #f4f7f9; font-family: 'Segoe UI', sans-serif; }
-
-.navHeader {
-    background: #0a3d62; height: 70px; display: flex; justify-content: space-between; align-items: center; padding: 0 30px; color: white;
+/* --- ESTRUCTURA GLOBAL --- */
+.dashboardContainer {
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    flex-direction: column;
+    padding: 15px;
+    overflow: hidden;
+    background: linear-gradient(135deg, #0a3d62 0%, #162a3a 100%);
 }
-.logoTitle { font-size: 1.5rem; margin: 0; font-weight: 800; display: flex; align-items: center; gap: 10px; }
-.guardiaBadge { background: #ffc107; color: #0a3d62; font-size: 0.65rem; padding: 3px 8px; border-radius: 4px; font-weight: 900; }
-.logoutBtn { background: #e30613; border: none; color: white; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; display: flex; align-items: center; gap: 8px; }
 
-.mainLayout { display: grid; grid-template-columns: 260px 1fr; min-height: calc(100vh - 70px); }
+/* 🔥 CAPA OSCURA (BACKDROP) */
+.backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(4px);
+    z-index: 999; /* Por debajo del sidebar pero sobre el contenido */
+}
 
-/* SIDEBAR */
-.sidebar { background: white; border-right: 1px solid #e1e8ed; padding: 20px 10px; }
-.menuItem { width: 100%; padding: 12px 15px; border: none; background: transparent; border-radius: 8px; text-align: left; display: flex; align-items: center; gap: 12px; font-weight: 600; color: #5c6c75; cursor: pointer; transition: 0.2s; margin-bottom: 5px; }
-.menuItem:hover { background: #f1f5f9; color: #0a3d62; }
+/* --- HEADER PREMIUM --- */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 30px;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(15px);
+    border-radius: 20px;
+    margin-bottom: 25px;
+    flex-shrink: 0;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    border-bottom: 4px solid #f1c40f;
+    position: relative;
+    z-index: 1001; /* Siempre arriba del todo */
+}
+
+.headerLeft { display: flex; align-items: center; gap: 15px; }
+
+.logoContainer {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding-right: 20px;
+    border-right: 2px solid #e2e8f0;
+}
+
+.logoText { font-size: 1.6rem; font-weight: 900; color: #0a3d62; margin: 0; }
+.logoText span { color: #f1c40f; }
+
+.roleTag {
+    background: linear-gradient(135deg, #0a3d62 0%, #1c4e75 100%);
+    color: white; padding: 6px 16px; border-radius: 50px;
+    font-size: 0.8rem; font-weight: 800; text-transform: uppercase;
+}
+
+.userNameHeader {
+    color: #0a3d62; font-weight: 700; font-size: 1rem;
+    padding-left: 15px; border-left: 2px solid #e2e8f0;
+    display: flex; align-items: center; gap: 8px; white-space: nowrap;
+}
+
+.headerCenter { position: absolute; left: 50%; transform: translateX(-50%); }
+
+.dateBadge {
+    background: #f8fafc; color: #64748b; padding: 8px 20px;
+    border-radius: 12px; font-weight: 700; border: 1px solid #e2e8f0;
+}
+
+.logoutBtn {
+    background: #fff5f5; color: #e53e3e; border: 1.5px solid #feb2b2;
+    padding: 10px 20px; border-radius: 14px; font-weight: 800; cursor: pointer;
+}
+
+/* 🔥 BOTÓN HAMBURGUESA */
+.hamburgerBtn {
+    display: none;
+    background: #0a3d62;
+    color: white;
+    border: none;
+    font-size: 1.5rem;
+    padding: 8px 12px;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+/* --- LAYOUT PRINCIPAL --- */
+.mainLayout { 
+    display: grid; 
+    grid-template-columns: 280px 1fr; 
+    gap: 20px; flex: 1; height: calc(100% - 100px); overflow: hidden;
+}
+
+/* --- SIDEBAR --- */
+.sidebar { 
+    background: white; border-radius: 20px; padding: 20px 15px; 
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1); display: flex; flex-direction: column;
+    z-index: 1000;
+}
+
+.menuItem { 
+    width: 100%; padding: 14px 18px; border: none; background: transparent; 
+    border-radius: 12px; text-align: left; display: flex; align-items: center; 
+    gap: 12px; font-weight: 700; color: #64748b; cursor: pointer; margin-bottom: 8px; 
+}
 .menuItem.active { background: #0a3d62; color: white; }
 
-.contentArea { padding: 30px; }
-
-/* DASHBOARD GRID */
-.dashboardGrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; }
-.statCard { background: white; padding: 25px; border-radius: 12px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.05); cursor: pointer; transition: 0.3s; border: 1px solid transparent; }
-.statCard:hover { transform: translateY(-5px); border-color: #0a3d62; }
-.statIcon { font-size: 2.5rem; color: #0a3d62; margin-bottom: 10px; }
-
-/* --- SECCIÓN DE AVISOS MEJORADA --- */
-.avisosControlPanel { display: flex; flex-direction: column; gap: 50px; max-width: 1000px; margin: 0 auto; }
-
-.avisosContainer {
-    background: white; padding: 40px; border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.05);
-}
-.avisoHeader h2 { color: #0a3d62; margin: 0 0 20px 0; text-align: center; }
-
-.categoryGrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 30px; }
-.catCard { background: #f8fafc; border: 2px solid transparent; padding: 20px; border-radius: 12px; cursor: pointer; text-align: center; transition: 0.2s; }
-.catCard:hover { background: #fff; transform: translateY(-3px); box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
-.catActive { background: white; box-shadow: 0 5px 15px rgba(0,0,0,0.1); border-width: 2px; }
-
-.catIcon { font-size: 2rem; margin-bottom: 10px; }
-.catCard h4 { margin: 0; color: #333; }
-
-.textAreaGeneral {
-    width: 100%; height: 120px; padding: 20px; border: 2px solid #eee; border-radius: 12px;
-    resize: none; font-family: inherit; font-size: 1rem; outline: none; transition: 0.2s; margin-bottom: 15px;
-}
-.textAreaGeneral:focus { border-color: #0a3d62; }
-
-.btnPublicar {
-    width: 100%; padding: 15px; border: none; border-radius: 10px; color: white; font-weight: bold; font-size: 1.1rem;
-    cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; transition: 0.3s;
+.contentArea { 
+    background: #fff; border-radius: 24px; padding: 30px; 
+    box-shadow: 0 10px 40px rgba(0,0,0,0.1); overflow-y: auto;
 }
 
-/* --- HISTORIAL DE TARJETAS (CARDS) --- */
-.historialAvisos h3 { color: #0a3d62; font-size: 1.3rem; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #eee; }
+/* ============================================================
+   📱 MEDIA QUERIES (VERSIÓN ULTRA-LIMPIA)
+   ============================================================ */
 
-.avisosGridList { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
+@media (max-width: 950px) {
+    .hamburgerBtn { display: block; }
+    
+    /* Ocultar elementos que roban espacio */
+    .headerCenter, 
+    .userNameHeader, 
+    .roleTag { 
+        display: none; 
+    }
 
-.avisoMiniCard {
-    background: white; border-radius: 12px; padding: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-    border-left: 6px solid #ccc; position: relative; display: flex; flex-direction: column; transition: 0.2s;
+    .header {
+        padding: 8px 15px; /* Reducimos padding vertical */
+        height: 60px;     /* Altura fija para control */
+    }
+
+    /* 🔥 El truco: Ocultamos el texto del botón de salir */
+    .logoutText {
+        display: none;
+    }
+
+    .logoutBtn {
+        padding: 8px;
+        min-width: 40px;
+        justify-content: center;
+        border-radius: 10px;
+    }
+
+    .logoContainer { 
+        border: none; 
+        padding: 0; 
+    }
+
+    .logoText {
+        font-size: 1.1rem; /* Logo más pequeño en móvil */
+    }
+
+    /* Sidebar y Layout (Se mantienen para funcionalidad) */
+    .mainLayout { display: block; position: relative; }
+    .sidebar {
+        position: fixed; top: 0; left: -100%; width: 280px; height: 100vh;
+        z-index: 1000; transition: left 0.4s ease; padding-top: 80px;
+    }
+    .sidebarOpen { left: 0; }
+    .contentArea { width: 100%; padding: 10px; }
 }
-.avisoMiniCard:hover { transform: translateY(-3px); box-shadow: 0 6px 16px rgba(0,0,0,0.12); }
 
-.avisoMiniInfo strong { font-size: 0.75rem; letter-spacing: 0.5px; padding: 4px 10px; border-radius: 20px; display: inline-block; margin-bottom: 10px; }
-.avisoMiniInfo p { color: #334155; font-size: 0.95rem; line-height: 1.5; margin: 0 0 15px 0; font-weight: 500; }
-.avisoMiniInfo small { color: #64748b; font-size: 0.8rem; font-weight: 600; display: block; }
-
-.btnTrash {
-    position: absolute; top: 15px; right: 15px; background: #fff1f2; color: #e30613;
-    border: none; width: 32px; height: 32px; border-radius: 8px; cursor: pointer;
-    display: flex; align-items: center; justify-content: center; transition: 0.2s;
+/* Para celulares muy pequeños (iPhone SE / Mini) */
+@media (max-width: 380px) {
+    .logoText { font-size: 1rem; }
+    .logoIcon { font-size: 1.2rem; }
+    .header { padding: 8px 10px; }
 }
-.btnTrash:hover { background: #e30613; color: white; }
-
-.emptyMsg { grid-column: 1 / -1; text-align: center; padding: 30px; color: #94a3b8; background: #f8fafc; border-radius: 12px; border: 2px dashed #eee; }

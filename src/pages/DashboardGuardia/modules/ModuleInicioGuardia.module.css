@@ -1,0 +1,4 @@
+.dashboardGrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; }
+.statCard { background: white; padding: 25px; border-radius: 12px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.05); cursor: pointer; transition: 0.3s; border: 1px solid transparent; }
+.statCard:hover { transform: translateY(-5px); border-color: #0a3d62; }
+.statIcon { font-size: 2.5rem; color: #0a3d62; margin-bottom: 10px; }

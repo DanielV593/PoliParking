@@ -68,87 +68,94 @@ const Login = () => {
     const handleLogin = async (e) => {
     e.preventDefault();
 
-    // 1. INVITADOS (Se mantiene igual)
     if (rol === 'invitado') {
-        const regexPlaca = /^[A-Z]{3}-\d{3,4}$/;
-        if (!regexPlaca.test(placaInv.toUpperCase())) {
-            toast.error('Formato de placa inválido (ABC-1234)');
-            return;
-        }
-        try {
-            const guestData = { nombre: nombreInv, celular: celularInv, placa: placaInv.toUpperCase() };
-            await addDoc(collection(db, "ingresos_invitados"), { ...guestData, fecha: new Date().toLocaleString(), rol: 'invitado' });
-            localStorage.setItem('userRole', 'invitado');
-            navigate('/guest');
-            return;
-        } catch (err) { toast.error('Error al registrar invitado.'); return; }
+    const regexPlaca = /^[A-Z]{3}-\d{3,4}$/;
+    if (!regexPlaca.test(placaInv.toUpperCase())) {
+        toast.error('Formato de placa inválido (ABC-1234)');
+        return;
     }
-
-    // 2. LÓGICA UNIFICADA (Admin, Estudiante, Docente)
     try {
+        const guestData = { 
+            nombre: nombreInv, 
+            celular: celularInv, 
+            placa: placaInv.toUpperCase(),
+            rol: 'invitado'
+        };
+
+        localStorage.setItem('guestData', JSON.stringify(guestData));
+        localStorage.setItem('userRole', 'invitado');
+
+
+        await addDoc(collection(db, "ingresos_invitados"), { 
+            ...guestData, 
+            fecha: new Date().toLocaleString() 
+        });
+        navigate('/guest'); 
+        return;
+    } catch (err) { 
+        console.error(err);
+        toast.error('Error al registrar invitado.'); 
+        return; 
+    }
+}
+
+    // 2. LÓGICA CORREGIDA (Admin, Estudiante, Docente, Guardia)
+    try {
+        // 🔥 PASO 1: Primero iniciamos sesión con Auth para obtener permiso de lectura
+        const userCredential = await signInWithEmailAndPassword(auth, email.trim(), password);
+        const user = userCredential.user;
+
+        // 🔥 PASO 2: Ahora que estamos autenticados, buscamos sus datos en Firestore
+        // Buscamos por el UID (que es más seguro y rápido)
         const q = query(collection(db, "usuarios"), where("email", "==", email.trim()));
         const querySnapshot = await getDocs(q);
 
         if (querySnapshot.empty) {
-            Swal.fire({
-                title: 'Usuario no registrado',
-                text: 'No encontramos tu cuenta. ¿Quieres registrarte?',
-                icon: 'question',
-                showCancelButton: true,
-                confirmButtonText: 'Registrarme',
-                confirmButtonColor: '#0a3d62'
-            }).then((res) => { if (res.isConfirmed) navigate('/register'); });
-            return;
+            await signOut(auth); // Lo sacamos porque no tiene perfil en Firestore
+            return Swal.fire('Error', 'No tienes un perfil creado. Contacta al administrador.', 'error');
         }
 
         const userDoc = querySnapshot.docs[0];
         const userData = userDoc.data();
 
-        // Verificar si está bloqueado
+        // 🔥 PASO 3: Verificaciones de seguridad (Bloqueo y Rol)
         if (userData.estado === 'bloqueado') {
-            Swal.fire({ title: 'Cuenta Bloqueada', icon: 'error', confirmButtonColor: '#e30613' });
+            await signOut(auth);
+            return Swal.fire({ title: 'Cuenta Bloqueada', icon: 'error', confirmButtonColor: '#e30613' });
+        }
+
+        // Verificar que el rol seleccionado en el <select> coincida con la base de datos
+        const rolMatch = (rol === 'administrador' && userData.rol === 'admin') || (rol === userData.rol);
+
+        if (!rolMatch) {
+            await signOut(auth);
+            toast.warning(`Esta cuenta es de tipo ${userData.rol.toUpperCase()}. Selecciona el tipo correcto.`);
             return;
         }
 
-        // Intento de Login en Firebase Auth
-        try {
-            await signInWithEmailAndPassword(auth, email, password);
-            
-            const rolMatch = (rol === 'administrador' && userData.rol === 'admin') || (rol === userData.rol);
-
-            if (!rolMatch) {
-                await signOut(auth);
-                toast.warning(`Esta cuenta es de tipo ${userData.rol.toUpperCase()}. Selecciona el tipo correcto.`);
-                return;
-            }
-
-            // Éxito: Limpiamos intentos y navegamos
-            if (userData.intentosFallidos > 0) {
-                await updateDoc(doc(db, "usuarios", userDoc.id), { intentosFallidos: 0 });
-            }
-
-            localStorage.setItem('userRole', userData.rol);
-            
-if (userData.rol === 'admin') {
-    navigate('/admin');
-} else if (userData.rol === 'docente') {
-    navigate('/docente'); 
-} else if (userData.rol === 'guardia') {
-    navigate('/guardia'); 
-} else {
-    navigate('/dashboard'); 
-}
-
-        } catch (authError) {
-            const nuevosIntentos = (userData.intentosFallidos || 0) + 1;
-            await updateDoc(doc(db, "usuarios", userDoc.id), { intentosFallidos: nuevosIntentos });
-            toast.error(`Credenciales incorrectas. Intento ${nuevosIntentos} de 3.`);
+        // 🔥 PASO 4: Éxito total
+        if (userData.intentosFallidos > 0) {
+            await updateDoc(doc(db, "usuarios", userDoc.id), { intentosFallidos: 0 });
         }
+
+        localStorage.setItem('userRole', userData.rol);
+        
+        // Navegación según rol
+        const rutas = { admin: '/admin', docente: '/docente', guardia: '/guardia' };
+        navigate(rutas[userData.rol] || '/dashboard');
+
     } catch (error) {
-        toast.error("Error en el acceso: " + error.message);
+        console.error("Error completo:", error);
+        // Manejo de errores específicos de Auth
+        if (error.code === 'auth/wrong-password' || error.code === 'auth/user-not-found' || error.code === 'auth/invalid-credential') {
+            toast.error("Correo o contraseña incorrectos.");
+        } else if (error.code === 'permission-denied') {
+            toast.error("Error de permisos: Revisa tus reglas de Firestore.");
+        } else {
+            toast.error("Error en el acceso: " + error.message);
+        }
     }
 };
-
     return (
         <div className='auth-page'>
             <Header />

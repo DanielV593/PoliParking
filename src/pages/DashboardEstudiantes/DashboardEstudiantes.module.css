@@ -41,7 +41,7 @@
     align-items: center;
     gap: 12px;
     padding-right: 20px;
-    border-right: 2px solid #e2e8f0; /* Separador elegante */
+    border-right: 2px solid #e2e8f0; 
 }
 
 .logoIcon {
@@ -76,8 +76,9 @@
 
 /* Centro con la fecha */
 .headerCenter {
-    display: flex;
-    align-items: center;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
 }
 
 .dateBadge {

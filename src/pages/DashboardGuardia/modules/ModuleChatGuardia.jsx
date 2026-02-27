@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { db } from '../../firebase/config';
+import { db } from "../../../firebase/config";
 import { collection, onSnapshot, doc, updateDoc, arrayUnion, setDoc, getDoc, query, where, getDocs, addDoc, serverTimestamp } from 'firebase/firestore';
 import { FaUser, FaPaperPlane, FaCircle, FaSearch, FaCar, FaLightbulb, FaExclamationTriangle, FaClock } from 'react-icons/fa';
 import Swal from 'sweetalert2';

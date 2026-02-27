@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import jsPDF from 'jspdf';
-// 🔥 Agregamos 'getDocs' para poder buscar los datos nosotros mismos
 import { collection, addDoc, query, where, onSnapshot, deleteDoc, doc, getDocs } from 'firebase/firestore';
 import { db, auth } from '../../firebase/config.js'; 
 import { signOut } from 'firebase/auth';
@@ -22,8 +21,7 @@ const DashboardDocente = ({ user }) => {
     tomorrow.setDate(today.getDate() + 1);
     const fechaManana = tomorrow.toLocaleDateString('en-CA');
 
-    // 🔥 1. ESTADO INDEPENDIENTE (Igual que el invitado)
-    // Esto evita que dependamos de si el Contexto cargó rápido o lento
+    // 🔥 1. ESTADO INDEPENDIENTE
     const [docenteData, setDocenteData] = useState(null);
     const [loadingData, setLoadingData] = useState(true);
 
@@ -39,18 +37,13 @@ const DashboardDocente = ({ user }) => {
     useEffect(() => {
         const fetchDatosDocente = async () => {
             if (!user?.email) return;
-
             try {
-                // Buscamos en la colección 'usuarios' quien tenga este email
                 const q = query(collection(db, "usuarios"), where("email", "==", user.email));
                 const querySnapshot = await getDocs(q);
-
                 if (!querySnapshot.empty) {
-                    // ¡Datos encontrados! Los guardamos en nuestro estado local
                     const data = querySnapshot.docs[0].data();
                     setDocenteData({ ...user, ...data });
                 } else {
-                    // Si falla, usamos lo básico que tengamos
                     setDocenteData(user);
                 }
             } catch (error) {
@@ -60,13 +53,11 @@ const DashboardDocente = ({ user }) => {
                 setLoadingData(false);
             }
         };
-
         fetchDatosDocente();
     }, [user]);
 
-    // 🔥 3. EFECTO DE RESERVAS (Ahora depende de 'docenteData', no de 'user')
+    // 🔥 3. EFECTO DE RESERVAS
     useEffect(() => {
-        // Si todavía no tenemos los datos cargados, esperamos
         if (!docenteData?.email) return; 
 
         const qMapa = query(collection(db, "reservas"), where("fecha", "==", reservaForm.fecha), where("lugar", "==", reservaForm.lugar));
@@ -80,25 +71,64 @@ const DashboardDocente = ({ user }) => {
         return () => { unsubMapa(); unsubMia(); };
     }, [reservaForm.fecha, reservaForm.lugar, docenteData]);
 
-    // --- FUNCIONES AUXILIARES (Usan docenteData) ---
-    const handleFormChange = (n) => setReservaForm(n);
-    const validarTiempoDocente = (h) => h; // (Aquí iría tu lógica de validación de hora)
+    // 🔥 4. LÓGICA DE AUTO-LIMPIEZA (Vigencia de 24 Horas)
+    useEffect(() => {
+        if (misReservas.length === 0) return;
+        const interval = setInterval(async () => {
+            const ahora = new Date();
+            for (const res of misReservas) {
+                const [anio, mes, dia] = res.fecha.split('-').map(Number);
+                const [h, m] = res.hora.split(':').map(Number);
+                const tReserva = new Date(anio, mes - 1, dia, h, m);
+                // Límite: Hora de reserva + 24 horas
+                const tExpiracion = new Date(tReserva.getTime() + (24 * 60 * 60 * 1000));
+
+                if (ahora > tExpiracion) {
+                    await deleteDoc(doc(db, "reservas", res.id));
+                }
+            }
+        }, 60000); // Revisa cada minuto
+        return () => clearInterval(interval);
+    }, [misReservas]);
+
+    // --- FUNCIONES AUXILIARES ---
+    const handleFormChange = (n) => {
+        if (n.hora) {
+            const [h, m] = n.hora.split(':').map(Number);
+            const horaDecimal = h + m / 60;
+            // Regla: 6:00 AM a 9:00 PM
+            if (horaDecimal < 6.0 || horaDecimal > 21.0) {
+                Swal.fire('Horario Docente', 'El acceso es permitido únicamente de 6:00 AM a 9:00 PM.', 'warning');
+                return setReservaForm({ ...n, hora: "" });
+            }
+        }
+        setReservaForm(n);
+    };
 
     const handleReserva = async (e) => {
         e.preventDefault();
-        if (misReservas.length >= 4) return Swal.fire('Límite', 'Máximo 4 reservas.', 'warning');
+        
+        // Regla: 2 hoy y 2 mañana (Total 4)
+        const hoyCount = misReservas.filter(r => r.fecha === fechaHoy).length;
+        const mananaCount = misReservas.filter(r => r.fecha === fechaManana).length;
+
+        if (reservaForm.fecha === fechaHoy && hoyCount >= 2) {
+            return Swal.fire('Límite Diario', 'Ya tienes 2 reservas para el día de hoy.', 'info');
+        }
+        if (reservaForm.fecha === fechaManana && mananaCount >= 2) {
+            return Swal.fire('Límite Diario', 'Ya tienes 2 reservas para el día de mañana.', 'info');
+        }
         
         try {
             await addDoc(collection(db, "reservas"), {
                 ...reservaForm, 
-                // Usamos docenteData que es seguro que tiene los datos
                 usuario: docenteData.email, 
                 nombre: docenteData.nombre || 'Docente', 
                 placa: docenteData.placa || 'PENDIENTE',
                 rol: 'docente',
                 timestamp: new Date()
             });
-            Swal.fire('¡Éxito!', 'Reserva confirmada.', 'success');
+            Swal.fire('¡Éxito!', 'Reserva confirmada por 24 horas.', 'success');
             setReservaForm(prev => ({...prev, espacio: null}));
         } catch (error) { Swal.fire('Error', 'No se pudo reservar.', 'error'); }
     };
@@ -114,102 +144,33 @@ const DashboardDocente = ({ user }) => {
     };
 
     const generarTicketDocente = (data) => {
-    // 1. Inicializar el documento
-    const doc = new jsPDF({
-        orientation: "portrait",
-        unit: "mm",
-        format: [80, 160]
-    });
+        const docPDF = new jsPDF({ orientation: "portrait", unit: "mm", format: [80, 160] });
+        const azulEPN = "#0a3d62";
+        const doradoDetalle = "#f1c40f";
 
-    // 2. Definir Colores (Esto evita el error de descarga)
-    const azulEPN = "#0a3d62";
-    const doradoDetalle = "#f1c40f";
-    const grisTexto = "#334155";
+        docPDF.setDrawColor(azulEPN); docPDF.setLineWidth(2); docPDF.rect(2, 2, 76, 156); 
+        docPDF.setFont("helvetica", "bold"); docPDF.setFontSize(10); docPDF.setTextColor(azulEPN);
+        docPDF.text("ESCUELA POLITÉCNICA NACIONAL", 40, 12, { align: "center" });
+        docPDF.setFontSize(8); docPDF.text("POLIPARKING - CONTROL DE ACCESO", 40, 17, { align: "center" });
+        docPDF.setDrawColor(doradoDetalle); docPDF.setLineWidth(0.8); docPDF.line(10, 22, 70, 22);
 
-    // --- DISEÑO DE MARCO Y BORDES ---
-    doc.setDrawColor(azulEPN);
-    doc.setLineWidth(2);
-    doc.rect(2, 2, 76, 156); 
+        docPDF.setFontSize(14); docPDF.text("TICKET DOCENTE", 40, 32, { align: "center" });
 
-    // Encabezado
-    doc.setFont("helvetica", "bold");
-    doc.setFontSize(10);
-    doc.setTextColor(azulEPN);
-    doc.text("ESCUELA POLITÉCNICA NACIONAL", 40, 12, { align: "center" });
-    doc.setFontSize(8);
-    doc.setFont("helvetica", "normal");
-    doc.text("POLIPARKING - CONTROL DE ACCESO", 40, 17, { align: "center" });
+        docPDF.setFontSize(10); docPDF.setTextColor("#334155");
+        let y = 80;
+        docPDF.text(`Docente: ${data.nombre}`, 12, y); y += 8;
+        docPDF.text(`Placa: ${data.placa}`, 12, y); y += 8;
+        docPDF.text(`Fecha: ${data.fecha}`, 12, y); y += 8;
+        docPDF.text(`Hora: ${data.hora}`, 12, y); y += 8;
+        docPDF.text(`Vigencia: 24 HORAS`, 12, y); y += 8;
 
-    // Línea divisoria dorada
-    doc.setDrawColor(doradoDetalle);
-    doc.setLineWidth(0.8);
-    doc.line(10, 22, 70, 22);
+        docPDF.setFillColor("#0a3d62"); docPDF.rect(10, y + 2, 60, 15, "F"); 
+        docPDF.setTextColor("#ffffff"); docPDF.setFontSize(13);
+        docPDF.text(`PUESTO: #${data.espacio}`, 40, y + 11, { align: "center" });
 
-    // --- TÍTULO CENTRAL ---
-    doc.setFontSize(14);
-    doc.setFont("helvetica", "bold");
-    doc.setTextColor(azulEPN);
-    doc.text("TICKET DOCENTE", 40, 32, { align: "center" });
+        docPDF.save(`Ticket_Docente_${data.placa}.pdf`);
+    };
 
-    // --- ICONO REPRESENTATIVO (DIBUJADO VECTORIAL) ---
-    doc.setFillColor("#f8fafc");
-    doc.roundedRect(25, 38, 30, 30, 5, 5, "F");
-
-    // Birrete dibujado para evitar fallos de emoji
-    doc.setFillColor(azulEPN);
-    doc.triangle(40, 42, 52, 48, 40, 54, "F");
-    doc.triangle(40, 42, 28, 48, 40, 54, "F");
-    doc.rect(34, 52, 12, 4, "F");
-    doc.setDrawColor(doradoDetalle);
-    doc.setLineWidth(1);
-    doc.line(50, 48, 52, 56); 
-
-    // --- BLOQUE DE INFORMACIÓN ---
-    doc.setFontSize(10);
-    doc.setTextColor(grisTexto);
-    let yPos = 80;
-    const info = [
-        { label: "Docente:", value: data.nombre },
-        { label: "Placa:", value: data.placa },
-        { label: "Fecha:", value: data.fecha },
-        { label: "Hora Ingreso:", value: data.hora || "06:30 AM" },
-        { label: "Tiempo:", value: "SIN LÍMITE" }
-    ];
-
-    info.forEach(item => {
-        doc.setFont("helvetica", "bold");
-        doc.text(item.label, 12, yPos);
-        doc.setFont("helvetica", "normal");
-        doc.text(String(item.value), 38, yPos);
-        yPos += 8;
-    });
-
-// --- CAJA UNIFICADA COMPACTA ---
-
-    doc.setFillColor("#0a3d62");
-    doc.rect(10, yPos + 2, 60, 15, "F"); 
-    doc.setTextColor("#ffffff");
-    doc.setFontSize(8);
-    doc.setFont("helvetica", "bold");
-    doc.text(data.lugar.toUpperCase(), 40, yPos + 7, { align: "center" });
-    doc.setFontSize(13);
-    doc.text(`PUESTO: #${data.espacio}`, 40, yPos + 13, { align: "center" });
-
-    // --- PIE DE PÁGINA ---
-    doc.setTextColor("#64748b");
-    doc.setFontSize(8);
-    doc.setFont("helvetica", "italic");
-    doc.text("¡Gracias por su labor educativa!", 40, 145, { align: "center" });
-    doc.setDrawColor("#cbd5e1");
-    doc.setLineDash([1, 1], 0);
-    doc.line(5, 150, 75, 150);
-    doc.setFont("helvetica", "bold");
-    doc.setFontSize(7);
-    doc.text("COMPROBANTE VÁLIDO DE ESTACIONAMIENTO", 40, 155, { align: "center" });
-    doc.save(`Ticket_Docente_${data.placa}.pdf`);
-};
-
-    // 🔥 4. PANTALLA DE CARGA (Vital para evitar pantalla blanca)
     if (loadingData || !docenteData) {
         return (
             <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', color: '#0a3d62', fontSize: '1.5rem', flexDirection: 'column' }}>
@@ -221,45 +182,31 @@ const DashboardDocente = ({ user }) => {
     return (
         <div className={styles.dashboardContainer}> 
             <div className={styles.fixedBackground}></div>
-            
             <header className={styles.header}>
                 <div className={styles.headerLeft}>
-                    <div className={styles.logoContainer}>
-                        <span className={styles.logoIcon}>🎓</span>
-                        <h1 className={styles.logoText}>POLI<span>PARKING</span></h1>
-                    </div>
+                    <div className={styles.logoContainer}><span className={styles.logoIcon}>🎓</span><h1 className={styles.logoText}>POLI<span>PARKING</span></h1></div>
                     <div className={styles.roleTag}>Docente</div>
                 </div>
-                <div className={styles.headerCenter}>
-                    <span className={styles.dateBadge}>📅 {fechaHoy}</span>
-                </div>
+                <div className={styles.headerCenter}><span className={styles.dateBadge}>📅 {fechaHoy}</span></div>
                 <button className={styles.logoutBtn} onClick={handleLogout}>Cerrar Sesión 🚫</button>
             </header>
 
             <main className={styles.mainLayout}>
                 <aside className={styles.sidebar}>
-                    {/* Renderizamos usando los datos seguros */}
                     <UserInfo user={docenteData} />
-                    
-                    <div className={styles.alertBanner}>🚗 Reservas: Hoy y Mañana</div>
-
+                    <div className={styles.alertBanner}>🚗 Reservas: 2 Hoy / 2 Mañana</div>
                     {misReservas.length < 4 && (
                         <div className={styles.formCardCompact}>
                             <BookingForm 
                                 form={reservaForm} setForm={handleFormChange} capacidades={CAPACIDADES}
                                 esDocente={true} fechas={{ hoy: fechaHoy, max: fechaManana }} onSubmit={handleReserva}
                             >
-                                <button 
-                                    className={`${styles.btnReservar} ${(!reservaForm.espacio || !reservaForm.hora) ? styles.disabled : ''}`} 
-                                    onClick={handleReserva}
-                                    disabled={!reservaForm.espacio || !reservaForm.hora}
-                                >
+                                <button className={`${styles.btnReservar} ${(!reservaForm.espacio || !reservaForm.hora) ? styles.disabled : ''}`} onClick={handleReserva} disabled={!reservaForm.espacio || !reservaForm.hora}>
                                     {!reservaForm.hora ? "⏰ Hora" : `✅ Reservar #${reservaForm.espacio}`}
                                 </button>
                             </BookingForm>
                         </div>
                     )}
-
                     <div className={styles.reservationScrollArea}>
                         {misReservas.map(res => (
                             <div key={res.id} className={styles.activeReservation}>
@@ -275,13 +222,8 @@ const DashboardDocente = ({ user }) => {
                         ))}
                     </div>
                 </aside>
-
                 <section className={styles.mapArea}>
-                    <ParkingMap 
-                        lugar={reservaForm.lugar} capacidad={CAPACIDADES[reservaForm.lugar]} 
-                        ocupados={reservasTotales} seleccionado={reservaForm.espacio} 
-                        onSelect={(n) => setReservaForm(p => ({...p, espacio: n}))} columnas={10} 
-                    />
+                    <ParkingMap lugar={reservaForm.lugar} capacidad={CAPACIDADES[reservaForm.lugar]} ocupados={reservasTotales} seleccionado={reservaForm.espacio} onSelect={(n) => setReservaForm(p => ({...p, espacio: n}))} columnas={10} />
                 </section>
             </main>
             <ChatFlotante userEmail={docenteData?.email} />
