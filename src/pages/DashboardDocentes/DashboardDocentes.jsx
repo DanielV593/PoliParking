@@ -179,13 +179,20 @@ const DashboardDocente = ({ user }) => {
         );
     }
 
+    // Este componente sirve tanto a "docente" como a "personal administrativo":
+    // se distinguen por el acento de color y el texto del badge de rol.
+    const esPersonalAdministrativo = docenteData?.rol === 'administrativo';
+    const accentVar = esPersonalAdministrativo ? 'var(--rol-personal)' : 'var(--rol-docente)';
+    const accentVarDark = esPersonalAdministrativo ? 'var(--rol-personal-dark)' : 'var(--rol-docente-dark)';
+    const etiquetaRol = esPersonalAdministrativo ? 'Personal Administrativo' : 'Docente';
+
     return (
-        <div className={styles.dashboardContainer}> 
+        <div className={styles.dashboardContainer} style={{ '--accent': accentVar, '--accent-dark': accentVarDark }}>
             <div className={styles.fixedBackground}></div>
             <header className={styles.header}>
                 <div className={styles.headerLeft}>
-                    <div className={styles.logoContainer}><span className={styles.logoIcon}>🎓</span><h1 className={styles.logoText}>POLI<span>PARKING</span></h1></div>
-                    <div className={styles.roleTag}>Docente</div>
+                    <div className={styles.logoContainer}><span className={styles.logoIcon}>{esPersonalAdministrativo ? '🗂️' : '🎓'}</span><h1 className={styles.logoText}>POLI<span>PARKING</span></h1></div>
+                    <div className={styles.roleTag}>{etiquetaRol}</div>
                 </div>
                 <div className={styles.headerCenter}><span className={styles.dateBadge}>📅 {fechaHoy}</span></div>
                 <button className={styles.logoutBtn} onClick={handleLogout}>Cerrar Sesión 🚫</button>

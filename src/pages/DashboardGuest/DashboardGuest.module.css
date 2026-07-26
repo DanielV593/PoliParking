@@ -1,15 +1,16 @@
+/* Acento de rol: --rol-invitado (gris slate) */
 .dashboardContainer {
     height: 100vh;
     width: 100vw;
     display: flex;
     flex-direction: column;
     padding: 15px;
-    overflow: hidden; /* Evita scroll general molesto */
+    overflow: hidden;
 }
 
 .fixedBackground {
     position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-    background: linear-gradient(135deg, #0a3d62 0%, #162a3a 100%);
+    background: linear-gradient(135deg, var(--db-sidebar-bg) 0%, var(--db-sidebar-bg-dark) 100%);
     z-index: -1;
 }
 
@@ -21,12 +22,12 @@
     padding: 12px 30px;
     background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(15px);
-    border-radius: 20px;
+    border-radius: var(--db-radius-lg);
     margin-bottom: 20px;
     flex-shrink: 0;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    box-shadow: var(--db-shadow-lg);
     border: 1px solid rgba(255, 255, 255, 0.3);
-    border-bottom: 4px solid #f1c40f; /* Refuerzo dorado institucional */
+    border-bottom: 4px solid var(--rol-invitado);
 }
 
 .headerLeft { display: flex; align-items: center; gap: 20px; }
@@ -36,21 +37,21 @@
     align-items: center;
     gap: 12px;
     padding-right: 20px;
-    border-right: 2px solid #e2e8f0;
+    border-right: 2px solid var(--db-border);
 }
 
-.logoText { font-size: 1.6rem; font-weight: 900; color: #0a3d62; margin: 0; }
-.logoText span { color: #f1c40f; }
+.logoText { font-size: 1.6rem; font-weight: 900; color: var(--colorPrincipal); margin: 0; }
+.logoText span { color: var(--colorDorado); }
 
 .roleTag {
-    background: #e30613; /* Rojo distintivo para Invitados */
+    background: linear-gradient(135deg, var(--rol-invitado) 0%, var(--rol-invitado-dark) 100%);
     color: white;
     padding: 6px 16px;
-    border-radius: 50px;
+    border-radius: var(--db-radius-pill);
     font-size: 0.85rem;
     font-weight: 800;
     text-transform: uppercase;
-    box-shadow: 0 4px 10px rgba(227, 6, 19, 0.2);
+    box-shadow: var(--db-shadow-sm);
 }
 
 .headerCenter {
@@ -58,14 +59,14 @@
 }
 
 .dateBadge {
-    background: white;
-    color: #0a3d62;
+    background: var(--db-surface);
+    color: var(--colorPrincipal);
     padding: 8px 20px;
-    border-radius: 12px;
+    border-radius: var(--db-radius-md);
     font-weight: 700;
     font-size: 0.9rem;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    border: 1px solid #e2e8f0;
+    box-shadow: var(--db-shadow-md);
+    border: 1px solid var(--db-border);
     display: flex;
     align-items: center;
     gap: 8px;
@@ -97,39 +98,39 @@
 
 /* BANNER DE HORARIO AMARILLO INSTITUCIONAL */
 .alertBanner {
-    background: #f1c40f;
-    color: #0a3d62;
+    background: var(--colorDorado);
+    color: var(--colorPrincipal);
     padding: 14px;
-    border-radius: 14px;
+    border-radius: var(--db-radius-md);
     font-weight: 800;
     text-align: center;
     box-shadow: 0 4px 15px rgba(241, 196, 15, 0.3);
-    border: 1px solid #d4ac0d;
+    border: 1px solid var(--rol-admin-dark);
 }
 
 /* TARJETAS DE FORMULARIO Y RESERVA */
 .formCard, .activeReservation {
-    background: #ffffff;
-    border-radius: 24px;
+    background: var(--db-surface);
+    border-radius: var(--db-radius-lg);
     padding: 20px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-    border: 1px solid #e2e8f0;
+    box-shadow: var(--db-shadow-lg);
+    border: 1px solid var(--db-border);
 }
 
 /* TICKET DE RESERVA CON LETRAS BLANCAS */
 .activeReservation {
     background: rgba(255, 255, 255, 0.05);
-    border: 2px solid #f1c40f;
-    border-radius: 20px;
+    border: 2px solid var(--colorDorado);
+    border-radius: var(--db-radius-lg);
     overflow: hidden;
     padding: 10px;
 }
 
 .ticketHeader {
-    background: #0a3d62;
+    background: var(--colorPrincipal);
     padding: 15px; 
     text-align: center;
-    border-radius: 12px 12px 0 0;
+    border-radius: var(--db-radius-md) var(--db-radius-md) 0 0;
     margin: -10px -10px 10px -10px;
 }
 .ticketHeader h3 {
@@ -141,24 +142,24 @@
 }
 
 .ticketContent {
-    background: #ffffff;
-    border-radius: 12px;
+    background: var(--db-surface);
+    border-radius: var(--db-radius-md);
     overflow: hidden;
 }
 
 /* BOTÓN DE RESERVA */
 .btnReservar {
-    width: 100%; padding: 15px; border-radius: 12px; border: none;
+    width: 100%; padding: 15px; border-radius: var(--db-radius-md); border: none;
     font-weight: 800; cursor: pointer; transition: 0.3s;
 }
-.btnReservar.disabled { background: #fff !important; color: #0a3d62 !important; border: 2px solid #0a3d62 !important; }
-.btnReservar:not(.disabled) { background: #0a3d62 !important; color: #fff !important; }
+.btnReservar.disabled { background: #fff !important; color: var(--colorPrincipal) !important; border: 2px solid var(--colorPrincipal) !important; }
+.btnReservar:not(.disabled) { background: var(--colorPrincipal) !important; color: #fff !important; }
 
 /* ÁREA DEL MAPA ESTILO CINE */
 .mapArea {
     flex: 1;
-    background: #ffffff;
-    border-radius: 28px;
+    background: var(--db-surface);
+    border-radius: var(--db-radius-lg);
     padding: 25px;
     box-shadow: 0 10px 40px rgba(0,0,0,0.4);
     display: flex;
@@ -181,8 +182,8 @@
 }
 
 .logoutBtn {
-    background: #fee2e2; color: #dc2626; border: 1px solid #feb2b2;
-    padding: 10px 20px; border-radius: 12px; font-weight: 700; cursor: pointer;
+    background: var(--db-danger-bg); color: var(--db-danger); border: 1px solid #feb2b2;
+    padding: 10px 20px; border-radius: var(--db-radius-md); font-weight: 700; cursor: pointer;
 }
 
 /* ============================================================

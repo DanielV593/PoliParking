@@ -9,7 +9,7 @@
 
 .fixedBackground {
     position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-    background: linear-gradient(135deg, #0a3d62 0%, #162a3a 100%);
+    background: linear-gradient(135deg, var(--db-sidebar-bg) 0%, var(--db-sidebar-bg-dark) 100%);
     z-index: -1;
 }
 
@@ -21,12 +21,12 @@
     padding: 12px 30px;
     background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(15px); /* Efecto cristal */
-    border-radius: 20px;
+    border-radius: var(--db-radius-lg);
     margin-bottom: 25px;
     flex-shrink: 0;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    box-shadow: var(--db-shadow-lg);
     border: 1px solid rgba(255, 255, 255, 0.3);
-    border-bottom: 4px solid #f1c40f; /* Refuerzo dorado */
+    border-bottom: 4px solid var(--rol-estudiante); /* Refuerzo dorado */
 }
 
 .headerLeft {
@@ -41,7 +41,7 @@
     align-items: center;
     gap: 12px;
     padding-right: 20px;
-    border-right: 2px solid #e2e8f0; 
+    border-right: 2px solid var(--db-border); 
 }
 
 .logoIcon {
@@ -52,26 +52,26 @@
 .logoText {
     font-size: 1.6rem;
     font-weight: 900;
-    color: #0a3d62;
+    color: var(--colorPrincipal);
     letter-spacing: -1px;
     margin: 0;
 }
 
 .logoText span {
-    color: #f1c40f;
+    color: var(--rol-estudiante);
 }
 
 /* Badge de Rol mejorado */
 .roleTag {
-    background: linear-gradient(135deg, #0a3d62 0%, #1c4e75 100%);
+    background: linear-gradient(135deg, var(--rol-estudiante) 0%, var(--rol-estudiante-dark) 100%);
     color: white;
     padding: 6px 16px;
-    border-radius: 50px; /* Estilo píldora */
+    border-radius: var(--db-radius-pill); /* Estilo píldora */
     font-size: 0.85rem;
     font-weight: 800;
     text-transform: uppercase;
     letter-spacing: 1px;
-    box-shadow: 0 4px 10px rgba(10, 61, 98, 0.2);
+    box-shadow: var(--db-shadow-sm);
 }
 
 /* Centro con la fecha */
@@ -82,25 +82,25 @@
 }
 
 .dateBadge {
-    background: #f8fafc;
-    color: #64748b;
+    background: var(--db-bg);
+    color: var(--db-text-soft);
     padding: 8px 20px;
-    border-radius: 12px;
+    border-radius: var(--db-radius-md);
     font-weight: 700;
     font-size: 0.95rem;
     display: flex;
     align-items: center;
     gap: 8px;
-    border: 1px solid #e2e8f0;
+    border: 1px solid var(--db-border);
 }
 
 /* Botón Logout Estilizado */
 .logoutBtn {
-    background: #fff5f5;
-    color: #e53e3e;
+    background: var(--db-danger-bg);
+    color: var(--db-danger);
     border: 1.5px solid #feb2b2;
     padding: 10px 20px;
-    border-radius: 14px;
+    border-radius: var(--db-radius-md);
     font-weight: 800;
     font-size: 0.9rem;
     cursor: pointer;
@@ -111,11 +111,11 @@
 }
 
 .logoutBtn:hover {
-    background: #e30613;
+    background: var(--rol-estudiante);
     color: white;
-    border-color: #e30613;
+    border-color: var(--rol-estudiante);
     transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(227, 6, 19, 0.3);
+    box-shadow: var(--db-shadow-md);
 }
 /* LAYOUT */
 .mainLayout {
@@ -137,11 +137,11 @@
 .sidebar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 10px; }
 
 .alertBanner {
-    background: #f1c40f;
-    color: #0a3d62;
+    background: var(--colorDorado);
+    color: var(--colorPrincipal);
     padding: 12px;
-    border-radius: 12px;
-    border: 1px solid #d4ac0d;
+    border-radius: var(--db-radius-md);
+    border: 1px solid var(--rol-admin-dark);
     font-size: 0.9rem;
     font-weight: 800;
     text-align: center;
@@ -150,26 +150,26 @@
 
 /* BOTÓN RESERVA */
 .btnReservar {
-    width: 100%; padding: 15px; border-radius: 12px; border: none;
+    width: 100%; padding: 15px; border-radius: var(--db-radius-md); border: none;
     font-weight: 800; cursor: pointer; transition: 0.3s;
 }
-.btnReservar.disabled { background: #fff !important; color: #0a3d62 !important; border: 2px solid #0a3d62 !important; }
-.btnReservar:not(.disabled) { background: #0a3d62 !important; color: #fff !important; }
+.btnReservar.disabled { background: #fff !important; color: var(--colorPrincipal) !important; border: 2px solid var(--colorPrincipal) !important; }
+.btnReservar:not(.disabled) { background: var(--colorPrincipal) !important; color: #fff !important; }
 
 /* TICKET DE RESERVA ACTIVA */
 .activeReservation {
     background: rgba(255, 255, 255, 0.05);
-    border: 2px solid #f1c40f;
-    border-radius: 20px;
+    border: 2px solid var(--rol-estudiante);
+    border-radius: var(--db-radius-lg);
     overflow: hidden;
     padding: 10px; 
     margin-top: 5px;
 }
 .ticketHeader {
-    background: #0a3d62;
+    background: var(--colorPrincipal);
     padding: 20px; 
     text-align: center;
-    border-radius: 12px 12px 0 0;
+    border-radius: var(--db-radius-md) var(--db-radius-md) 0 0;
 }
 .ticketHeader h3 {
     margin: 0;
@@ -179,7 +179,7 @@
 }
 .ticketHeader span { 
     font-size: 0.75rem; 
-    color: #f1c40f !important; 
+    color: var(--rol-estudiante) !important; 
     font-weight: 700;
     text-transform: uppercase; 
 }
@@ -204,10 +204,10 @@
 /* ÁREA DEL MAPA (DERECHA) */
 .mapArea {
     flex: 1;
-    background: #fff;
-    border-radius: 24px;
+    background: var(--db-surface);
+    border-radius: var(--db-radius-lg);
     padding: 20px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    box-shadow: var(--db-shadow-lg);
     display: flex;
     flex-direction: column;
     max-height: 100%; 
@@ -215,8 +215,8 @@
 
 /* Logout */
 .logoutBtn {
-    background: #fee2e2; color: #dc2626; border: none; padding: 8px 16px;
-    border-radius: 10px; font-weight: 700; cursor: pointer;
+    background: var(--db-danger-bg); color: var(--db-danger); border: none; padding: 8px 16px;
+    border-radius: var(--db-radius-sm); font-weight: 700; cursor: pointer;
 }
 
 .headerCenter {
@@ -224,14 +224,14 @@
 }
 
 .dateBadge {
-    background: white;
-    color: #0a3d62;
+    background: var(--db-surface);
+    color: var(--colorPrincipal);
     padding: 8px 20px;
-    border-radius: 12px;
+    border-radius: var(--db-radius-md);
     font-weight: 700;
     font-size: 0.9rem;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    border: 1px solid #e2e8f0;
+    box-shadow: var(--db-shadow-md);
+    border: 1px solid var(--db-border);
     display: flex;
     align-items: center;
     gap: 8px;

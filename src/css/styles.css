@@ -12,6 +12,62 @@
     /* EL NUEVO COLOR "NO CANSA VISTA" */
     --colorFondoSuave: #f0f4f8;   /* Gris Hielo (Alice Blue moderno) */
     --colorBlanco: #ffffff;
+
+    /* ===================================================================
+       SISTEMA DE DISEÑO UNIFICADO — DASHBOARDS (prefijo db-)
+       Fuente única de verdad para los 6 dashboards por rol.
+       No modifica los tokens del sitio público de arriba.
+    =================================================================== */
+
+    /* Superficies y neutros */
+    --db-bg: #f8fafc;
+    --db-bg-alt: #f0f4f8;
+    --db-surface: #ffffff;
+    --db-border: #e2e8f0;
+    --db-border-soft: #edf2f7;
+    --db-text: #1e293b;
+    --db-text-soft: #64748b;
+    --db-text-muted: #94a3b8;
+
+    /* Sidebar / navbar oscuro (navy EPN, ya usado orgánicamente en varios dashboards) */
+    --db-sidebar-bg: var(--colorPrincipal);
+    --db-sidebar-bg-dark: #162a3a;
+    --db-sidebar-hover: #1c4e75;
+    --db-sidebar-text: #f8fafc;
+
+    /* Estados semánticos */
+    --db-success: #16a34a;
+    --db-success-bg: #dcfce7;
+    --db-success-text: #166534;
+    --db-danger: #dc2626;
+    --db-danger-bg: #fee2e2;
+    --db-danger-text: #991b1b;
+    --db-warning: #f39c12;
+    --db-warning-bg: #fff7e6;
+    --db-info: var(--colorPrincipal);
+
+    /* Radios y sombras estandarizados */
+    --db-radius-sm: 8px;
+    --db-radius-md: 12px;
+    --db-radius-lg: 20px;
+    --db-radius-pill: 999px;
+    --db-shadow-sm: 0 1px 3px rgba(10, 61, 98, 0.08);
+    --db-shadow-md: 0 4px 12px rgba(10, 61, 98, 0.10);
+    --db-shadow-lg: 0 10px 30px rgba(10, 61, 98, 0.14);
+
+    /* Acentos por rol — color de identidad + variante oscura para hover/texto */
+    --rol-admin: #ffc107;
+    --rol-admin-dark: #b8860b;
+    --rol-guardia: #f5a623;
+    --rol-guardia-dark: #b3760f;
+    --rol-invitado: #64748b;
+    --rol-invitado-dark: #475569;
+    --rol-estudiante: #06b6d4;
+    --rol-estudiante-dark: #0e7490;
+    --rol-personal: #16a34a;
+    --rol-personal-dark: #15803d;
+    --rol-docente: #7c3aed;
+    --rol-docente-dark: #5b21b6;
 }
 
 * { 

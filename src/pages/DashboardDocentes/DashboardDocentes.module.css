@@ -1,3 +1,4 @@
+/* Acento de rol: --rol-docente (púrpura) */
 .dashboardContainer {
     height: 100vh;
     width: 100vw;
@@ -9,7 +10,7 @@
 
 .fixedBackground {
     position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-    background: linear-gradient(135deg, #0a3d62 0%, #162a3a 100%);
+    background: linear-gradient(135deg, var(--db-sidebar-bg) 0%, var(--db-sidebar-bg-dark) 100%);
     z-index: -1;
 }
 
@@ -21,31 +22,31 @@
     padding: 12px 30px;
     background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(15px);
-    border-radius: 20px;
+    border-radius: var(--db-radius-lg);
     margin-bottom: 25px;
     flex-shrink: 0;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    box-shadow: var(--db-shadow-lg);
     border: 1px solid rgba(255, 255, 255, 0.3);
-    border-bottom: 4px solid #f1c40f;
+    border-bottom: 4px solid var(--accent, var(--rol-docente));
 }
 
 .headerLeft { display: flex; align-items: center; gap: 20px; }
-.logoContainer { display: flex; align-items: center; gap: 12px; padding-right: 20px; border-right: 2px solid #e2e8f0; }
+.logoContainer { display: flex; align-items: center; gap: 12px; padding-right: 20px; border-right: 2px solid var(--db-border); }
 .logoIcon { font-size: 1.8rem; }
-.logoText { font-size: 1.6rem; font-weight: 900; color: #0a3d62; margin: 0; }
-.logoText span { color: #f1c40f; }
+.logoText { font-size: 1.6rem; font-weight: 900; color: var(--colorPrincipal); margin: 0; }
+.logoText span { color: var(--accent, var(--rol-docente)); }
 
 .roleTag {
-    background: linear-gradient(135deg, #0a3d62 0%, #1c4e75 100%);
-    color: white; padding: 6px 16px; border-radius: 50px;
+    background: linear-gradient(135deg, var(--accent, var(--rol-docente)) 0%, var(--accent-dark) 100%);
+    color: white; padding: 6px 16px; border-radius: var(--db-radius-pill);
     font-size: 0.85rem; font-weight: 800; text-transform: uppercase;
 }
 
 .headerCenter { display: flex; align-items: center; }
-.dateBadge { background: #f8fafc; color: #64748b; padding: 8px 20px; border-radius: 12px; font-weight: 700; font-size: 0.95rem; display: flex; align-items: center; gap: 8px; border: 1px solid #e2e8f0; }
+.dateBadge { background: var(--db-bg); color: var(--db-text-soft); padding: 8px 20px; border-radius: var(--db-radius-md); font-weight: 700; font-size: 0.95rem; display: flex; align-items: center; gap: 8px; border: 1px solid var(--db-border); }
 
-.logoutBtn { background: #fff5f5; color: #e53e3e; border: 1.5px solid #feb2b2; padding: 10px 20px; border-radius: 14px; font-weight: 800; font-size: 0.9rem; cursor: pointer; transition: 0.3s; display: flex; align-items: center; gap: 8px; }
-.logoutBtn:hover { background: #e30613; color: white; border-color: #e30613; transform: translateY(-2px); }
+.logoutBtn { background: var(--db-danger-bg); color: var(--db-danger); border: 1.5px solid #feb2b2; padding: 10px 20px; border-radius: var(--db-radius-md); font-weight: 800; font-size: 0.9rem; cursor: pointer; transition: 0.3s; display: flex; align-items: center; gap: 8px; }
+.logoutBtn:hover { background: var(--accent, var(--rol-docente)); color: white; border-color: var(--accent, var(--rol-docente)); transform: translateY(-2px); }
 
 /* LAYOUT */
 .mainLayout { display: flex; gap: 20px; flex: 1; height: calc(100% - 80px); }
@@ -57,43 +58,43 @@
 .sidebar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 10px; }
 
 .alertBanner {
-    background: #f1c40f; color: #0a3d62; padding: 12px; border-radius: 12px;
-    border: 1px solid #d4ac0d; font-size: 0.9rem; font-weight: 800; text-align: center;
+    background: var(--colorDorado); color: var(--colorPrincipal); padding: 12px; border-radius: var(--db-radius-md);
+    border: 1px solid var(--rol-admin-dark); font-size: 0.9rem; font-weight: 800; text-align: center;
     box-shadow: 0 4px 15px rgba(241, 196, 15, 0.2);
 }
 
-.btnReservar { width: 100%; padding: 15px; border-radius: 12px; border: none; font-weight: 800; cursor: pointer; transition: 0.3s; }
-.btnReservar.disabled { background: #fff !important; color: #0a3d62 !important; border: 2px solid #0a3d62 !important; }
-.btnReservar:not(.disabled) { background: #0a3d62 !important; color: #fff !important; }
+.btnReservar { width: 100%; padding: 15px; border-radius: var(--db-radius-md); border: none; font-weight: 800; cursor: pointer; transition: 0.3s; }
+.btnReservar.disabled { background: #fff !important; color: var(--colorPrincipal) !important; border: 2px solid var(--colorPrincipal) !important; }
+.btnReservar:not(.disabled) { background: var(--colorPrincipal) !important; color: #fff !important; }
 
 /* TICKET DE RESERVA ACTIVA */
 .activeReservation {
-    background: rgba(255, 255, 255, 0.05); border: 2px solid #f1c40f;
-    border-radius: 20px; overflow: hidden; padding: 10px; margin-top: 5px;
+    background: rgba(255, 255, 255, 0.05); border: 2px solid var(--accent, var(--rol-docente));
+    border-radius: var(--db-radius-lg); overflow: hidden; padding: 10px; margin-top: 5px;
 }
-.ticketHeader { background: #0a3d62; padding: 20px; text-align: center; border-radius: 12px 12px 0 0; }
+.ticketHeader { background: var(--colorPrincipal); padding: 20px; text-align: center; border-radius: var(--db-radius-md) var(--db-radius-md) 0 0; }
 .ticketHeader h3 { margin: 0; color: #ffffff !important; font-size: 1.2rem; font-weight: 900; }
-.ticketHeader span { font-size: 0.75rem; color: #f1c40f !important; font-weight: 700; text-transform: uppercase; }
+.ticketHeader span { font-size: 0.75rem; color: var(--accent, var(--rol-docente)) !important; font-weight: 700; text-transform: uppercase; }
 
 .sidebarFooter { margin-top: auto; padding: 20px; text-align: center; color: rgba(255, 255, 255, 0.6); font-size: 0.85rem; font-style: italic; border-top: 1px solid rgba(255, 255, 255, 0.1); }
 .sidebarFooter p { color: rgba(255, 255, 255, 0.5) !important; font-size: 0.85rem; line-height: 1.4; }
 
 /* ÁREA DEL MAPA */
-.mapArea { flex: 1; background: #fff; border-radius: 24px; padding: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); display: flex; flex-direction: column; max-height: 100%; }
+.mapArea { flex: 1; background: var(--db-surface); border-radius: var(--db-radius-lg); padding: 20px; box-shadow: var(--db-shadow-lg); display: flex; flex-direction: column; max-height: 100%; }
 
 .headerCenter {
     position: absolute; left: 50%; transform: translateX(-50%);
 }
 
 .dateBadge {
-    background: white;
-    color: #0a3d62;
+    background: var(--db-surface);
+    color: var(--colorPrincipal);
     padding: 8px 20px;
-    border-radius: 12px;
+    border-radius: var(--db-radius-md);
     font-weight: 700;
     font-size: 0.9rem;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    border: 1px solid #e2e8f0;
+    box-shadow: var(--db-shadow-md);
+    border: 1px solid var(--db-border);
     display: flex;
     align-items: center;
     gap: 8px;

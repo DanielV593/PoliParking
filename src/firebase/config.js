@@ -1,4 +1,4 @@
-import { initializeApp } from "firebase/app";
+import { initializeApp, getApps, deleteApp } from "firebase/app";
 import { 
     getAuth, 
     setPersistence, 
@@ -26,3 +26,18 @@ setPersistence(auth, browserSessionPersistence)
   .catch((error) => {
     console.error("Error configurando la persistencia:", error);
   });
+
+// 🔥 APP SECUNDARIA: sirve únicamente para que un administrador pueda crear
+// cuentas nuevas (createUserWithEmailAndPassword) sin que Firebase cierre su
+// propia sesión y lo autentique como el usuario recién creado.
+// Se crea "al vuelo" y se destruye después de cada uso.
+export const getSecondaryAuth = () => {
+  const nombreAppSecundaria = "SecundariaCrearUsuarios";
+  const appExistente = getApps().find(a => a.name === nombreAppSecundaria);
+  const appSecundaria = appExistente || initializeApp(firebaseConfig, nombreAppSecundaria);
+  return { appSecundaria, authSecundaria: getAuth(appSecundaria) };
+};
+
+export const cerrarAppSecundaria = async (appSecundaria) => {
+  try { await deleteApp(appSecundaria); } catch (e) { /* ya estaba cerrada */ }
+};

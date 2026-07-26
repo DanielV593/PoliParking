@@ -9,9 +9,13 @@ const ProtectedRoute = ({ roleRequired, children }) => {
 
     if (!user) return <Navigate to="/login" replace />;
 
-    if (roleRequired && user.rol !== roleRequired) {
-        if (user.rol === 'admin') return <Navigate to="/admin" replace />;
-        if (user.rol === 'docente') return <Navigate to="/docente" replace />;
+    // roleRequired puede ser un string ("admin") o un array (["admin", "admin_secundario"])
+    const rolesPermitidos = Array.isArray(roleRequired) ? roleRequired : [roleRequired];
+
+    if (roleRequired && !rolesPermitidos.includes(user.rol)) {
+        if (user.rol === 'admin' || user.rol === 'admin_secundario') return <Navigate to="/admin" replace />;
+        if (user.rol === 'docente' || user.rol === 'administrativo') return <Navigate to="/docente" replace />;
+        if (user.rol === 'guardia') return <Navigate to="/guardia" replace />;
         return <Navigate to="/dashboard" replace />; // Estudiantes
     }
 

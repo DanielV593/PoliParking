@@ -1,4 +1,4 @@
 .dashboardGrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; }
-.statCard { background: white; padding: 25px; border-radius: 12px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.05); cursor: pointer; transition: 0.3s; border: 1px solid transparent; }
-.statCard:hover { transform: translateY(-5px); border-color: #0a3d62; }
-.statIcon { font-size: 2.5rem; color: #0a3d62; margin-bottom: 10px; }
+.statCard { background: var(--db-surface); padding: 25px; border-radius: var(--db-radius-md); text-align: center; box-shadow: var(--db-shadow-sm); cursor: pointer; transition: 0.3s; border: 1px solid transparent; }
+.statCard:hover { transform: translateY(-5px); border-color: var(--rol-guardia); }
+.statIcon { font-size: 2.5rem; color: var(--rol-guardia); margin-bottom: 10px; }

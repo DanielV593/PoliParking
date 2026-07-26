@@ -1,4 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
+import Swal from 'sweetalert2';
+
+const FORM_VACIO = { nombre: '', email: '', placa: '', rol: 'estudiante', password: '', confirmPassword: '' };
 
 const ModuleUsuarios = ({ 
     usuariosFiltrados, 
@@ -14,18 +17,77 @@ const ModuleUsuarios = ({
     verPerfil, 
     toggleBloqueo, 
     eliminarRegistro,
-    estanBloqueados
+    estanBloqueados,
+    esAdminPrincipal = false,
+    rolesCreables = [],
+    onCrearUsuario
 }) => {
+    const [modalAbierto, setModalAbierto] = useState(false);
+    const [form, setForm] = useState(FORM_VACIO);
+    const [guardando, setGuardando] = useState(false);
 
     // Función auxiliar para los colores de los roles
     const getRolBadgeColor = (rol) => {
         switch(rol) {
-            case 'admin': return { bg: '#2c3e50', color: 'white', label: 'ADMIN' };
+            case 'admin': return { bg: '#2c3e50', color: 'white', label: 'ADMIN PRINCIPAL' };
+            case 'admin_secundario': return { bg: '#8e44ad', color: 'white', label: 'ADMIN SECUNDARIO' };
             case 'docente': return { bg: '#f1c40f', color: '#0a3d62', label: 'DOCENTE' };
+            case 'administrativo': return { bg: '#1abc9c', color: 'white', label: 'ADMINISTRATIVO' };
             case 'estudiante': return { bg: '#3498db', color: 'white', label: 'ESTUDIANTE' };
+            case 'guardia': return { bg: '#34495e', color: 'white', label: 'GUARDIA' };
             case 'invitado': return { bg: '#95a5a6', color: 'white', label: 'INVITADO' };
             default: return { bg: '#ecf0f1', color: '#7f8c8d', label: rol ? rol.toUpperCase() : 'DESCONOCIDO' };
         }
+    };
+
+    const cerrarModal = () => {
+        setModalAbierto(false);
+        setForm(FORM_VACIO);
+    };
+
+    const handleSubmitCrear = async (e) => {
+        e.preventDefault();
+
+        if (form.password !== form.confirmPassword) {
+            Swal.fire('Error', 'Las contraseñas no coinciden.', 'error');
+            return;
+        }
+        const regexPassword = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/;
+        if (!regexPassword.test(form.password)) {
+            Swal.fire({
+                title: 'Contraseña muy débil',
+                html: 'Debe tener al menos 6 caracteres, una mayúscula, un número y un carácter especial.',
+                icon: 'warning'
+            });
+            return;
+        }
+        const partesNombre = form.nombre.trim().split(/\s+/);
+        if (partesNombre.length < 2 || !partesNombre.every(p => p.length >= 3)) {
+            Swal.fire('Nombre incompleto', 'Ingresa al menos un nombre y un apellido.', 'warning');
+            return;
+        }
+        if (!form.email.endsWith('@epn.edu.ec')) {
+            Swal.fire('Correo inválido', 'Debes usar un correo institucional @epn.edu.ec', 'warning');
+            return;
+        }
+        if (form.placa) {
+            const regexPlaca = /^[A-Z]{3}-\d{3,4}$/;
+            if (!regexPlaca.test(form.placa)) {
+                Swal.fire('Placa inválida', 'Usa el formato oficial (ej: ABC-1234) o déjala en blanco.', 'warning');
+                return;
+            }
+        }
+
+        setGuardando(true);
+        const exito = await onCrearUsuario(form);
+        setGuardando(false);
+        if (exito) cerrarModal();
+    };
+
+    const handlePlacaChange = (e) => {
+        let value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+        if (value.length > 3) value = value.slice(0, 3) + '-' + value.slice(3, 7);
+        setForm({ ...form, placa: value });
     };
 
     return (
@@ -33,27 +95,53 @@ const ModuleUsuarios = ({
             <div style={{display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:'20px', flexWrap:'wrap', gap:'10px'}}>
                 <h2 className="card-title" style={{margin:0}}>Gestión de Usuarios</h2>
                 
-                {/* 🔥 BOTÓN DE GESTIÓN MASIVA (DISEÑO MODERNO) 🔥 */}
-                <button 
-                    onClick={() => setModoMasivo(!modoMasivo)}
-                    style={{
-                        background: modoMasivo ? '#0a3d62' : 'transparent', 
-                        color: modoMasivo ? 'white' : '#0a3d62',
-                        border: '2px solid #0a3d62', 
-                        borderRadius: '8px',
-                        padding: '8px 16px',
-                        fontWeight: '700',
-                        fontSize: '0.9rem',
-                        cursor: 'pointer',
-                        display: 'flex', alignItems: 'center', gap: '8px',
-                        transition: 'all 0.3s ease',
-                        boxShadow: modoMasivo ? '0 4px 12px rgba(10, 61, 98, 0.2)' : 'none'
-                    }}
-                >
-                    <span>{modoMasivo ? '☑️' : '◻️'}</span>
-                    {modoMasivo ? 'Modo Selección Activo' : 'Activar Selección'}
-                </button>
+                <div style={{display:'flex', gap:'10px', flexWrap:'wrap'}}>
+                    {/* 🔥 BOTÓN CREAR USUARIO — solo el administrador principal lo ve 🔥 */}
+                    {esAdminPrincipal && (
+                        <button 
+                            onClick={() => setModalAbierto(true)}
+                            style={{
+                                background: '#27ae60', color: 'white', border: 'none', 
+                                borderRadius: '8px', padding: '8px 16px', fontWeight: '700',
+                                fontSize: '0.9rem', cursor: 'pointer', display: 'flex', 
+                                alignItems: 'center', gap: '8px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
+                            }}
+                        >
+                            <span>➕</span> Crear Usuario
+                        </button>
+                    )}
+
+                    {/* 🔥 BOTÓN DE GESTIÓN MASIVA (DISEÑO MODERNO) 🔥 */}
+                    <button 
+                        onClick={() => setModoMasivo(!modoMasivo)}
+                        style={{
+                            background: modoMasivo ? '#0a3d62' : 'transparent', 
+                            color: modoMasivo ? 'white' : '#0a3d62',
+                            border: '2px solid #0a3d62', 
+                            borderRadius: '8px',
+                            padding: '8px 16px',
+                            fontWeight: '700',
+                            fontSize: '0.9rem',
+                            cursor: 'pointer',
+                            display: 'flex', alignItems: 'center', gap: '8px',
+                            transition: 'all 0.3s ease',
+                            boxShadow: modoMasivo ? '0 4px 12px rgba(10, 61, 98, 0.2)' : 'none'
+                        }}
+                    >
+                        <span>{modoMasivo ? '☑️' : '◻️'}</span>
+                        {modoMasivo ? 'Modo Selección Activo' : 'Activar Selección'}
+                    </button>
+                </div>
             </div>
+
+            {!esAdminPrincipal && (
+                <div style={{
+                    background: '#fff3cd', color: '#856404', border: '1px solid #ffeeba',
+                    borderRadius: '8px', padding: '10px 15px', marginBottom: '15px', fontSize: '0.85rem'
+                }}>
+                    ℹ️ Estás en modo <b>administrador secundario</b>: puedes activar o bloquear usuarios, pero no crearlos ni eliminarlos.
+                </div>
+            )}
             
             {/* --- BARRA DE FILTROS --- */}
             <div style={{ display: 'flex', gap: '12px', marginBottom: '20px', flexWrap: 'wrap', background:'#f8fafc', padding:'15px', borderRadius:'12px', border:'1px solid #edf2f7' }}>
@@ -75,7 +163,10 @@ const ModuleUsuarios = ({
                     <option value="todos">Todos los Roles</option>
                     <option value="estudiante">Estudiante</option>
                     <option value="docente">Docente</option>
+                    <option value="administrativo">Administrativo</option>
+                    <option value="guardia">Guardia</option>
                     <option value="admin">Admin</option>
+                    {esAdminPrincipal && <option value="admin_secundario">Admin Secundario</option>}
                     <option value="invitado">Invitado</option>
                 </select>
 
@@ -136,28 +227,30 @@ const ModuleUsuarios = ({
                             {estanBloqueados ? 'Activar Marcados' : 'Bloquear Marcados'}
                         </button>
 
-                        {/* BOTÓN ELIMINAR - Rojo moderno */}
-                        <button 
-                            onClick={() => ejecutarAccionMasiva('borrar')}
-                            disabled={seleccionados.length === 0}
-                            style={{
-                                background: '#e74c3c', // Rojo plano
-                                color: 'white',
-                                border: 'none',
-                                borderRadius: '8px',
-                                padding: '10px 20px',
-                                fontWeight: '700',
-                                cursor: seleccionados.length === 0 ? 'not-allowed' : 'pointer',
-                                opacity: seleccionados.length === 0 ? 0.6 : 1,
-                                boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
-                                display: 'flex', alignItems: 'center', gap: '8px',
-                                transition: 'transform 0.2s ease'
-                            }}
-                            onMouseOver={(e) => e.currentTarget.style.transform = 'translateY(-2px)'}
-                            onMouseOut={(e) => e.currentTarget.style.transform = 'translateY(0)'}
-                        >
-                            <span>🗑️</span> Eliminar Marcados
-                        </button>
+                        {/* BOTÓN ELIMINAR - Rojo moderno (solo admin principal) */}
+                        {esAdminPrincipal && (
+                            <button 
+                                onClick={() => ejecutarAccionMasiva('borrar')}
+                                disabled={seleccionados.length === 0}
+                                style={{
+                                    background: '#e74c3c', // Rojo plano
+                                    color: 'white',
+                                    border: 'none',
+                                    borderRadius: '8px',
+                                    padding: '10px 20px',
+                                    fontWeight: '700',
+                                    cursor: seleccionados.length === 0 ? 'not-allowed' : 'pointer',
+                                    opacity: seleccionados.length === 0 ? 0.6 : 1,
+                                    boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
+                                    display: 'flex', alignItems: 'center', gap: '8px',
+                                    transition: 'transform 0.2s ease'
+                                }}
+                                onMouseOver={(e) => e.currentTarget.style.transform = 'translateY(-2px)'}
+                                onMouseOut={(e) => e.currentTarget.style.transform = 'translateY(0)'}
+                            >
+                                <span>🗑️</span> Eliminar Marcados
+                            </button>
+                        )}
                     </div>
                 </div>
             )}
@@ -244,9 +337,11 @@ const ModuleUsuarios = ({
                                                 >
                                                     {u.estado === 'bloqueado' ? '🔓' : '🔒'}
                                                 </button>
-                                                <button className="btn-action" style={{background:'#e74c3c', color:'white', borderRadius:'6px'}} title="Eliminar" onClick={() => eliminarRegistro(u.id)}>
-                                                    🗑️
-                                                </button>
+                                                {esAdminPrincipal && (
+                                                    <button className="btn-action" style={{background:'#e74c3c', color:'white', borderRadius:'6px'}} title="Eliminar" onClick={() => eliminarRegistro(u.id)}>
+                                                        🗑️
+                                                    </button>
+                                                )}
                                             </div>
                                         </td>
                                     </tr>
@@ -263,6 +358,93 @@ const ModuleUsuarios = ({
                     </tbody>
                 </table>
             </div>
+
+            {/* --- MODAL CREAR USUARIO --- */}
+            {modalAbierto && (
+                <div style={{
+                    position: 'fixed', top: 0, left: 0, width: '100%', height: '100%',
+                    background: 'rgba(10, 61, 98, 0.5)', display: 'flex', alignItems: 'center',
+                    justifyContent: 'center', zIndex: 2000, padding: '20px'
+                }} onClick={cerrarModal}>
+                    <div 
+                        style={{
+                            background: 'white', borderRadius: '14px', padding: '30px',
+                            width: '100%', maxWidth: '480px', maxHeight: '90vh', overflowY: 'auto',
+                            boxShadow: '0 10px 40px rgba(0,0,0,0.25)'
+                        }} 
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        <h3 style={{ margin: '0 0 20px', color: '#0a3d62' }}>➕ Crear Nuevo Usuario</h3>
+
+                        <form onSubmit={handleSubmitCrear}>
+                            <div style={{ marginBottom: '14px' }}>
+                                <label style={{ fontSize: '0.85rem', fontWeight: '700', color: '#2c3e50' }}>Nombre completo</label>
+                                <input 
+                                    type="text" required className="input-admin" style={{ width: '100%', margin: '4px 0 0' }}
+                                    value={form.nombre} onChange={(e) => setForm({ ...form, nombre: e.target.value })}
+                                />
+                            </div>
+
+                            <div style={{ marginBottom: '14px' }}>
+                                <label style={{ fontSize: '0.85rem', fontWeight: '700', color: '#2c3e50' }}>Correo institucional</label>
+                                <input 
+                                    type="email" required placeholder="usuario@epn.edu.ec" className="input-admin" style={{ width: '100%', margin: '4px 0 0' }}
+                                    value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })}
+                                />
+                            </div>
+
+                            <div style={{ marginBottom: '14px' }}>
+                                <label style={{ fontSize: '0.85rem', fontWeight: '700', color: '#2c3e50' }}>Rol</label>
+                                <select 
+                                    className="input-admin" style={{ width: '100%', margin: '4px 0 0' }}
+                                    value={form.rol} onChange={(e) => setForm({ ...form, rol: e.target.value })}
+                                >
+                                    {rolesCreables.map(r => <option key={r.value} value={r.value}>{r.label}</option>)}
+                                </select>
+                            </div>
+
+                            <div style={{ marginBottom: '14px' }}>
+                                <label style={{ fontSize: '0.85rem', fontWeight: '700', color: '#2c3e50' }}>Placa de vehículo (opcional)</label>
+                                <input 
+                                    type="text" placeholder="ABC-1234" maxLength="8" className="input-admin" style={{ width: '100%', margin: '4px 0 0' }}
+                                    value={form.placa} onChange={handlePlacaChange}
+                                />
+                            </div>
+
+                            <div style={{ marginBottom: '14px' }}>
+                                <label style={{ fontSize: '0.85rem', fontWeight: '700', color: '#2c3e50' }}>Contraseña</label>
+                                <input 
+                                    type="password" required className="input-admin" style={{ width: '100%', margin: '4px 0 0' }}
+                                    value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })}
+                                />
+                            </div>
+
+                            <div style={{ marginBottom: '20px' }}>
+                                <label style={{ fontSize: '0.85rem', fontWeight: '700', color: '#2c3e50' }}>Repetir contraseña</label>
+                                <input 
+                                    type="password" required className="input-admin" style={{ width: '100%', margin: '4px 0 0' }}
+                                    value={form.confirmPassword} onChange={(e) => setForm({ ...form, confirmPassword: e.target.value })}
+                                />
+                            </div>
+
+                            <div style={{ display: 'flex', gap: '10px', justifyContent: 'flex-end' }}>
+                                <button 
+                                    type="button" onClick={cerrarModal}
+                                    style={{ background: '#ecf0f1', color: '#2c3e50', border: 'none', borderRadius: '8px', padding: '10px 18px', fontWeight: '700', cursor: 'pointer' }}
+                                >
+                                    Cancelar
+                                </button>
+                                <button 
+                                    type="submit" disabled={guardando}
+                                    style={{ background: '#0a3d62', color: 'white', border: 'none', borderRadius: '8px', padding: '10px 18px', fontWeight: '700', cursor: guardando ? 'not-allowed' : 'pointer', opacity: guardando ? 0.7 : 1 }}
+                                >
+                                    {guardando ? 'Creando...' : 'Crear Usuario'}
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

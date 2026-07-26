@@ -1,4 +1,5 @@
 /* --- ESTRUCTURA GLOBAL --- */
+/* Acento de rol: --rol-guardia (amarillo ámbar) */
 .dashboardContainer {
     height: 100vh;
     width: 100vw;
@@ -6,10 +7,10 @@
     flex-direction: column;
     padding: 15px;
     overflow: hidden;
-    background: linear-gradient(135deg, #0a3d62 0%, #162a3a 100%);
+    background: linear-gradient(135deg, var(--db-sidebar-bg) 0%, var(--db-sidebar-bg-dark) 100%);
 }
 
-/* 🔥 CAPA OSCURA (BACKDROP) */
+/* CAPA OSCURA (BACKDROP) */
 .backdrop {
     position: fixed;
     top: 0;
@@ -18,7 +19,7 @@
     height: 100vh;
     background: rgba(0, 0, 0, 0.4);
     backdrop-filter: blur(4px);
-    z-index: 999; /* Por debajo del sidebar pero sobre el contenido */
+    z-index: 999;
 }
 
 /* --- HEADER PREMIUM --- */
@@ -29,13 +30,13 @@
     padding: 12px 30px;
     background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(15px);
-    border-radius: 20px;
+    border-radius: var(--db-radius-lg);
     margin-bottom: 25px;
     flex-shrink: 0;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
-    border-bottom: 4px solid #f1c40f;
+    box-shadow: var(--db-shadow-lg);
+    border-bottom: 4px solid var(--rol-guardia);
     position: relative;
-    z-index: 1001; /* Siempre arriba del todo */
+    z-index: 1001;
 }
 
 .headerLeft { display: flex; align-items: center; gap: 15px; }
@@ -45,45 +46,45 @@
     align-items: center;
     gap: 12px;
     padding-right: 20px;
-    border-right: 2px solid #e2e8f0;
+    border-right: 2px solid var(--db-border);
 }
 
-.logoText { font-size: 1.6rem; font-weight: 900; color: #0a3d62; margin: 0; }
-.logoText span { color: #f1c40f; }
+.logoText { font-size: 1.6rem; font-weight: 900; color: var(--colorPrincipal); margin: 0; }
+.logoText span { color: var(--rol-guardia); }
 
 .roleTag {
-    background: linear-gradient(135deg, #0a3d62 0%, #1c4e75 100%);
-    color: white; padding: 6px 16px; border-radius: 50px;
+    background: linear-gradient(135deg, var(--rol-guardia) 0%, var(--rol-guardia-dark) 100%);
+    color: white; padding: 6px 16px; border-radius: var(--db-radius-pill);
     font-size: 0.8rem; font-weight: 800; text-transform: uppercase;
 }
 
 .userNameHeader {
-    color: #0a3d62; font-weight: 700; font-size: 1rem;
-    padding-left: 15px; border-left: 2px solid #e2e8f0;
+    color: var(--colorPrincipal); font-weight: 700; font-size: 1rem;
+    padding-left: 15px; border-left: 2px solid var(--db-border);
     display: flex; align-items: center; gap: 8px; white-space: nowrap;
 }
 
 .headerCenter { position: absolute; left: 50%; transform: translateX(-50%); }
 
 .dateBadge {
-    background: #f8fafc; color: #64748b; padding: 8px 20px;
-    border-radius: 12px; font-weight: 700; border: 1px solid #e2e8f0;
+    background: var(--db-bg); color: var(--db-text-soft); padding: 8px 20px;
+    border-radius: var(--db-radius-md); font-weight: 700; border: 1px solid var(--db-border);
 }
 
 .logoutBtn {
-    background: #fff5f5; color: #e53e3e; border: 1.5px solid #feb2b2;
-    padding: 10px 20px; border-radius: 14px; font-weight: 800; cursor: pointer;
+    background: var(--db-danger-bg); color: var(--db-danger); border: 1.5px solid #feb2b2;
+    padding: 10px 20px; border-radius: var(--db-radius-md); font-weight: 800; cursor: pointer;
 }
 
-/* 🔥 BOTÓN HAMBURGUESA */
+/* BOTÓN HAMBURGUESA */
 .hamburgerBtn {
     display: none;
-    background: #0a3d62;
+    background: var(--colorPrincipal);
     color: white;
     border: none;
     font-size: 1.5rem;
     padding: 8px 12px;
-    border-radius: 10px;
+    border-radius: var(--db-radius-md);
     cursor: pointer;
 }
 
@@ -96,31 +97,30 @@
 
 /* --- SIDEBAR --- */
 .sidebar { 
-    background: white; border-radius: 20px; padding: 20px 15px; 
-    box-shadow: 0 10px 30px rgba(0,0,0,0.1); display: flex; flex-direction: column;
+    background: var(--db-surface); border-radius: var(--db-radius-lg); padding: 20px 15px; 
+    box-shadow: var(--db-shadow-lg); display: flex; flex-direction: column;
     z-index: 1000;
 }
 
 .menuItem { 
     width: 100%; padding: 14px 18px; border: none; background: transparent; 
-    border-radius: 12px; text-align: left; display: flex; align-items: center; 
-    gap: 12px; font-weight: 700; color: #64748b; cursor: pointer; margin-bottom: 8px; 
+    border-radius: var(--db-radius-md); text-align: left; display: flex; align-items: center; 
+    gap: 12px; font-weight: 700; color: var(--db-text-soft); cursor: pointer; margin-bottom: 8px; 
 }
-.menuItem.active { background: #0a3d62; color: white; }
+.menuItem.active { background: var(--rol-guardia); color: var(--colorPrincipal); }
 
 .contentArea { 
-    background: #fff; border-radius: 24px; padding: 30px; 
-    box-shadow: 0 10px 40px rgba(0,0,0,0.1); overflow-y: auto;
+    background: var(--db-surface); border-radius: var(--db-radius-lg); padding: 30px; 
+    box-shadow: var(--db-shadow-lg); overflow-y: auto;
 }
 
 /* ============================================================
-   📱 MEDIA QUERIES (VERSIÓN ULTRA-LIMPIA)
+   MEDIA QUERIES
    ============================================================ */
 
 @media (max-width: 950px) {
     .hamburgerBtn { display: block; }
     
-    /* Ocultar elementos que roban espacio */
     .headerCenter, 
     .userNameHeader, 
     .roleTag { 
@@ -128,11 +128,10 @@
     }
 
     .header {
-        padding: 8px 15px; /* Reducimos padding vertical */
-        height: 60px;     /* Altura fija para control */
+        padding: 8px 15px;
+        height: 60px;
     }
 
-    /* 🔥 El truco: Ocultamos el texto del botón de salir */
     .logoutText {
         display: none;
     }
@@ -141,7 +140,7 @@
         padding: 8px;
         min-width: 40px;
         justify-content: center;
-        border-radius: 10px;
+        border-radius: var(--db-radius-md);
     }
 
     .logoContainer { 
@@ -150,10 +149,9 @@
     }
 
     .logoText {
-        font-size: 1.1rem; /* Logo más pequeño en móvil */
+        font-size: 1.1rem;
     }
 
-    /* Sidebar y Layout (Se mantienen para funcionalidad) */
     .mainLayout { display: block; position: relative; }
     .sidebar {
         position: fixed; top: 0; left: -100%; width: 280px; height: 100vh;

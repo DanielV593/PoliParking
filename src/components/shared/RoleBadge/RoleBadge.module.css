@@ -1,0 +1,54 @@
+/* src/components/shared/RoleBadge/RoleBadge.module.css */
+
+.badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'Roboto', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    padding: 3px 10px;
+    border-radius: var(--db-radius-pill, 999px);
+    border: 1px solid currentColor;
+    white-space: nowrap;
+}
+
+.badge::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: currentColor;
+}
+
+.admin {
+    color: var(--rol-admin, #ffc107);
+    background: color-mix(in srgb, var(--rol-admin, #ffc107) 15%, transparent);
+}
+
+.guardia {
+    color: var(--rol-guardia, #e30613);
+    background: color-mix(in srgb, var(--rol-guardia, #e30613) 15%, transparent);
+}
+
+.invitado {
+    color: var(--rol-invitado, #64748b);
+    background: color-mix(in srgb, var(--rol-invitado, #64748b) 15%, transparent);
+}
+
+.estudiante {
+    color: var(--rol-estudiante, #06b6d4);
+    background: color-mix(in srgb, var(--rol-estudiante, #06b6d4) 15%, transparent);
+}
+
+.personal {
+    color: var(--rol-personal, #16a34a);
+    background: color-mix(in srgb, var(--rol-personal, #16a34a) 15%, transparent);
+}
+
+.docente {
+    color: var(--rol-docente, #7c3aed);
+    background: color-mix(in srgb, var(--rol-docente, #7c3aed) 15%, transparent);
+}

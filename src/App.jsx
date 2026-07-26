@@ -46,12 +46,16 @@ function AppContent() {
         } />
 
         <Route path="/admin" element={
-          <ProtectedRoute user={user} roleRequired="admin">
+          <ProtectedRoute user={user} roleRequired={["admin", "admin_secundario"]}>
             <DashboardAdmin user={user} />
           </ProtectedRoute>
         } />
 
-        <Route path="/docente" element={<DashboardDocente user={user} />} />
+        <Route path="/docente" element={
+          <ProtectedRoute user={user} roleRequired={["docente", "administrativo"]}>
+            <DashboardDocente user={user} />
+          </ProtectedRoute>
+        } />
 
         {/* --- RUTA PARA EL GUARDIA --- */}
       <Route path="/guardia" element={

@@ -125,7 +125,9 @@ const Login = () => {
         }
 
         // Verificar que el rol seleccionado en el <select> coincida con la base de datos
-        const rolMatch = (rol === 'administrador' && userData.rol === 'admin') || (rol === userData.rol);
+        // 🔥 "administrador" cubre tanto al admin principal como a los admins secundarios
+        const rolMatch = (rol === 'administrador' && (userData.rol === 'admin' || userData.rol === 'admin_secundario'))
+            || (rol === userData.rol);
 
         if (!rolMatch) {
             await signOut(auth);
@@ -141,7 +143,13 @@ const Login = () => {
         localStorage.setItem('userRole', userData.rol);
         
         // Navegación según rol
-        const rutas = { admin: '/admin', docente: '/docente', guardia: '/guardia' };
+        const rutas = { 
+            admin: '/admin', 
+            admin_secundario: '/admin', 
+            docente: '/docente', 
+            administrativo: '/docente',
+            guardia: '/guardia' 
+        };
         navigate(rutas[userData.rol] || '/dashboard');
 
     } catch (error) {
@@ -176,6 +184,7 @@ const Login = () => {
                                 <select value={rol} onChange={(e) => setRol(e.target.value)} className="auth-register__input">
                                     <option value="estudiante">Estudiante</option>
                                     <option value="docente">Docente</option>
+                                    <option value="administrativo">Personal Administrativo</option>
                                     <option value="invitado">Invitado</option>
                                     <option value="administrador">Administrador</option>
                                     <option value="guardia">Guardia</option>

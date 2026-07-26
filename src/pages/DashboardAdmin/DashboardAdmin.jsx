@@ -1,11 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { auth, db } from "../../firebase/config.js"; 
-import { signOut } from 'firebase/auth';
+import { auth, db, getSecondaryAuth, cerrarAppSecundaria } from "../../firebase/config.js"; 
+import { 
+    signOut, 
+    EmailAuthProvider, 
+    reauthenticateWithCredential, 
+    createUserWithEmailAndPassword
+} from 'firebase/auth';
 import { 
     collection, deleteDoc, doc, updateDoc, addDoc, query, orderBy, writeBatch, onSnapshot 
 } from 'firebase/firestore';
 import Swal from 'sweetalert2';
+import { toast } from 'react-toastify';
+import { useUser } from '../../context/UserContext';
 
 // COMPONENTES
 import AdminNavbar from './components/AdminNavbar';
@@ -21,6 +28,11 @@ import './DashboardAdmin.css';
 
 const DashboardAdmin = () => {
     const navigate = useNavigate();
+    const { user: currentUser } = useUser();
+
+    // 🔥 Solo el admin principal (rol "admin") puede crear usuarios y eliminarlos.
+    // Los "admin_secundario" solo pueden ver/activar/desactivar.
+    const esAdminPrincipal = currentUser?.rol === 'admin';
     
     // --- ESTADOS DE DATOS ---
     const [moduloActivo, setModuloActivo] = useState('resumen');
@@ -183,7 +195,10 @@ const DashboardAdmin = () => {
 
     const getColorSemaforo = (oc, tot) => (oc/tot > 0.85) ? '#e30613' : (oc/tot > 0.5) ? '#f39c12' : '#2ecc71';
 
-    const usuariosFiltrados = usuarios.filter(u => 
+    // 🔥 Los admins secundarios no tienen visibilidad del/los administrador(es) principal(es)
+    const usuariosVisibles = esAdminPrincipal ? usuarios : usuarios.filter(u => u.rol !== 'admin');
+
+    const usuariosFiltrados = usuariosVisibles.filter(u => 
         (u.nombre.toLowerCase().includes(filtro.texto.toLowerCase()) || (u.placa||'').toLowerCase().includes(filtro.texto.toLowerCase())) &&
         (filtro.rol === 'todos' || u.rol === filtro.rol) && (u.estado||'activo') === filtro.estado
     );
@@ -248,13 +263,97 @@ const DashboardAdmin = () => {
     const estanBloqueados = seleccionados.length > 0 && seleccionados.every(id => usuarios.find(user => user.id === id)?.estado === 'bloqueado');
     const ejecutarAccionMasivaUsuarios = async (tipo) => {
         if (seleccionados.length === 0) return;
-        if (tipo === 'borrar') { await ejecutarBorradoMasivo('usuarios'); return; }
+        if (tipo === 'borrar') {
+            if (!esAdminPrincipal) {
+                Swal.fire('Acción no permitida', 'Solo el administrador principal puede eliminar usuarios.', 'error');
+                return;
+            }
+            await ejecutarBorradoMasivo('usuarios');
+            return;
+        }
         if ((await Swal.fire({ title: `¿${estanBloqueados ? 'Activar' : 'Bloquear'} ${seleccionados.length} usuarios?`, icon: 'question', showCancelButton: true })).isConfirmed) {
             const batch = writeBatch(db);
             seleccionados.forEach(id => { const ref = doc(db, "usuarios", id); batch.update(ref, { estado: estanBloqueados ? 'activo' : 'bloqueado' }); });
             await batch.commit(); Swal.fire('Actualizado', '', 'success'); setSeleccionados([]);
         }
     };
+    // 🔥 CREACIÓN SEGURA DE USUARIOS (solo administrador principal)
+    // Roles que puede crear el admin principal desde este panel
+    const ROLES_CREABLES = [
+        { value: 'estudiante', label: 'Estudiante' },
+        { value: 'docente', label: 'Docente' },
+        { value: 'administrativo', label: 'Personal Administrativo' },
+        { value: 'guardia', label: 'Guardia' },
+        { value: 'admin_secundario', label: 'Administrador Secundario' },
+    ];
+
+    const crearUsuarioAdmin = async (datosNuevoUsuario) => {
+        if (!esAdminPrincipal) {
+            Swal.fire('Acción no permitida', 'Solo el administrador principal puede crear usuarios.', 'error');
+            return false;
+        }
+
+        const { nombre, email, placa, rol, password } = datosNuevoUsuario;
+
+        // Paso 1: pedir la contraseña del admin actual para confirmar la operación
+        const { value: passwordAdmin } = await Swal.fire({
+            title: 'Confirma tu identidad',
+            text: 'Por seguridad, ingresa tu contraseña de administrador para continuar.',
+            input: 'password',
+            inputPlaceholder: 'Tu contraseña',
+            showCancelButton: true,
+            confirmButtonColor: '#0a3d62',
+            confirmButtonText: 'Confirmar',
+            cancelButtonText: 'Cancelar'
+        });
+
+        if (!passwordAdmin) return false;
+
+        try {
+            // Paso 2: reautenticar al admin actual (no cambia la sesión)
+            const credencial = EmailAuthProvider.credential(currentUser.email, passwordAdmin);
+            await reauthenticateWithCredential(auth.currentUser, credencial);
+        } catch (error) {
+            Swal.fire('Contraseña incorrecta', 'No se pudo verificar tu identidad.', 'error');
+            return false;
+        }
+
+        // Paso 3: crear la cuenta en una app secundaria para NO perder la sesión del admin
+        const { appSecundaria, authSecundaria } = getSecondaryAuth();
+        try {
+            const userCredential = await createUserWithEmailAndPassword(authSecundaria, email, password);
+            const nuevoUid = userCredential.user.uid;
+
+            await addDoc(collection(db, "usuarios"), {
+                uid: nuevoUid,
+                nombre,
+                email,
+                placa: placa || '',
+                rol,
+                estado: 'activo',
+                intentosFallidos: 0,
+                fechaRegistro: new Date().toLocaleString(),
+                creadoPor: currentUser.email
+            });
+
+            await signOut(authSecundaria);
+            await cerrarAppSecundaria(appSecundaria);
+
+            Swal.fire('¡Usuario creado!', `La cuenta de ${nombre} fue creada correctamente.`, 'success');
+            return true;
+        } catch (error) {
+            await cerrarAppSecundaria(appSecundaria);
+            if (error.code === 'auth/email-already-in-use') {
+                Swal.fire('Correo ya registrado', 'Ya existe una cuenta con ese correo.', 'error');
+            } else if (error.code === 'auth/weak-password') {
+                Swal.fire('Contraseña débil', 'La contraseña debe tener al menos 6 caracteres.', 'error');
+            } else {
+                Swal.fire('Error', 'No se pudo crear el usuario: ' + error.message, 'error');
+            }
+            return false;
+        }
+    };
+
     const verPerfilUsuario = (u) => {
         const susReservas = reservas.filter(r => r.usuario === u.email);
         Swal.fire({ title: `Perfil de ${u.nombre}`, html: `<div><p>Email: ${u.email}</p><p>Placa: ${u.placa || 'N/A'}</p><p>Rol: ${u.rol}</p><hr/><p>Reservas: ${susReservas.length}</p></div>`, icon: 'info' });
@@ -299,8 +398,18 @@ const DashboardAdmin = () => {
                             usuariosFiltrados={usuariosFiltrados} filtro={filtro} setFiltro={setFiltro}
                             handleCambioFiltroEstado={handleCambioFiltroEstado} modoMasivo={modoMasivo} setModoMasivo={setModoMasivo}
                             seleccionados={seleccionados} toggleSeleccion={toggleSeleccion} seleccionarTodo={() => seleccionarTodo(usuariosFiltrados)}
-                            ejecutarAccionMasiva={ejecutarAccionMasivaUsuarios} verPerfil={verPerfilUsuario} toggleBloqueo={toggleBloqueo} eliminarRegistro={(id) => eliminarRegistro('usuarios', id)}
+                            ejecutarAccionMasiva={ejecutarAccionMasivaUsuarios} verPerfil={verPerfilUsuario} toggleBloqueo={toggleBloqueo} 
+                            eliminarRegistro={(id) => {
+                                if (!esAdminPrincipal) {
+                                    Swal.fire('Acción no permitida', 'Solo el administrador principal puede eliminar usuarios.', 'error');
+                                    return;
+                                }
+                                eliminarRegistro('usuarios', id);
+                            }}
                             estanBloqueados={estanBloqueados}
+                            esAdminPrincipal={esAdminPrincipal}
+                            rolesCreables={ROLES_CREABLES}
+                            onCrearUsuario={crearUsuarioAdmin}
                         />
                     )}
 
